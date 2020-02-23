@@ -11,6 +11,7 @@ public class File {
 	
 	public static void main(String[] Args) {
 		System.out.println("Eeeeeerste functie huyyyyy");
+		System.out.println("Git is awesome wooohooow");
 	}
 
 }
