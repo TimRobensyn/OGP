@@ -2,7 +2,7 @@
  * ToDo class commentaar
  * 
  * @version 1.0
- * @author Tim Lauwers, Robbe Vanbiervliet, Tim Robensyn
+ * @author Tim Lauwers, Robbe Van Biervliet, Tim Robensyn
  */
 
 package file;
