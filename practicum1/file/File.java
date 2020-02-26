@@ -31,6 +31,9 @@ public class File {
 		this.writable = writable;
 	}
 	
+	
+	// TOTAAL PROGRAMMEREN
+	
 	/*
 	 * Returns the name of this file.
 	 */
@@ -89,6 +92,22 @@ public class File {
 		return this.size;
 	}
 	
+	// VOORWAARDE FILE = WRITABLE?
+	/**
+	 * Return a boolean reflecting whether this file can accept the given amount for enlarge. 
+	 * 
+	 * @param  amount
+	 * 		   The amount to be checked
+	 * @return True if and only if the given amount is positive and if the size 
+	 * 		   of this file incremented with the given amount is a valid size for
+	 * 		   any file.
+	 *       | result == 
+	 *       |    ( (amount > 0)
+	 *       |   && ((isValidSize(getSize()+amount)) )
+	 */
+	public boolean canAcceptForEnlarge(int amount) {
+		return ( (amount > 0) && (isValidSize(getSize()+amount)) );
+	}
 	
 	/**
 	 * Increase the size of this file with the given size
@@ -103,7 +122,24 @@ public class File {
 	 *       | new.getSize() == this.getSize() + amount
 	 */
 	public void enlarge(int amount) {
+		assert canAcceptForEnlarge(amount): "Precondition: Acceptable amount for enlarge";
 		setSize(getSize() + amount);
+	}
+	
+	// VOORWAARDE FILE = WRITABLE?
+	/**
+	 * Return a boolean reflecting whether this file can accept the given amount for shorten.
+	 * 
+	 * @param  amount
+	 * 		   The amount to be checked.
+	 * @return True if and only if the given amount is positive and the size of the file
+	 * 		   decremented with the given amount is a valid size for all files.
+	 *       | return == 
+	 *       |    ( (amount > 0)
+	 *       |   && ((isValidSize(getSize()-amount)) )
+	 */
+	public boolean canAcceptForShorten(int amount) {
+		return ( (amount>0) && (isValidSize(getSize()-amount)) );
 	}
 	
 	/**
@@ -119,6 +155,7 @@ public class File {
 	 *      | new.getSize() == this.getSize() - amount
 	 */
 	public void shorten(int amount) {
+		assert canAcceptForShorten(amount): "Precondition: cAceptable amount for shorten";
 		setSize(getSize() - amount);
 	}
 	
@@ -172,7 +209,8 @@ public class File {
 	private static int sizeLimit = Integer.MAX_VALUE;
 	
 	
-
+    // DEFENSIEF PROGRAMMEREN
+	
 	/*
 	 * Check whether this file is writable
 	 *   Some methods have no effect when invoked against non writable files.
