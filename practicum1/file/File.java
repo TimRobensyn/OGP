@@ -34,10 +34,24 @@ public class File {
 	 *      | isValidSize(size) 
 	 *      
 	 */
+	@Raw
 	public File(String name, int size, boolean writable) {
 		setName(name);
 		setSize(size);
 		setWritable(writable);
+	}
+	
+	/**
+	 * Initialize this new file with a given name, size 0 and possibility to write.
+	 * 
+	 * @param  name
+	 *         The name for this new file.
+	 * @effect This new file is initialized with the given name as its name, 0 as its 
+	 *         size and true as is writability state. 
+	 */
+	@Raw
+	public File(String name) {
+		this(name,0,true);
 	}
 	
 	
@@ -146,7 +160,7 @@ public class File {
 	 * 		   The amount to be checked.
 	 * @return True if and only if the given amount is positive and the size of the file
 	 * 		   decremented with the given amount is a valid size for all files.
-	 *       | return == 
+	 *       | result == 
 	 *       |    ( (amount > 0)
 	 *       |   && ((isValidSize(getSize()-amount)) )
 	 */
