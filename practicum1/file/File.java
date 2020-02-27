@@ -1,6 +1,7 @@
 package file;
 
 import be.kuleuven.cs.som.annotate.*;
+import java.util.Date;
 
 // ToDo class commentaar: @invar, @pre enz.
 
@@ -226,6 +227,15 @@ public class File {
 	
 	// DEFENSIEF PROGRAMMEREN
 	// ALLES IVM TIJD
+	
+	/**
+	 * Return the current time
+	 */
+	@Basic
+	public String getTime() {
+		Date date = new Date();
+		return date.toString();
+	}
 	
     // TOTAAL PROGRAMMEREN
 	
