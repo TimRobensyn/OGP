@@ -112,6 +112,7 @@ public class File {
 	 *         valid size for any file.
 	 *       | result == 
 	 *       |    ( (amount > 0)
+	 *       |   && ( getSize() <= Long.MAX_VALUE - amount)
 	 *       |   && ((isValidSize(getSize()+amount)) )
 	 */
 	public boolean canAcceptForEnlarge(long amount) {
