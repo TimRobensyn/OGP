@@ -2,11 +2,18 @@ package file;
 
 import be.kuleuven.cs.som.annotate.*;
 
+// ToDo class commentaar: @invar, @pre enz.
+
 /**
- * ToDo class commentaar: @invar, @pre enz.
+ * A class of files, involving a file name, size, a size limit and its writability.
+ * 
+ * @invar   The size of a file must be valid
+ *        | isValidSize(getSize())
+ * @invar   The size limit that applies to all bank accounts must be a valid size limit
+ *        | isValidSizeLimit(getSizeLimit())
  * 
  * @version 1.0
- * @author Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
+ * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  */
 
 
@@ -24,11 +31,12 @@ public class File {
 	 * 		  The initial value for the writability of this new file.
 	 * @pre   The given size must be valid.
 	 *      | isValidSize(size) 
+	 *      
 	 */
 	public File(String name, int size, boolean writable) {
 		setName(name);
 		setSize(size);
-		this.writable = writable;
+		setWritable(writable);
 	}
 	
 	
@@ -79,7 +87,7 @@ public class File {
 	 *       |    ( (size >= 0)
 	 *       |   && (size <= getSizeLimit()) )
 	 */
-	public static boolean isValidSize(int size) {
+	public static boolean isValidSize(long size) {
 		return ((size>=0) && (size <= getSizeLimit()));
 	}
 	
@@ -88,7 +96,7 @@ public class File {
 	 * Returns the size of this file
 	 */
 	@Basic
-	public int getSize() {
+	public long getSize() {
 		return this.size;
 	}
 	
@@ -98,15 +106,17 @@ public class File {
 	 * 
 	 * @param  amount
 	 * 		   The amount to be checked
-	 * @return True if and only if the given amount is positive and if the size 
-	 * 		   of this file incremented with the given amount is a valid size for
-	 * 		   any file.
+	 * @return True if and only if the given amount is positive, if there's no overflow
+	 *         and if the size of this file incremented with the given amount is a 
+	 *         valid size for any file.
 	 *       | result == 
 	 *       |    ( (amount > 0)
 	 *       |   && ((isValidSize(getSize()+amount)) )
 	 */
-	public boolean canAcceptForEnlarge(int amount) {
-		return ( (amount > 0) && (isValidSize(getSize()+amount)) );
+	public boolean canAcceptForEnlarge(long amount) {
+		return ( (amount > 0) 
+				&& (getSize() <= Long.MAX_VALUE - amount)
+				&& (isValidSize(getSize()+amount)) );
 	}
 	
 	/**
@@ -138,7 +148,7 @@ public class File {
 	 *       |    ( (amount > 0)
 	 *       |   && ((isValidSize(getSize()-amount)) )
 	 */
-	public boolean canAcceptForShorten(int amount) {
+	public boolean canAcceptForShorten(long amount) {
 		return ( (amount>0) && (isValidSize(getSize()-amount)) );
 	}
 	
@@ -155,7 +165,7 @@ public class File {
 	 *      | new.getSize() == this.getSize() - amount
 	 */
 	public void shorten(int amount) {
-		assert canAcceptForShorten(amount): "Precondition: cAceptable amount for shorten";
+		assert canAcceptForShorten(amount): "Precondition: Acceptable amount for shorten";
 		setSize(getSize() - amount);
 	}
 	
@@ -167,7 +177,7 @@ public class File {
 	 * @post  If the size is valid, the size of the file will be set
 	 * 		  to the given size.
 	 */
-	public void setSize(int size) {
+	public void setSize(long size) {
 		if (isValidSize(size)) {
 			this.size = size;
 		}
@@ -176,7 +186,7 @@ public class File {
 	/*
 	 * Variable registering the size of this file.
 	 */
-	private int size = 0;
+	private long size = 0;
 	
 	
 	
@@ -186,35 +196,44 @@ public class File {
 	 *   The size limit expresses the highest possible value for the 
 	 *   size of a file.
 	 */
-	@Basic @Immutable
-	public static int getSizeLimit() {
+	@Basic
+	@Immutable
+	public static long getSizeLimit() {
 		return File.sizeLimit;
 	}
+		
 	
 	/**
 	 * Set the maximum allowed file size
 	 * Does nothing if the given limit is negative
 	 * @param limit
-	 * 		  The new maximum file size
+	 * 		  The new maximum file size for all files.
+	 * @pre   The given limit must be positive
+	 *      | limit >= 0
+	 * @post  The new size limit that applies to all files is equal to the given
+	 *        limit.
+	 *      | new.getSizeLimit == limit      
 	 */
-	public static void setSizeLimit(int limit) {
-		if (limit >= 0) {
-			File.sizeLimit = limit;
-		}
+	public static void setSizeLimit(long limit) {
+		assert (limit >= 0): "Precondition: Acceptable number for size limit.";
+		File.sizeLimit = limit;
 	}
 	
 	/*
 	 * Variable registering the size limit of this file.
 	 */
-	private static int sizeLimit = Integer.MAX_VALUE;
+	private static long sizeLimit = Long.MAX_VALUE;
 	
+	// DEFENSIEF PROGRAMMEREN
+	// ALLES IVM TIJD
 	
-    // DEFENSIEF PROGRAMMEREN
+    // TOTAAL PROGRAMMEREN
 	
 	/*
 	 * Check whether this file is writable
 	 *   Some methods have no effect when invoked against non writable files.
 	 */
+	@Basic
 	public boolean isWritable() {
 		return this.writable;
 	}
