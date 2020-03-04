@@ -39,6 +39,8 @@ public class File {
 		setName(name);
 		setSize(size);
 		setWritable(writable);
+		this.creationTime = getCurrentTime();
+		this.modificationTime = null;
 	}
 	
 	/**
@@ -77,9 +79,10 @@ public class File {
 	 *      | new.name = name  
 	 */
 	public void setName(String name) {
-		if( (!name.isEmpty()) 
+		if( (!name.isEmpty()) && (isWritable() == true) 
 		     && (name.matches("^[a-zA-Z0-9.-_]*$")) ) {
 			this.name = name;
+			this.setModificationTime();
 		}
 	}
 	
@@ -150,6 +153,7 @@ public class File {
 	public void enlarge(int amount) {
 		assert canAcceptForEnlarge(amount): "Precondition: Acceptable amount for enlarge";
 		setSize(getSize() + amount);
+		this.setModificationTime();
 	}
 	
 	// VOORWAARDE FILE = WRITABLE?
@@ -183,6 +187,7 @@ public class File {
 	public void shorten(int amount) {
 		assert canAcceptForShorten(amount): "Precondition: Acceptable amount for shorten";
 		setSize(getSize() - amount);
+		this.setModificationTime();
 	}
 	
 	/**
@@ -190,13 +195,15 @@ public class File {
 	 * 
 	 * @param size
 	 *        The size for this file.
-	 * @post  If the size is valid, the size of the file will be set
-	 * 		  to the given size.
+	 * @pre   This amount is a valid size
+	 *      | isValidSize(size)
+	 * @post  The size of the file is set to the given size.
+	 * 		| new.size = size
 	 */
 	public void setSize(long size) {
-		if (isValidSize(size)) {
-			this.size = size;
-		}
+		assert isValidSize(size): "Precondition: Acceptable number for size";
+		this.size = size;
+		this.setModificationTime();
 	}
 	
 	/*
@@ -247,10 +254,29 @@ public class File {
 	 * Return the current time
 	 */
 	@Basic
-	public String getTime() {
+	private static String getCurrentTime() {
 		Date date = new Date();
 		return date.toString();
 	}
+	
+	/**
+	 * Set the time of the last modification of the file.
+	 * 
+	 * @post  The time when the file was last modified will be set to the current time.
+	 */
+	public void setModificationTime() {
+		this.modificationTime = getCurrentTime();
+	}
+	
+	/*
+	 * Variable registering the creation time of this file.	
+	 */
+	private final String creationTime;
+	
+	/*
+	 * Variable registering the modification time of this file.
+	 */
+	private String modificationTime = null;
 	
     // TOTAAL PROGRAMMEREN
 	
