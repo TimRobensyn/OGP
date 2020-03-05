@@ -39,8 +39,7 @@ public class File {
 		setName(name);
 		setSize(size);
 		setWritable(writable);
-		this.creationTime = getCurrentTime();
-		this.modificationTime = (Long) null;
+
 	}
 	
 	/**
@@ -82,7 +81,7 @@ public class File {
 		if( (!name.isEmpty()) && (isWritable() == true) 
 		     && (name.matches("^[a-zA-Z0-9.-_]*$")) ) {
 			this.name = name;
-			this.setModificationTime();
+			setModificationTime();
 		}
 	}
 	
@@ -153,7 +152,6 @@ public class File {
 	public void enlarge(int amount) {
 		assert canAcceptForEnlarge(amount): "Precondition: Acceptable amount for enlarge";
 		setSize(getSize() + amount);
-		this.setModificationTime();
 	}
 	
 	// VOORWAARDE FILE = WRITABLE?
@@ -187,7 +185,6 @@ public class File {
 	public void shorten(int amount) {
 		assert canAcceptForShorten(amount): "Precondition: Acceptable amount for shorten";
 		setSize(getSize() - amount);
-		this.setModificationTime();
 	}
 	
 	/**
@@ -203,7 +200,7 @@ public class File {
 	public void setSize(long size) {
 		assert isValidSize(size): "Precondition: Acceptable number for size";
 		this.size = size;
-		this.setModificationTime();
+		setModificationTime();
 	}
 	
 	/*
@@ -248,59 +245,77 @@ public class File {
 	 */
 	private static long sizeLimit = Long.MAX_VALUE;
 	
+	
+	
 	// TOTAAL PROGRAMMEREN
 	// ALLES IVM TIJD
 	
 	/**
 	 * Return the current time
 	 */
-	@Basic
-	private static long getCurrentTime() {
+	private static Date getCurrentTime() {
 		Date date = new Date();
-		return date.getTime();
+		return date;
 	}
+	
+	/**
+	 * Return the creation time of the file.
+	 */
+	@Basic
+	@Immutable
+	public Date getCreationTime() {
+		return this.creationTime;
+	}
+
+	/*
+	 * Variable registering the creation time of this file.	
+	 */
+	private final Date creationTime = new Date();
+	
 	
 	/**
 	 * Set the time of the last modification of the file.
 	 * 
 	 * @post  The time when the file was last modified will be set to the current time.
 	 */
-	public void setModificationTime() {
+	private void setModificationTime() {
 		this.modificationTime = getCurrentTime();
 	}
 	
 	/**
-	 * Return the time between the creation time and modification time of this file
+	 * Returns the modification time of the file.
 	 */
-	@Basic
-	public long getUsePeriod(){
-		long usePeriod = (Long) null;
-		if (modificationTime != (Long) null){
-		usePeriod = this.modificationTime - this.creationTime - 1;
-		}
-		return usePeriod;
+	public Date getModificationTime() {
+		return this.modificationTime;
 	}
-	
-	/**
-	 * Return a boolean reflecting whether a file's useperiod overlaps with another given file's useperiod
-	 * 
-	 * @param file
-	 * 		  The file which useperiod will be compared
-	 * @return True if and only if the useperiod of this file overlaps with the useperiod of the given file
-	 */
-	public boolean hasOverlappingUsePeriod(File file) {
-		return(this.getUsePeriod() == file.getUsePeriod());
-	}
-	
-	/*
-	 * Variable registering the creation time of this file.	
-	 */
-	private final long creationTime;
 	
 	/*
 	 * Variable registering the modification time of this file.
 	 */
-	private long modificationTime = (Long) null;
+	private Date modificationTime = null;
+		
+	
+	/**
+	 * Return a boolean reflecting whether a file's use period overlaps with another given file's useperiod
+	 * 
+	 * @param  file
+	 * 		   The file which use period will be compared with the current file.
+	 * @return True if and only if the use period of this file overlaps with the use period of the given file
+	 */
+	public boolean hasOverlappingUsePeriod(File file) {
+		if (this.getModificationTime() != null
+		   && file.getModificationTime() != null) {
+			return !(this.getModificationTime().before(file.getCreationTime())
+					|| this.getCreationTime().after(file.getModificationTime()));
+		}
+		else
+			return false;
+	}
+	
+	
+	
+	
+	
 	
     // DEFENSIEF PROGRAMMEREN (WRITABLE)
 	
