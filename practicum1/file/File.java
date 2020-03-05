@@ -40,7 +40,7 @@ public class File {
 		setSize(size);
 		setWritable(writable);
 		this.creationTime = getCurrentTime();
-		this.modificationTime = null;
+		this.modificationTime = (Long) null;
 	}
 	
 	/**
@@ -231,14 +231,15 @@ public class File {
 	 * Does nothing if the given limit is negative
 	 * @param limit
 	 * 		  The new maximum file size for all files.
-	 * @pre   The given limit must be positive
+	 * @pre   The given limit must be positive and less than or equal to the max value
 	 *      | limit >= 0
+	 *      | limit <= Long.MAX_VALUE
 	 * @post  The new size limit that applies to all files is equal to the given
 	 *        limit.
 	 *      | new.getSizeLimit == limit      
 	 */
 	public static void setSizeLimit(long limit) {
-		assert (limit >= 0): "Precondition: Acceptable number for size limit.";
+		assert ((limit >= 0) && (limit <= Long.MAX_VALUE)): "Precondition: Acceptable number for size limit.";
 		File.sizeLimit = limit;
 	}
 	
@@ -247,16 +248,16 @@ public class File {
 	 */
 	private static long sizeLimit = Long.MAX_VALUE;
 	
-	// DEFENSIEF PROGRAMMEREN
+	// TOTAAL PROGRAMMEREN
 	// ALLES IVM TIJD
 	
 	/**
 	 * Return the current time
 	 */
 	@Basic
-	private static String getCurrentTime() {
+	private static long getCurrentTime() {
 		Date date = new Date();
-		return date.toString();
+		return date.getTime();
 	}
 	
 	/**
@@ -268,17 +269,40 @@ public class File {
 		this.modificationTime = getCurrentTime();
 	}
 	
+	/**
+	 * Return the time between the creation time and modification time of this file
+	 */
+	@Basic
+	public long getUsePeriod(){
+		long usePeriod = (Long) null;
+		if (modificationTime != (Long) null){
+		usePeriod = this.modificationTime - this.creationTime - 1;
+		}
+		return usePeriod;
+	}
+	
+	/**
+	 * Return a boolean reflecting whether a file's useperiod overlaps with another given file's useperiod
+	 * 
+	 * @param file
+	 * 		  The file which useperiod will be compared
+	 * @return True if and only if the useperiod of this file overlaps with the useperiod of the given file
+	 */
+	public boolean hasOverlappingUsePeriod(File file) {
+		return(this.getUsePeriod() == file.getUsePeriod());
+	}
+	
 	/*
 	 * Variable registering the creation time of this file.	
 	 */
-	private final String creationTime;
+	private final long creationTime;
 	
 	/*
 	 * Variable registering the modification time of this file.
 	 */
-	private String modificationTime = null;
+	private long modificationTime = (Long) null;
 	
-    // TOTAAL PROGRAMMEREN
+    // DEFENSIEF PROGRAMMEREN (WRITABLE)
 	
 	/*
 	 * Check whether this file is writable
