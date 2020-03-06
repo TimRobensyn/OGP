@@ -74,12 +74,20 @@ public class File {
 	 * @param name
 	 * 	      String that will be used as the filename
 	 * @post  If the name is valid, the new name of this file is equal to the given name.
-	 *      | new.name = name  
+	 *      | new.name = name
+	 * @throws FileNotWritableException
+	 * 		  This file is not writable and cannot be renamed by the user.
 	 */
-	public void setName(String name) {
+	public void setName(String name) 
+	throws FileNotWritableException {
+		if(! this.isWritable()) {
+			throw new FileNotWritableException(this);
+		}
+		else {
 		if (isValidName(name)) {
 			this.name = name;
 			setModificationTime();
+		}
 		}
 	}
 	
@@ -164,10 +172,18 @@ public class File {
 	 * @post   The new size of this file is equal to the old size incremented
 	 *         with the give amount of bytes.
 	 *       | new.getSize() == this.getSize() + amount
+	 * @throws FileNotWritableException
+	 *         This file is not writable and cannot be enlarged by the user.
 	 */
-	public void enlarge(int amount) {
+	public void enlarge(int amount)
+	throws FileNotWritableException{
+		if(! this.isWritable()) {
+			throw new FileNotWritableException(this);
+		}
+		else {
 		assert canAcceptForEnlarge(amount): "Precondition: Acceptable amount for enlarge";
 		setSize(getSize() + amount);
+		}
 	}
 	
 	// VOORWAARDE FILE = WRITABLE?
@@ -197,10 +213,18 @@ public class File {
 	 * @post  The new size of this file is equal to the old size decremented
 	 *        with the given amount of bytes.
 	 *      | new.getSize() == this.getSize() - amount
+	 * @throws FileNotWritableException
+	 *         This file is not writable and cannot be shortened by the user.
 	 */
-	public void shorten(int amount) {
+	public void shorten(int amount)
+	throws FileNotWritableException{
+		if(! this.isWritable()) {
+			throw new FileNotWritableException(this);
+		}
+		else {
 		assert canAcceptForShorten(amount): "Precondition: Acceptable amount for shorten";
 		setSize(getSize() - amount);
+		}
 	}
 	
 	/**
@@ -212,11 +236,19 @@ public class File {
 	 *      | isValidSize(size)
 	 * @post  The size of the file is set to the given size.
 	 * 		| new.size = size
+	 * @throws FileNotWritableException
+	 *         This file is not writable and its size cannot be set by the user.
 	 */
-	public void setSize(long size) {
+	public void setSize(long size)
+	throws FileNotWritableException{
+		if(! this.isWritable()) {
+			throw new FileNotWritableException(this);
+		}
+		else {
 		assert isValidSize(size): "Precondition: Acceptable number for size";
 		this.size = size;
 		setModificationTime();
+		}
 	}
 	
 	/*
@@ -312,7 +344,7 @@ public class File {
 		
 	
 	/**
-	 * Return a boolean reflecting whether a file's use period overlaps with another given file's useperiod
+	 * Return a boolean reflecting whether a file's use period overlaps with another given file's use period
 	 * 
 	 * @param  file
 	 * 		   The file which use period will be compared with the current file.
@@ -332,10 +364,6 @@ public class File {
 		else
 			return false;
 	}
-	
-	
-	
-	
 	
 	
     // DEFENSIEF PROGRAMMEREN (WRITABLE)
