@@ -8,6 +8,8 @@ import java.util.Date;
 /**
  * A class of files, involving a file name, size, a size limit and its writability.
  * 
+ * @invar   The name of a file must be valid
+ *        | isValidName(getName())
  * @invar   The size of a file must be valid
  *        | isValidSize(getSize())
  * @invar   The size limit that applies to all bank accounts must be a valid size limit
@@ -71,30 +73,44 @@ public class File {
 	 * 
 	 * @param name
 	 * 	      String that will be used as the filename
-	 * @post  If the name is not empty and if the name consists only out of
-	 *  	  lower and upper case letters, numbers and the following symbols:
-	 *        points (.), hyphens (-) and underscores (_), the new name of the
-	 *        of this file is equal to the given name.
+	 * @post  If the name is valid, the new name of this file is equal to the given name.
 	 *      | new.name = name  
 	 */
 	public void setName(String name) {
-		if( (!name.isEmpty()) && (isWritable() == true) 
-		     && (name.matches("^[a-zA-Z0-9.-_]*$")) ) {
+		if (isValidName(name)) {
 			this.name = name;
 			setModificationTime();
 		}
 	}
 	
+	/**
+	 * Check whether the given name is valid for a file.
+	 * 
+	 * @param  name
+	 *         The name to be checked
+	 * @return True if and only if the name consists only out of
+	 *  	   lower and upper case letters, numbers and the following symbols:
+	 *         points (.), hyphens (-) and underscores (_)
+	 *       | result ==
+	 *       |    ( !name.isEmpty()
+	 *       |   && name.matches("^[a-zA-Z0-9.-_]*$") )
+	 */
+	public static boolean isValidName(String name) {
+		return ( (!name.isEmpty()) 
+			     && (name.matches("^[a-zA-Z0-9.-_]*$")) );
+	}
+	
 	/*
 	 * Variable registering the name of this file.	
 	 */
-	private String name;
+	private String name = "New_file";
 	
 	
 	
 	// ALLES IVM MET SIZE --> NOMINAAL PROGRAMMEREN: PRE, CHECKER
 	
 	/**
+	 * Check whether the given size is valid for a file. 
 	 * 
 	 * @param  size
 	 * 		   The size to check.
@@ -300,7 +316,12 @@ public class File {
 	 * 
 	 * @param  file
 	 * 		   The file which use period will be compared with the current file.
-	 * @return True if and only if the use period of this file overlaps with the use period of the given file
+	 * @return True if and only if both this file as the file to be compared with has a
+	 *         valid modification time and the use period of this file overlaps with the
+	 *         use period of the given file
+	 *       | result ==
+	 *       |  !( this.getModificationTime().before(file.getCreationTime())
+			 |	  || this.getCreationTime().after(file.getModificationTime()) )
 	 */
 	public boolean hasOverlappingUsePeriod(File file) {
 		if (this.getModificationTime() != null
