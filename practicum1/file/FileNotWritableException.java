@@ -24,6 +24,7 @@ public class FileNotWritableException extends RuntimeException{
 	 *         exception involving no diagnostic message and no cause.
 	 *       | super() 
 	 */
+	@Raw
 	public FileNotWritableException(File file) {
 		this.file = file;
 	}

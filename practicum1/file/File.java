@@ -131,7 +131,7 @@ public class File {
 	 *       |   && (size <= getSizeLimit()) )
 	 */
 	public static boolean isValidSize(long size) {
-		return ((size>=0) && (size <= getSizeLimit()));
+		return ((size>=0L) && (size <= getSizeLimit()));
 	}
 	
 	
@@ -178,15 +178,9 @@ public class File {
 	 *         This file is not writable and cannot be enlarged by the user.
 	 *       | (! this.isWritable())
 	 */
-	public void enlarge(long amount)
-	throws FileNotWritableException{
-		if(! this.isWritable()) {
-			throw new FileNotWritableException(this);
-		}
-		else {
+	public void enlarge(long amount) {
 		assert canAcceptForEnlarge(amount): "Precondition: Acceptable amount for enlarge";
 		setSize(getSize() + amount);
-		}
 	}
 	
 	// VOORWAARDE FILE = WRITABLE?
@@ -220,15 +214,9 @@ public class File {
 	 *         This file is not writable and cannot be shortened by the user.
 	 *      | (! this.isWritable())
 	 */
-	public void shorten(long amount)
-	throws FileNotWritableException{
-		if(! this.isWritable()) {
-			throw new FileNotWritableException(this);
-		}
-		else {
+	public void shorten(long amount) {
 		assert canAcceptForShorten(amount): "Precondition: Acceptable amount for shorten";
 		setSize(getSize() - amount);
-		}
 	}
 	
 	/**

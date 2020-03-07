@@ -44,7 +44,7 @@ public class FileTest {
 	
 	@Test
 	public void extendedConstructor_InvalidName() {
-		File invalidName1 = new File(iAmInvalid300);
+		File invalidName1 = new File("");
 		File invalidName2 = new File("invalidText!@#$%^&*(){}[];:<>");
 		assertEquals("New_file", invalidName1.getName());
 		assertEquals("New_file", invalidName2.getName());
