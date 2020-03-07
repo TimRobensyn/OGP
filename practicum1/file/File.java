@@ -37,10 +37,11 @@ public class File {
 	 *      
 	 */
 	@Raw
-	public File(String name, int size, boolean writable) {
+	public File(String name, long size, boolean writable) {
 		setName(name);
 		setSize(size);
 		setWritable(writable);
+		this.modificationTime = null;
 
 	}
 	
@@ -77,6 +78,7 @@ public class File {
 	 *      | new.name = name
 	 * @throws FileNotWritableException
 	 * 		  This file is not writable and cannot be renamed by the user.
+	 *      | (! this.isWritable())
 	 */
 	public void setName(String name) 
 	throws FileNotWritableException {
@@ -174,8 +176,9 @@ public class File {
 	 *       | new.getSize() == this.getSize() + amount
 	 * @throws FileNotWritableException
 	 *         This file is not writable and cannot be enlarged by the user.
+	 *       | (! this.isWritable())
 	 */
-	public void enlarge(int amount)
+	public void enlarge(long amount)
 	throws FileNotWritableException{
 		if(! this.isWritable()) {
 			throw new FileNotWritableException(this);
@@ -215,8 +218,9 @@ public class File {
 	 *      | new.getSize() == this.getSize() - amount
 	 * @throws FileNotWritableException
 	 *         This file is not writable and cannot be shortened by the user.
+	 *      | (! this.isWritable())
 	 */
-	public void shorten(int amount)
+	public void shorten(long amount)
 	throws FileNotWritableException{
 		if(! this.isWritable()) {
 			throw new FileNotWritableException(this);
@@ -238,6 +242,7 @@ public class File {
 	 * 		| new.size = size
 	 * @throws FileNotWritableException
 	 *         This file is not writable and its size cannot be set by the user.
+	 *      | (! this.isWritable())
 	 */
 	public void setSize(long size)
 	throws FileNotWritableException{
@@ -333,6 +338,7 @@ public class File {
 	/**
 	 * Returns the modification time of the file.
 	 */
+	@Basic
 	public Date getModificationTime() {
 		return this.modificationTime;
 	}
