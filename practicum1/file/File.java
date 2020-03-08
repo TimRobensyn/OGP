@@ -69,8 +69,6 @@ public class File {
 	}
 	
 	
-	// TOTAAL PROGRAMMEREN (NAME)
-	
 	/*
 	 * Returns the name of this file.
 	 */
@@ -126,8 +124,6 @@ public class File {
 	private String name = "New_file";
 	
 	
-
-
 	
 	
 	/**
@@ -254,7 +250,6 @@ public class File {
 	private long size = 0;
 	
 	
-	
 	/*
 	 * Returns the size limit that applies to all files
 	 *   The size limit expresses the highest possible value for the 
@@ -292,24 +287,19 @@ public class File {
 
 	
 	
-	
-	
-	
 	/**
 	 * Check whether the given date is a valid creation date for this file.
 	 * 
 	 * @param   date
 	 *          The date to check.
-	 * @return  True if and only if the date points to the null object or the date 
+	 * @return  True if and only if the date 
 	 *          is before or at the same time as the current time.
 	 *        | result =
-	 *        |    ( (date == null)
-	 *        |   || (getCreationTime().before(getCurrentTime()))
+	 *        |    ((getCreationTime().before(getCurrentTime()))
 	 *        |   || (getCreationTime().equals(getCurrentTime())) )
 	 */
 	public boolean isValidCreationTime(Date date) {
-		return ( (date == null) ||
-			   (date.before(getCurrentTime())) ||
+		return ((date.before(getCurrentTime())) ||
 			   (date.equals(getCurrentTime())) );
 	}
 	
@@ -406,10 +396,6 @@ public class File {
 	
 
 
-	
-	
-	
-	
 	
 	/*
 	 * Check whether this file is writable
