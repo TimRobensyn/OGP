@@ -3,7 +3,6 @@ package file;
 import be.kuleuven.cs.som.annotate.*;
 import java.util.Date;
 
-// ToDo class commentaar: @invar, @pre enz.
 
 /**
  * A class of files, involving a file name, size, a size limit and its writability.
@@ -14,6 +13,10 @@ import java.util.Date;
  *        | isValidSize(getSize())
  * @invar   The size limit that applies to all bank accounts must be a valid size limit
  *        | isValidSizeLimit(getSizeLimit())
+ * @invar   The creation time of a file must be valid.
+ *        | isValidCreationTime(getCreationTime())
+ * @invar   The modification time of a file must be valid.
+ *        | canHaveAsModificationTime(getModificationTime())
  * 
  * @version 1.0
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
@@ -34,7 +37,14 @@ public class File {
 	 * 		  The initial value for the writability of this new file.
 	 * @pre   The given size must be valid.
 	 *      | isValidSize(size) 
-	 *      
+	 * @post  If the given name is not empty and consists only out of
+	 *  	  lower and upper case letters, numbers and the following symbols:
+	 *        points (.), hyphens (-) and underscores (_), the initial name of this file
+	 *        is the given name. Otherwise its name is "New_file".
+	 * @post  If the given size is greater than or equal to zero and lower than the size
+	 *        limit of all files, the initial size of this file is the given number.
+	 *        Otherwise its initial size is 0.
+	 * @post  The initial writability state of this new file is equal to the given flag.      
 	 */
 	@Raw
 	public File(String name, long size, boolean writable) {
@@ -59,7 +69,7 @@ public class File {
 	}
 	
 	
-	// TOTAAL PROGRAMMEREN
+	// TOTAAL PROGRAMMEREN (NAME)
 	
 	/*
 	 * Returns the name of this file.
@@ -72,12 +82,12 @@ public class File {
 	/**
 	 * Set the name of the file as the given string name.
 	 * 
-	 * @param name
-	 * 	      String that will be used as the filename
-	 * @post  If the name is valid, the new name of this file is equal to the given name.
-	 *      | new.name = name
+	 * @param  name
+	 * 	       String that will be used as the filename
+	 * @post   If the name is valid, the new name of this file is equal to the given name.
+	 *       | new.name = name
 	 * @throws FileNotWritableException
-	 * 		  This file is not writable and cannot be renamed by the user.
+	 * 		   This file is not writable and cannot be renamed by the user.
 	 *      | (! this.isWritable())
 	 */
 	public void setName(String name) 
@@ -98,7 +108,7 @@ public class File {
 	 * 
 	 * @param  name
 	 *         The name to be checked
-	 * @return True if and only if the name consists only out of
+	 * @return True if and only if the name is not empty and consists only out of
 	 *  	   lower and upper case letters, numbers and the following symbols:
 	 *         points (.), hyphens (-) and underscores (_)
 	 *       | result ==
@@ -116,8 +126,9 @@ public class File {
 	private String name = "New_file";
 	
 	
+
+
 	
-	// ALLES IVM MET SIZE --> NOMINAAL PROGRAMMEREN: PRE, CHECKER
 	
 	/**
 	 * Check whether the given size is valid for a file. 
@@ -143,7 +154,7 @@ public class File {
 		return this.size;
 	}
 	
-	// VOORWAARDE FILE = WRITABLE?
+	
 	/**
 	 * Return a boolean reflecting whether this file can accept the given amount for enlarge. 
 	 * 
@@ -167,23 +178,19 @@ public class File {
 	 * Increase the size of this file with the given size
 	 *  Does nothing if the resulting file size is larger than the size limit
 	 * 
-	 * @param  amount
-	 * 		   The amount with which the file size will be increased.
-	 * @pre    This amount is accepted for enlargement.
-	 *       | canAcceptForEnlarge(amount)
-	 * @post   The new size of this file is equal to the old size incremented
-	 *         with the give amount of bytes.
-	 *       | new.getSize() == this.getSize() + amount
-	 * @throws FileNotWritableException
-	 *         This file is not writable and cannot be enlarged by the user.
-	 *       | (! this.isWritable())
+	 * @param   amount
+	 * 		    The amount with which the file size will be increased.
+	 * @pre     This amount is accepted for enlargement.
+	 *        | canAcceptForEnlarge(amount)
+	 * @effect  The new size of this file is equal to the old size incremented
+	 *          with the give amount of bytes.
+	 *        | new.getSize() == this.getSize() + amount
 	 */
 	public void enlarge(long amount) {
 		assert canAcceptForEnlarge(amount): "Precondition: Acceptable amount for enlarge";
 		setSize(getSize() + amount);
 	}
 	
-	// VOORWAARDE FILE = WRITABLE?
 	/**
 	 * Return a boolean reflecting whether this file can accept the given amount for shorten.
 	 * 
@@ -203,16 +210,13 @@ public class File {
 	 * Decrease the size of this file with the given size
 	 * Does nothing if the resulting file size is negative
 	 * 
-	 * @param amount
-	 * 	      The amount with which the file size will be decreased.
-	 * @pre   This amount is accepted to shorten the file.
-	 *      | canAcceptForShorten(amount)
-	 * @post  The new size of this file is equal to the old size decremented
-	 *        with the given amount of bytes.
-	 *      | new.getSize() == this.getSize() - amount
-	 * @throws FileNotWritableException
-	 *         This file is not writable and cannot be shortened by the user.
-	 *      | (! this.isWritable())
+	 * @param   amount
+	 * 	        The amount with which the file size will be decreased.
+	 * @pre     This amount is accepted to shorten the file.
+	 *        | canAcceptForShorten(amount)
+	 * @effect  The new size of this file is equal to the old size decremented
+	 *          with the given amount of bytes.
+	 *        | new.getSize() == this.getSize() - amount
 	 */
 	public void shorten(long amount) {
 		assert canAcceptForShorten(amount): "Precondition: Acceptable amount for shorten";
@@ -251,7 +255,6 @@ public class File {
 	
 	
 	
-	
 	/*
 	 * Returns the size limit that applies to all files
 	 *   The size limit expresses the highest possible value for the 
@@ -286,10 +289,29 @@ public class File {
 	 */
 	private static long sizeLimit = Long.MAX_VALUE;
 	
+
 	
 	
-	// TOTAAL PROGRAMMEREN
-	// ALLES IVM TIJD
+	
+	
+	
+	/**
+	 * Check whether the given date is a valid creation date for this file.
+	 * 
+	 * @param   date
+	 *          The date to check.
+	 * @return  True if and only if the date points to the null object or the date 
+	 *          is before or at the same time as the current time.
+	 *        | result =
+	 *        |    ( (date == null)
+	 *        |   || (getCreationTime().before(getCurrentTime()))
+	 *        |   || (getCreationTime().equals(getCurrentTime())) )
+	 */
+	public boolean isValidCreationTime(Date date) {
+		return ( (date == null) ||
+			   (date.before(getCurrentTime())) ||
+			   (date.equals(getCurrentTime())) );
+	}
 	
 	/**
 	 * Return the current time
@@ -313,6 +335,29 @@ public class File {
 	 */
 	private final Date creationTime = new Date();
 	
+	
+	/**
+	 * Check whether the given date is a valid modification date for this file.
+	 * 
+	 * @param  date
+	 *         The date to check
+	 * @return True if and only if date points to the null object or the date 
+	 *         is before or at the same time as the current time and after or at 
+	 *         the same time as the creation time
+	 *       | result =
+	 *       |    ( (date == null)
+	 *		 | || (	( (date.after(getCreationTime()))
+	 *	     |      || (date.equals(getCreationTime())) )
+	 *	     |    && ( (date.before(getCurrentTime()))
+	 *	     |      || (date.equals(getCurrentTime())) )) )
+	 */
+	public boolean canHaveAsModificationTime(Date date) {
+		return ( (date == null)
+			  || (	( (date.after(getCreationTime()))
+		           || (date.equals(getCreationTime())) )
+		         && ( (date.before(getCurrentTime()))
+		           || (date.equals(getCurrentTime())) )	 ) );
+	}
 	
 	/**
 	 * Set the time of the last modification of the file.
@@ -347,7 +392,7 @@ public class File {
 	 *         use period of the given file
 	 *       | result ==
 	 *       |  !( this.getModificationTime().before(file.getCreationTime())
-			 |	  || this.getCreationTime().after(file.getModificationTime()) )
+			 |	|| this.getCreationTime().after(file.getModificationTime()) )
 	 */
 	public boolean hasOverlappingUsePeriod(File file) {
 		if (this.getModificationTime() != null
@@ -359,8 +404,12 @@ public class File {
 			return false;
 	}
 	
+
+
 	
-    // DEFENSIEF PROGRAMMEREN (WRITABLE)
+	
+	
+	
 	
 	/*
 	 * Check whether this file is writable
@@ -377,6 +426,7 @@ public class File {
 	 * @param flag
 	 *        The new writable state of this account
 	 * @post  The new writable state of this account is equal to the given flag.
+	 *      | new.writable = flag
 	 */
 	public void setWritable(boolean flag) {
 		this.writable = flag;

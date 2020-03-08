@@ -1,36 +1,35 @@
 package file;
 import file.File;
 import static org.junit.Assert.*;
-import java.util.Date;
 import org.junit.*;
 
 /**
  * A class made for testing the File class.
  * 
  * @version 1.0
- * @author Robbe Van Biervliet, Tim Lauwers, Tim Robensyn
+ * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  */
+
 public class FileTest {
 	
-	/**
-	 * Class instances that may change throughout tests:
-	 */
-	private static File emptyFile, fullFile;
+	// Class instances that may change throughout tests
+	private static File emptyFile, normalFile, fullFile;
 	
-	/**
-	 * Immutable class instances for testing:
-	 */
+	// Immutable class instances for testing
 	private static File staticFile;
 	
+	// Set up a mutable test fixture
 	@Before
 	public void setUpMutableFixture() {
 		emptyFile = new File("emptyFile");
+		normalFile = new File("normalFile",100,true);
 		fullFile = new File("fullFile", Long.MAX_VALUE, true);
 	}
 	
+	// Set up an immutable test fixture
 	@BeforeClass
 	public static void setUpImmutableFixture() {
-		staticFile = new File("staticFile", 500, false);
+		staticFile = new File("staticFile", 100, false);
 	}
 	
 	@Test
@@ -50,10 +49,10 @@ public class FileTest {
 		assertEquals("New_file", invalidName2.getName());
 	}
 	
-	@Test
-	public void extendedConstructor_InvalidSize() {
-		File invalidSize = new File("invalidSize", Long.MAX_VALUE+1, true);
-		assertEquals(0,invalidSize.getSize());
+	@Test(expected=AssertionError.class)
+	public void extendedConstructor_InvalidSize() throws AssertionError {
+		File invalidSize = new File("invalidSize", -1, true);
+		assertEquals(0L,invalidSize.getSize());
 	}
 	
 	@Test
@@ -76,10 +75,11 @@ public class FileTest {
 	@Test
 	public void enlarge_LegalCase() {
 		emptyFile.enlarge(1);
+		assertEquals(1L,emptyFile.getSize());
 	}
 	
-	@Test
-	public void enlarge_UnacceptableAmount() {
+	@Test(expected=AssertionError.class)
+	public void enlarge_UnacceptableAmount() throws AssertionError {
 		fullFile.enlarge(1);
 		fullFile.enlarge(-1);
 	}
@@ -93,11 +93,12 @@ public class FileTest {
 	
 	@Test
 	public void shorten_LegalCase() {
-		emptyFile.shorten(1);
+		normalFile.shorten(1);
+		assertEquals(99,normalFile.getSize());
 	}
 	
-	@Test
-	public void shorten_UnacceptableAmount() {
+	@Test(expected=AssertionError.class)
+	public void shorten_UnacceptableAmount() throws AssertionError {
 		emptyFile.shorten(1);
 		emptyFile.shorten(-1);
 	}
