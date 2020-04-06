@@ -1,0 +1,22 @@
+FileSystemObject (=superklasse)
+ - Beheert de associaties tussen elkaar
+ - Schrijfrecht
+ - Benaming
+ - Creatietijdstip en tijdstip van wijziging (toevoegen extra methoden hasOverlappingUsePeriod)
+ - Controlling class van de bidirectionele associatie, zowel File als Directory moeten dan zo weinig mogelijk overschrijven of nieuw bijmaken.
+ - termination ook hier dus
+ - makeRoot, move en getRoot ook hier 
+
+
+File (=subklasse)
+ - Voegt functionaliteit toe om grootte te veranderen (vorig practicum)
+ - Extra: heeft een type
+    HOE DIT VOORSTELLEN?
+     1. Het doet mij denken aan 4.3 (dat nergens behandeld wordt in een hoorcollege, heb ik wel gelezen in het boek)
+        --> aparte 'enumeration' klasse
+     2. Een static list/map aanmaken (6.3.1)
+ - Extra: eventuele nodige functies om de associatie te kunnen beheren
+
+Directory (=subklasse)
+ - Zie functionaliteit pagina 2 opgave
+   --> ArrayList
