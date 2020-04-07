@@ -18,7 +18,7 @@ public class FileNotWritableException extends RuntimeException {
 	/**
 	 * Variable referencing the file to which change was denied.
 	 */
-	private final File file;
+	private final FileOud file;
 
 	/**
 	 * Initialize this new file not writable exception involving the
@@ -31,7 +31,7 @@ public class FileNotWritableException extends RuntimeException {
 	 * 			| new.getFile() == file
 	 */
 	@Raw
-	public FileNotWritableException(File file) {
+	public FileNotWritableException(FileOud file) {
 		this.file = file;
 	}
 	
@@ -39,7 +39,7 @@ public class FileNotWritableException extends RuntimeException {
 	 * Return the file involved in this file not writable exception.
 	 */
 	@Raw @Basic @Immutable
-	public File getFile() {
+	public FileOud getFile() {
 		return file;
 	}
 	
