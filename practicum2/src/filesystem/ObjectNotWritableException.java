@@ -8,7 +8,7 @@ import be.kuleuven.cs.som.annotate.*;
  * @author 	Tommy Messelis
  * @version	2.1
  */
-public class FileNotWritableException extends RuntimeException {
+public class ObjectNotWritableException extends RuntimeException {
 
 	/**
 	 * Required because this class inherits from Exception
@@ -18,7 +18,7 @@ public class FileNotWritableException extends RuntimeException {
 	/**
 	 * Variable referencing the file to which change was denied.
 	 */
-	private final FileOud file;
+	private final FileSystemObject fileSysObj;
 
 	/**
 	 * Initialize this new file not writable exception involving the
@@ -31,16 +31,16 @@ public class FileNotWritableException extends RuntimeException {
 	 * 			| new.getFile() == file
 	 */
 	@Raw
-	public FileNotWritableException(FileOud file) {
-		this.file = file;
+	public ObjectNotWritableException(FileSystemObject FSObj) {
+		this.fileSysObj = FSObj;
 	}
 	
 	/**
 	 * Return the file involved in this file not writable exception.
 	 */
 	@Raw @Basic @Immutable
-	public FileOud getFile() {
-		return file;
+	public FileSystemObject getFile() {
+		return fileSysObj;
 	}
 	
 	

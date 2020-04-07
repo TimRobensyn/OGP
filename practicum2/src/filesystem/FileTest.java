@@ -102,7 +102,7 @@ public class FileTest {
 		assertFalse(timeAfterSetName.before(fileString.getModificationTime()));
 	}
 	
-	@Test (expected = FileNotWritableException.class)
+	@Test (expected = ObjectNotWritableException.class)
 	public void testChangeName_FileNotWritable() {
 		fileNotWritable.changeName("NewLegalName");
 	}
@@ -141,7 +141,7 @@ public class FileTest {
 		assertFalse(timeAfterEnlarge.before(file.getModificationTime()));  
 	}
 	
-	@Test (expected = FileNotWritableException.class)
+	@Test (expected = ObjectNotWritableException.class)
 	public void testEnlarge_FileNotWritable() {
 		fileNotWritable.enlarge(1);
 	}
@@ -156,7 +156,7 @@ public class FileTest {
 		assertFalse(timeAfterShorten.before(fileStringIntBoolean.getModificationTime()));
 	}
 	
-	@Test (expected = FileNotWritableException.class)
+	@Test (expected = ObjectNotWritableException.class)
 	public void testShorten_FileNotWritable() {
 		fileNotWritable.shorten(1);
 	}

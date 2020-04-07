@@ -152,18 +152,16 @@ public class FileOud {
      * 			of this file is updated.
      *          | if (isValidName(name) && isWritable())
      *          | then setModificationTime()
-     * @throws  FileNotWritableException(this)
+     * @throws  ObjectNotWritableException(this)
      *          This file is not writable
      *          | ! isWritable() 
      */
-    public void changeName(String name) throws FileNotWritableException {
+    public void changeName(String name) {
         if (isWritable()) {
             if (isValidName(name)){
             	setName(name);
                 setModificationTime();
             }
-        } else {
-            throw new FileNotWritableException(this);
         }
     }
 
@@ -239,7 +237,7 @@ public class FileOud {
      * @effect  The size of this file is increased with the given delta.
      *          | changeSize(delta)
      */
-    public void enlarge(int delta) throws FileNotWritableException {
+    public void enlarge(int delta) throws ObjectNotWritableException {
         changeSize(delta);
     }
 
@@ -254,7 +252,7 @@ public class FileOud {
      * @effect  The size of this file is decreased with the given delta.
      *          | changeSize(-delta)
      */
-    public void shorten(int delta) throws FileNotWritableException {
+    public void shorten(int delta) throws ObjectNotWritableException {
         changeSize(-delta);
     }
 
@@ -270,17 +268,17 @@ public class FileOud {
      *         | setSize(getSize()+delta)
      * @effect The modification time is updated.
      *         | setModificationTime()
-     * @throws FileNotWritableException(this)
+     * @throws ObjectNotWritableException(this)
      *         This file is not writable.
      *         | ! isWritable()
      */
     @Model 
-    private void changeSize(int delta) throws FileNotWritableException{
+    private void changeSize(int delta) throws ObjectNotWritableException{
         if (isWritable()) {
             setSize(getSize()+delta);
             setModificationTime();            
         }else{
-        	throw new FileNotWritableException(this);
+        	throw new ObjectNotWritableException(this);
         }
     }
 

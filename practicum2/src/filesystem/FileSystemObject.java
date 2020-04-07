@@ -281,7 +281,7 @@ public abstract class FileSystemObject {
     }
     
     public FileSystemObject getRoot() {
-    	
+    	return null;
     }
     
 }
