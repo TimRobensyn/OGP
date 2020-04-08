@@ -2,16 +2,73 @@ package filesystem;
 
 import be.kuleuven.cs.som.annotate.*;
 
+
 import java.util.Date;
-import java.util.ArrayList;
+
+/**
+ * An abstract class of file system objects.
+ * 
+ * @invar    Each disk item must have a properly spelled name.
+ * 		   | isValidName(getName())
+ * @invar    Each disk item must have a valid creation time.
+ *         | isValidCreationTime(getCreationTime())
+ * @invar    Each disk item must have a valid modification time.
+ *         | canHaveAsModificationTime(getModificationTime())
+ * 
+ * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
+ * @version 1.0
+ *
+ */
 
 public abstract class FileSystemObject {
-
 	
+    /**********************************************************
+     * Constructors
+     **********************************************************/
+		
+	
+	/**
+	 * Initialize a new file system object with given directory, name and writability.
+	 * 
+	 * @param  dir
+	 *         The parent directory of the new file system object.
+	 * @param  name
+	 *         The name of the new file system object.
+	 * @param  writable
+	 * 		   The writability of the new file system object.
+	 * @effect The name of the file system object is set to the given name.
+	 *         If the given name is not valid, a default name is set.
+	 *       | setName(name)
+	 * @effect The writability of the new file system object is set to the given flag.
+	 *       | setWritable(writable)
+     * @post   The new creation time of this file is initialized to some time during
+     *         constructor execution.
+     *       | (new.getCreationTime().getTime() >= System.currentTimeMillis()) &&
+     *       | (new.getCreationTime().getTime() <= (new System).currentTimeMillis())
+     * @post   The new file has no time of last modification.
+     *       | new.getModificationTime() == null
+	 */
 	protected FileSystemObject(Directory dir, String name, boolean writable) {
 		setName(name);
 		setWritable(writable);
 	}
+	
+	
+	/**
+	 * Initialize a new root file system object with given name and writability.
+	 * 
+	 * @param  name
+	 *         The name of the new file system object.
+	 * @param  writable
+	 * 		   The writability of the new file system object.
+	 * @effect The new file system object is initialized with the given name and writability
+	 *         and no parent directory.
+	 */
+	protected FileSystemObject(String name, boolean writable) {
+		this(null,name,writable);
+	}
+	
+	
 	
 	
     /**********************************************************
@@ -20,13 +77,11 @@ public abstract class FileSystemObject {
 
     /**
      * Variable referencing the name of this filesystem object.
-     * @note		See Coding Rule 32, for information on the initialization of fields.
      */
     private String name = null;
 
     /**
      * Return the name of this filesystem object.
-     * @note		See Coding Rule 19 for the Basic annotation.
      */
     @Raw @Basic 
     public String getName() {
@@ -199,7 +254,7 @@ public abstract class FileSystemObject {
      *         |                    (new System).currentTimeMillis())
      */
     @Model 
-    private void setModificationTime() {
+    protected void setModificationTime() {
         modificationTime = new Date();
     }
 
