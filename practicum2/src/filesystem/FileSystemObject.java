@@ -1,8 +1,6 @@
 package filesystem;
 
 import be.kuleuven.cs.som.annotate.*;
-
-
 import java.util.Date;
 
 /**
@@ -51,6 +49,7 @@ public abstract class FileSystemObject {
 	protected FileSystemObject(Directory dir, String name, boolean writable) {
 		setName(name);
 		setWritable(writable);
+		setDirectory(dir);
 	}
 	
 	
@@ -327,6 +326,30 @@ public abstract class FileSystemObject {
      * Nieuwe shit
      **********************************************************/
    
+    /**
+     * Variable referencing the directory of this filesystem object
+     */
+    private Directory dir = null;
+    
+    /**
+     * Set the directory of this filesystem object to the given directory
+     * 
+     * @param dir
+     * 		  The new directory
+     */
+    @Raw
+    public void setDirectory(Directory dir) {
+    	this.dir = dir;
+    }
+    
+    /**
+     * Return the directory this filesystem object belongs to
+     */
+    @Basic @Raw
+    public Directory getDirectory() {
+    	return this.dir;
+    }
+    
     public void makeRoot() {
     	
     }
@@ -335,8 +358,21 @@ public abstract class FileSystemObject {
     	
     }
     
+    /**
+     * Return the root of this filesystem object
+     * 
+     * @return MOET DE RETURN HIER INGEVULD WORDEN IK WEET DAT NOG ALTIJD NIET 100%??
+     */
     public FileSystemObject getRoot() {
-    	return null;
+    	FileSystemObject root = this.getDirectory();
+    	if(root == null) {
+    		root = this;
+    	} else {
+    		while(root.getDirectory() != null) {
+    			root = root.getDirectory();
+    		}
+    	}
+    	return root;
     }
     
 }

@@ -1,5 +1,8 @@
 package filesystem;
 
+import be.kuleuven.cs.som.annotate.*;
+import java.util.ArrayList;
+
 /**
  * A class of directories
  * 
@@ -83,6 +86,11 @@ public class Directory extends FileSystemObject {
     /**********************************************************
      * Nieuwe shit
      **********************************************************/
+	
+	/**
+	 * Variable referencing the ArrayList with the directories and files contained in this directory
+	 */
+	public ArrayList<FileSystemObject> contents = new ArrayList<FileSystemObject>();
 	
 	public FileSystemObject getItemAt(int index) {
 		return null;
