@@ -98,20 +98,20 @@ public class Directory extends FileSystemObject {
 	 * @param obj
 	 *        The object that will be added to the directory
 	 * @post  The file system object will be added to the contents of the directory such that the contents are lexicographically ordered
-	 * 		  | int length = this.getNbItems();
-			  | if(length == 0) then contents.add(obj)
+	 * 		  | int size = this.getNbItems();
+			  | if(size == 0) then contents.add(obj)
 		      | 	else
 		      | int pos = 0;
 		      | while(obj.getName().compareToIgnoreCase(this.getItemAt(pos).getName()) > 0)
 		      |		pos = pos + 1
-		      | while(length != pos) 
-		      | 	contents.set(length+1, contents.get(length))
-		      | 	length = length - 1
+		      | while(size != pos) 
+		      | 	contents.set(size+1, contents.get(size))
+		      | 	size = size - 1
 		      |	contents.set(pos, obj);
 	 */
 	public void addItem(FileSystemObject obj) {
-		int length = this.getNbItems();
-		if(length == 0) {
+		int size = this.getNbItems();
+		if(size == 0) {
 			contents.add(obj);
 		} else {
 			int pos = 0;
@@ -120,9 +120,9 @@ public class Directory extends FileSystemObject {
 				pos = pos + 1;
 			}
 			
-			while(length != pos) {
-				contents.set(length+1, contents.get(length));
-				length = length - 1;
+			while(size != pos) {
+				contents.set(size+1, contents.get(size));
+				size = size - 1;
 			}
 			contents.set(pos, obj);
 		}
@@ -144,11 +144,25 @@ public class Directory extends FileSystemObject {
 	/**
 	 * Return the file system object in this directory that owns the given name
 	 * @param name
-	 * @return
+	 *        The given name
+	 * @return the file system object in this directory that owns the given name
 	 */
 	public FileSystemObject getItem(String name) {
-		
-		return null;
+		FileSystemObject item = null;
+		int R = this.getNbItems()-1;
+		int L = 0;
+		while(L<= R) {
+			int mid = (int) Math.floor((R+L)/2);
+			String objName = this.getItemAt(mid).getName();
+			if(name.compareToIgnoreCase(objName) > 0) {
+				L = mid+1;
+			} else if(name.compareToIgnoreCase(objName) < 0) {
+				R = mid-1;
+			} else {
+				item = this.getItemAt(mid);
+			}
+		}
+		return item;
 	}
 	
 	/**
