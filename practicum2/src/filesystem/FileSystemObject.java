@@ -361,7 +361,7 @@ public abstract class FileSystemObject {
     /**
      * Return the root of this filesystem object
      * 
-     * @return MOET DE RETURN HIER INGEVULD WORDEN IK WEET DAT NOG ALTIJD NIET 100%??
+     * @return The file system object that is the root of this object
      */
     public FileSystemObject getRoot() {
     	FileSystemObject root = this.getDirectory();
@@ -374,5 +374,4 @@ public abstract class FileSystemObject {
     	}
     	return root;
     }
-    
 }
