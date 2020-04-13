@@ -160,7 +160,21 @@ public class Directory extends FileSystemObject {
 	 *         | else if ( (index<1)
 	 *         |        || (index > getNbItems()+1) )
 	 *         |   then result == false
-	 *         Otherwise, true if and only if ...
+	 *         Otherwise, if the object is in this directory, then true if and only if its predecessor is 
+	 *         lexicographically before this object and its successor after this object.
+	 *         If the object is not in this directory, then true if and only if inserting this object
+	 *         in the list would not result in an unordered list.
+	 *         | else if (hasAsItem(obj))
+	 *         |   then result == (index==1 && getItemAt(index+1).isLexicographicallyAfter(obj))
+	 *		   |	   			  || (index==getNbItems() && 
+	 *		   |                       getItemAt(index-1).isLexicographicallyBefore(obj))
+	 *		   |	   			  || (getItemAt(index-1).isLexicographicallyBefore(obj) && 
+	 *		   |					  getItemAt(index+1).isLexicographicallyAfter(obj))
+	 *		   |   else result == (index==1 && getItemAt(index).isLexicographicallyAfter(obj))
+	 *		   |	   			  || (index==getNbItems()+1 && 
+	 *		   |                      getItemAt(index-1).isLexicographicallyBefore(obj))
+	 *		   |	              || (getItemAt(index-1).isLexicographicallyBefore(obj) && 
+	 *		   |                      getItemAt(index).isLexicographicallyAfter(obj));
 	 */
 	@Raw
 	public boolean canHaveAsItemAt(FileSystemObject obj, int index) {
@@ -170,17 +184,16 @@ public class Directory extends FileSystemObject {
 		if ( (index<1) || (index>getNbItems()+1) )
 			return false;
 		
-		// Check of het object op de juiste plaats zit volgens zijn naam (als het er tenminste inzit)
-		// Als het er nog niet inzit: als je het in de lijst steekt op de vermelde index, of de lijst nog steeds juist geordend zou zijn
 		if (hasAsItem(obj)) {
-			
+			return (index==1 && getItemAt(index+1).isLexicographicallyAfter(obj))
+				   || (index==getNbItems() && getItemAt(index-1).isLexicographicallyBefore(obj))
+				   || (getItemAt(index-1).isLexicographicallyBefore(obj) && getItemAt(index+1).isLexicographicallyAfter(obj));
 		}
 		else {
-			
+			return (index==1 && getItemAt(index).isLexicographicallyAfter(obj))
+				   || (index==getNbItems()+1 && getItemAt(index-1).isLexicographicallyBefore(obj))
+				   || (getItemAt(index-1).isLexicographicallyBefore(obj) && getItemAt(index).isLexicographicallyAfter(obj));
 		}
-		
-		return true;
-		
 	}
 	
 	
