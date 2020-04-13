@@ -164,6 +164,41 @@ public abstract class FileSystemObject {
         }
     }
     
+    /**
+     * Check whether this file system object is ordered before this file system object,
+     * lexographically by name, ignoring case.
+     * 
+     * @param  obj
+     *         The file system object to compare with.
+     * @return True if and only if the other object is effective, has a valid name and the
+     *         name of this item is lexicographically ordered before the name of the other object.
+     *         False otherwise.
+     *         | result == (obj != null)
+     *         |          && isValidName(obj.getName())
+     *         |          && (getName().compareToIgnoreCase(obj.getName()) < 0)         
+     */
+    public boolean isLexicographicallyBefore(FileSystemObject obj) {
+    	return obj!=null && isValidName(obj.getName())
+    		   && getName().compareToIgnoreCase(obj.getName()) < 0;
+    }
+    
+    /**
+     * Check whether this file system object is ordered after this file system object,
+     * lexographically by name, ignoring case.
+     * 
+     * @param  obj
+     *         The file system object to compare with.
+     * @return True if and only if the other object is effective, has a valid name and the
+     *         name of this item is lexicographically ordered after the name of the other object.
+     *         False otherwise.
+     *         | result == (obj != null)
+     *         |          && isValidName(obj.getName())
+     *         |          && (getName().compareToIgnoreCase(obj.getName()) > 0)         
+     */
+    public boolean isLexicographicallyAfter(FileSystemObject obj) {
+    	return obj!=null && isValidName(obj.getName())
+     		   && getName().compareToIgnoreCase(obj.getName()) > 0;
+    }
     
     
     /**********************************************************
@@ -346,7 +381,7 @@ public abstract class FileSystemObject {
      * Return the directory this filesystem object belongs to
      */
     @Basic @Raw
-    public Directory getDirectory() {
+    public Directory getParentDirectory() {
     	return this.dir;
     }
     
@@ -364,12 +399,12 @@ public abstract class FileSystemObject {
      * @return The file system object that is the root of this object
      */
     public FileSystemObject getRoot() {
-    	FileSystemObject root = this.getDirectory();
+    	FileSystemObject root = this.getParentDirectory();
     	if(root == null) {
     		root = this;
     	} else {
-    		while(root.getDirectory() != null) {
-    			root = root.getDirectory();
+    		while(root.getParentDirectory() != null) {
+    			root = root.getParentDirectory();
     		}
     	}
     	return root;
