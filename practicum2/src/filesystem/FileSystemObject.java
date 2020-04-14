@@ -367,6 +367,14 @@ public abstract class FileSystemObject {
     private Directory dir = null;
     
     /**
+     * Return the directory this filesystem object belongs to
+     */
+    @Basic @Raw
+    public Directory getParentDirectory() {
+    	return this.dir;
+    }
+    
+    /**
      * Set the directory of this filesystem object to the given directory
      * 
      * @param dir
@@ -375,14 +383,6 @@ public abstract class FileSystemObject {
     @Raw
     public void setDirectory(Directory dir) {
     	this.dir = dir;
-    }
-    
-    /**
-     * Return the directory this filesystem object belongs to
-     */
-    @Basic @Raw
-    public Directory getParentDirectory() {
-    	return this.dir;
     }
     
     public void makeRoot() {

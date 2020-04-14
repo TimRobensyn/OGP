@@ -84,7 +84,7 @@ public class File extends FileSystemObject {
 	 *       | this(null,name,size,writable,type)
 	 */
 	public File(String name, int size, boolean writable, FileType type) {
-		this(null,name,size,writable,type);
+		this(null, name, size, writable, type);
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public class File extends FileSystemObject {
 	 *         The file type of the new file.
 	 * @effect The new root file is initialized with the given name and type,
 	 *         a zero size and true writability.
-	 *       | this(name,0,true,type)
+	 *       | this(null,name,0,true,type)
 	 */
 	public File(String name, FileType type) {
 		this(name, 0, true, type);
@@ -126,6 +126,7 @@ public class File extends FileSystemObject {
 	 *       | result ==
 	 *       |   (type != null)
 	 */
+	@Raw
 	public boolean isValidType(FileType type) {
 		return type != null;
 	}

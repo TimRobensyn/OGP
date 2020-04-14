@@ -197,7 +197,6 @@ public class Directory extends FileSystemObject {
 	}
 	
 	
-	
 	/**
 	 * Check whether this directory has proper contents associated with it.
 	 * 
@@ -256,6 +255,7 @@ public class Directory extends FileSystemObject {
 	/**
 	 * Return the number of file system objects in this directory.
 	 */
+	@Basic
 	public int getNbItems() {
 		return contents.size();
 	}
@@ -319,8 +319,30 @@ public class Directory extends FileSystemObject {
 		}
 	}
 	
-	
+	/**
+	 * Checks whether this directory is a direct or indirect subdirectory of the given directory
+	 * 
+	 * @param dir
+	 * 		  The given directory
+	 * @return True if and only if this directory is a direct or indirect subdirectory of a directory equal to the given directory
+	 * 		   |result == false 
+	 * 		   |do
+	 *         | 	if(parent==dir) then
+	 *         |		result == true
+	 *         |	else parent=parent.getParentDirectory()
+	 *         |while(parent != null)
+	 */
 	public boolean isDirectOrIndirectSubdirectoryOf(Directory dir) {
-		return false;
+		Directory parent = this.getParentDirectory();
+		boolean bool = false;
+		do {
+			if(parent==dir) {
+				bool = true;
+				parent = null;
+			} else {
+				parent = parent.getParentDirectory();
+			}
+		} while (parent != null);
+		return bool;
 	}
 }
