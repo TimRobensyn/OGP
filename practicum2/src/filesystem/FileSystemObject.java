@@ -383,10 +383,13 @@ public abstract class FileSystemObject {
     @Raw
     public void setDirectory(Directory dir) {
     	this.dir = dir;
+    	dir.addItem(this);
     }
     
+    //Dit mag mogelijks niet, iets moet veranderen aan setDirectory zodat er geen addItem op null wordt uitgevoerd
     public void makeRoot() {
-    	
+    	getParentDirectory().removeItem(this);
+    	setDirectory(null);
     }
     
     public void move(Directory destination) {

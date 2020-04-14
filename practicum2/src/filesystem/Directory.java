@@ -226,7 +226,15 @@ public class Directory extends FileSystemObject {
 	 * @return True if and only if this directory contains a file system object with the given name.
 	 */
 	public boolean exists(String name) {
-		return false;
+		boolean bool = false;
+		int index = 0;
+		while((index != getNbItems())&&(bool == false)) {
+			if(getItemAt(index).getName() == name) {
+				bool = true;
+			}
+			index++;
+		}
+		return bool;
 	}
 	
 	/**
@@ -293,7 +301,7 @@ public class Directory extends FileSystemObject {
 			  | if(size == 0) then contents.add(obj)
 		      | 	else
 		      | int pos = 0;
-		      | while(obj.getName().compareToIgnoreCase(this.getItemAt(pos).getName()) > 0)
+		      | while(obj.isLexicographicallyAfter(this.getItemAt(pos)))
 		      |		pos = pos + 1
 		      | while(size != pos) 
 		      | 	contents.set(size+1, contents.get(size))
@@ -301,13 +309,14 @@ public class Directory extends FileSystemObject {
 		      |	contents.set(pos, obj);
 	 */
 	public void addItem(FileSystemObject obj) {
+		//Een checker canHaveAsItem en mss throw er bij
 		int size = this.getNbItems();
 		if(size == 0) {
 			contents.add(obj);
 		} else {
 			int pos = 0;
-
-			while(obj.getName().compareToIgnoreCase(this.getItemAt(pos).getName()) > 0) {
+			
+			while(obj.isLexicographicallyAfter(this.getItemAt(pos))) {
 				pos = pos + 1;
 			}
 			
@@ -317,6 +326,11 @@ public class Directory extends FileSystemObject {
 			}
 			contents.set(pos, obj);
 		}
+	}
+	
+	//Dit mag mogelijks niet
+	public void removeItem(FileSystemObject obj) {
+		this.contents.remove(obj);
 	}
 	
 	/**
