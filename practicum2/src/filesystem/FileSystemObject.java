@@ -364,7 +364,7 @@ public abstract class FileSystemObject {
     
     
     /**********************************************************
-     * Nieuwe shit
+     * Parent directory
      **********************************************************/
    
     /**
@@ -382,8 +382,8 @@ public abstract class FileSystemObject {
     
     /**
      * Set the directory of this filesystem object to the given directory
-     * @param dir
-     * 		  The new directory
+     * @param  dir
+     * 		   The new directory
      * @effect This file system object gets added to the given directory
      * 		   | dir.addAsItem(this)
      */
@@ -395,6 +395,7 @@ public abstract class FileSystemObject {
     
     /**
      * Makes this file system object a root object
+     * 
      * @effect This file system object gets removed from it's old parent directory
      *         | getParentDirectory().removeAsItem(this)
      * @effect This file system object's parent directory gets set to null
@@ -451,6 +452,12 @@ public abstract class FileSystemObject {
     	return getRoot() == null;
     }
     
+    
+    /**********************************************************
+    * Termination
+    **********************************************************/
+    
+    
     /**
      * Variable registering whether this file system object is terminated
      */
@@ -459,21 +466,40 @@ public abstract class FileSystemObject {
     /**
      * Check whether this file system object is terminated
      */
-    @Basic
+    @Basic @Raw
     public boolean isTerminated() {
     	return(isTerminated);
     }
     
     /**
-     * Terminates this file system object
+     * Terminate this file system object.
      * 
-     * @effect This file system object becomes a root object
-     * 		   | makeRoot()
-     * @post This file system object will be terminated
-     *       | this.isTerminated = true
+     * @post   This file system object will be terminated.
+     *         | this.isTerminated = true
+     * @effect If this file system object is not yet terminated and it is not a root,
+     *         it becomes a root object.
+     *         | if !isTerminated() && !isRoot()
+     * 		   |   then makeRoot()
+     * @throws IllegalStateException
+     *         The file system object is not yet terminated and it is not writable or is no root 
+     *         or its parent directory is not writable.
+     *         | !isTerminated() &&
+     *         | ( !isWritable() ||
+     *         |   ! (isRoot() || getParentDirectory().isWritable()) )
      */
-    public void terminate() {
-    	makeRoot();
-    	this.isTerminated = true;
+    public void terminate() throws IllegalStateException {
+    	if (!isTerminated()) {
+    		
+    		if (!isWritable() || !(isRoot() || getParentDirectory().isWritable()) )
+    			throw new IllegalStateException("This file system object cannot be terminated.");
+    		
+    		if (!isRoot()) {
+    			makeRoot();
+    			this.isTerminated = true;
+    		}   		
+    	}
     }
+    
+    
+    
 }

@@ -85,7 +85,7 @@ public class Directory extends FileSystemObject {
 
 	
     /**********************************************************
-     * Nieuwe shit
+     * File system objects in this directory
      **********************************************************/
 	
 	/**
@@ -164,9 +164,9 @@ public class Directory extends FileSystemObject {
 	 * 
 	 * @param  obj
 	 *         The file system object to check.
-	 * @return If the given file system object is not effective, it is equal to this directory,
+	 * @return If the given file system object is not effective, it is equal to this directory, it is not writable,
 	 *         it is terminated or this directory is terminated, then return false.
-	 *         | if ( obj == null || obj == this || isWritable()==false 
+	 *         | if ( obj == null || obj == this || !this.isWritable()
 	 *         |   || obj.isTerminated() || this.isTerminated() )
 	 *         |   then result == false 
 	 *         Else if the given object is an item of this directory, then true if and only if this objects name
@@ -182,7 +182,7 @@ public class Directory extends FileSystemObject {
 	 */
 	@Raw
 	public boolean canHaveAsItem(FileSystemObject obj) {
-		if (obj == null || obj==this || isWritable()==false) //ook als obj terminated of this terminated --> false, LATER TOEVOEGEN
+		if (obj == null || obj==this || !this.isWritable()) //ook als obj terminated of this terminated --> false, LATER TOEVOEGEN
 		    return false;
 		if (hasAsItem(obj)) {
 			int indexOfObj = getIndexOf(obj);
@@ -460,7 +460,7 @@ public class Directory extends FileSystemObject {
 	 *         The given index is not positive or it exceeds the number of content items
 	 *         associated with this directory.
 	 *         | (index<1 || index> getNbItems())
-	 * @throws ObjectNotWritableException(this)
+	 * @throws ObjectNotWritableException
 	 *         This directory is not writable
 	 *         | ! isWritable()
 	 */
@@ -503,17 +503,19 @@ public class Directory extends FileSystemObject {
 	}
 	
 	/**
-	 * Terminates this directory
-	 * @effect If this directory is empty, it will be terminated
-	 *         | super.terminate()
-	 * @throws IllegalArgumentException
+	 * Terminate this directory.
+	 * 
+	 * @effect If this directory is empty, it will be terminated.
+	 *         | if getNbItems() == 0
+	 *         |   then super.terminate()
+	 * @throws IllegalStateException
 	 *         This directory is not empty
 	 *         | getNbItems() != 0
 	 */
 	@Override
-	public void terminate() throws IllegalArgumentException {
+	public void terminate() throws IllegalStateException {
 		if(getNbItems() != 0)
-			throw new IllegalArgumentException("This directory is not empty.");
+			throw new IllegalStateException("This directory is not empty.");
 		
 		super.terminate();
 	}
