@@ -93,11 +93,18 @@ public class Directory extends FileSystemObject {
 	 * 
 	 * @invar The list of contents is effective.
 	 *        | contents != null
-	 * @invar CONSTRAINTS ON THE ITEMS IN THE CONTENTS LIST
-	 *        each item is effective
-	 *        each item is not terminated
-	 *        each item has this directory as its parent directory
-	 * 
+	 * @invar Each item in the contents list is effective.
+	 *        | for each item in contents:
+	 *        |   item != null
+	 * @invar Each item in the contents list is not terminated.
+	 *        | for each item in contents:
+	 *        |   !item.isTerminated()
+	 * @invar Each item in the contents list has this directory as its parent directory.
+	 *        | for each item in contents:
+	 *        |   item.getParentDirectory() == this
+	 * @invar The lists of contents is alphabetically ordered.
+	 *        | for each I in 2..getNbItems()
+	 *        |   getItemAt(I).isLexicographicallyAfter(getItemAt(I-1)) 
 	 */
 	public ArrayList<FileSystemObject> contents = new ArrayList<FileSystemObject>();
 	
@@ -164,7 +171,7 @@ public class Directory extends FileSystemObject {
 	 *         name does not yet occur in this directory and the given object is a root item or its parent
 	 *         directory allows us to move the object to this directory.
 	 *         |   else result == ( !this.exists(obj.getName()) &&
-	 *         |                    ...
+	 *         |                    (obj.isRoot() || obj.getParentDirectory().isWritable()) )
 	 */
 	@Raw
 	public boolean canHaveAsItem(FileSystemObject obj) {
@@ -181,9 +188,7 @@ public class Directory extends FileSystemObject {
 		}
 		else {
 			return ( !this.exists(obj.getName()) &&
-					  obj.isRoot());
-			// NOG TOEVOEGEN: ofwel is obj een root en dan is het oke
-			//                ofwel is het geen root en dan moeten we het kunnen verplaatsen (hoe dit checken?)
+					  (obj.isRoot() || obj.getParentDirectory().isWritable()) );
 		}
 	}
 		
