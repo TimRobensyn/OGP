@@ -132,23 +132,30 @@ public class Directory extends FileSystemObject {
 	 *         The name of the file system object to get.
 	 * @return The file system object in this directory that owns the given name if it is in
 	 *         this directory, returns null otherwise.
+	 * @throws IllegalArgumentException
+	 * 		   There is no object with the given name in this directory
+	 *         | !exists(name)
 	 */
-	public FileSystemObject getItem(String name) {
-		FileSystemObject item = null;
-		int R = this.getNbItems()-1;
-		int L = 0;
-		while(L<= R) {
-			int mid = (int) Math.floor((R+L)/2);
-			String objName = this.getItemAt(mid).getName();
-			if(name.compareToIgnoreCase(objName) > 0) {
-				L = mid+1;
-			} else if(name.compareToIgnoreCase(objName) < 0) {
-				R = mid-1;
-			} else {
-				item = this.getItemAt(mid);
+	public FileSystemObject getItem(String name) throws IllegalArgumentException {
+		if(! exists(name)) {
+			throw new IllegalArgumentException("This directory does not contain an object with the given name.");
+		} else {
+			FileSystemObject item = null;
+			int R = this.getNbItems()-1;
+			int L = 0;
+			while(L<= R) {
+				int mid = (int) Math.floor((R+L)/2);
+				String objName = this.getItemAt(mid).getName();
+				if(name.compareToIgnoreCase(objName) > 0) {
+					L = mid+1;
+				} else if(name.compareToIgnoreCase(objName) < 0) {
+					R = mid-1;
+				} else {
+					item = this.getItemAt(mid);
+				}
 			}
+			return item;
 		}
-		return item;
 	}
 	
 	
@@ -159,7 +166,7 @@ public class Directory extends FileSystemObject {
 	 *         The file system object to check.
 	 * @return If the given file system object is not effective, it is equal to this directory,
 	 *         it is terminated or this directory is terminated, then return false.
-	 *         | if ( obj == null || obj == this 
+	 *         | if ( obj == null || obj == this || isWritable()==false 
 	 *         |   || obj.isTerminated() || this.isTerminated() )
 	 *         |   then result == false 
 	 *         Else if the given object is an item of this directory, then true if and only if this objects name
@@ -175,7 +182,7 @@ public class Directory extends FileSystemObject {
 	 */
 	@Raw
 	public boolean canHaveAsItem(FileSystemObject obj) {
-		if (obj == null || obj==this) //ook als obj terminated of this terminated --> false, LATER TOEVOEGEN
+		if (obj == null || obj==this || isWritable()==false) //ook als obj terminated of this terminated --> false, LATER TOEVOEGEN
 		    return false;
 		if (hasAsItem(obj)) {
 			int indexOfObj = getIndexOf(obj);
@@ -397,10 +404,16 @@ public class Directory extends FileSystemObject {
 	 *         This directory cannot have the given file system object as a content item
 	 *         at the given index.
 	 *         | !canHaveAsItemAt(obj,index)
+	 * @throws ObjectNotWritableException(this)
+	 * 		   This directory is not writable
+	 *         | ! isWritable()
 	 */
-	private void addItemAt(FileSystemObject obj, int index) throws IllegalArgumentException {
+	private void addItemAt(FileSystemObject obj, int index) throws IllegalArgumentException, ObjectNotWritableException {
 		if (!canHaveAsItemAt(obj,index))
 			throw new IllegalArgumentException("Invalid file system object for this index.");
+		if(! isWritable()) {
+			throw new ObjectNotWritableException(this);
+		}
 		contents.add(index-1, obj);
 	}
 	
@@ -447,10 +460,16 @@ public class Directory extends FileSystemObject {
 	 *         The given index is not positive or it exceeds the number of content items
 	 *         associated with this directory.
 	 *         | (index<1 || index> getNbItems())
+	 * @throws ObjectNotWritableException(this)
+	 *         This directory is not writable
+	 *         | ! isWritable()
 	 */
-	private void removeItemAt(int index) throws IndexOutOfBoundsException {
+	private void removeItemAt(int index) throws IndexOutOfBoundsException, ObjectNotWritableException {
 		if (index<1 || index> getNbItems())
 			throw new IndexOutOfBoundsException();
+		if(! isWritable()) {
+			throw new ObjectNotWritableException(this);
+		}
 		contents.remove(index-1);
 	}
 	
@@ -481,5 +500,21 @@ public class Directory extends FileSystemObject {
 			}
 		} while (parent != null);
 		return bool;
+	}
+	
+	/**
+	 * Terminates this directory
+	 * @effect If this directory is empty, it will be terminated
+	 *         | super.terminate()
+	 * @throws IllegalArgumentException
+	 *         This directory is not empty
+	 *         | getNbItems() != 0
+	 */
+	@Override
+	public void terminate() throws IllegalArgumentException {
+		if(getNbItems() != 0)
+			throw new IllegalArgumentException("This directory is not empty.");
+		
+		super.terminate();
 	}
 }

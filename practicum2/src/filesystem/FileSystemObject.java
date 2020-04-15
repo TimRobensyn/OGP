@@ -75,12 +75,12 @@ public abstract class FileSystemObject {
      **********************************************************/
 
     /**
-     * Variable referencing the name of this filesystem object.
+     * Variable referencing the name of this file system object.
      */
     private String name = null;
 
     /**
-     * Return the name of this filesystem object.
+     * Return the name of this file system object.
      */
     @Raw @Basic 
     public String getName() {
@@ -88,7 +88,7 @@ public abstract class FileSystemObject {
     }
     
     /**
-     * Check whether the given name is a legal name for a filesystem object.
+     * Check whether the given name is a legal name for a file system object.
      * 
      * @param  	name
      *			The name to be checked
@@ -106,10 +106,10 @@ public abstract class FileSystemObject {
      * Set the name of this filesystem object to the given name.
      *
      * @param   name
-     * 			The new name for this filesystem object.
+     * 			The new name for this file system object.
      * @post    If the given name is valid, the name of
-     *          this filesystem object is set to the given name,
-     *          otherwise the name of the filesystem object is set to a valid name (the default).
+     *          this file system object is set to the given name,
+     *          otherwise the name of the file system object is set to a valid name (the default).
      *          | if (isValidName(name))
      *          |      then new.getName().equals(name)
      *          |      else new.getName().equals(getDefaultName())
@@ -124,10 +124,10 @@ public abstract class FileSystemObject {
     }
     
     /**
-     * Return the name for a new filesystem object which is to be used when the
+     * Return the name for a new file system object which is to be used when the
      * given name is not valid.
      *
-     * @return   A valid filesystem object name.
+     * @return   A valid file system object name.
      *         | isValidName(result)
      */
     @Model
@@ -139,9 +139,9 @@ public abstract class FileSystemObject {
      * Change the name of this filesystem object to the given name.
      *
      * @param	name
-     * 			The new name for this filesystem object.
-     * @effect  The name of this filesystem object is set to the given name, 
-     * 			if this is a valid name, the filesystem object is writable and the file system object
+     * 			The new name for this file system object.
+     * @effect  The name of this file system object is set to the given name, 
+     * 			if this is a valid name, the file system object is writable and the file system object
      *          is a root or its parent directory is writable, 
      * 			otherwise there is no change.
      * 			| if ( isValidName(name) && isWritable()
@@ -149,7 +149,7 @@ public abstract class FileSystemObject {
      *          | then setName(name)
      * @effect  If the name is valid, the file system object is writable and the file system object
      *          is a root or its parent directory is writable, the modification time 
-     * 			of this filesystem object is updated.
+     * 			of this file system object is updated.
      *          | if ( isValidName(name) && isWritable()
      *          |   && (isRoot() || getParentDirectory().isWritable()) )
      *          | then setModificationTime()
@@ -217,7 +217,7 @@ public abstract class FileSystemObject {
     private final Date creationTime = new Date();
    
     /**
-     * Return the time at which this filesystem object was created.
+     * Return the time at which this file system object was created.
      */
     @Raw @Basic @Immutable
     public Date getCreationTime() {
@@ -253,8 +253,8 @@ public abstract class FileSystemObject {
     private Date modificationTime = null;
    
     /**
-     * Return the time at which this filesystem object was last modified, that is
-     * at which the name or size was last changed. If this filesystem object has
+     * Return the time at which this file system object was last modified, that is
+     * at which the name or size was last changed. If this file system object has
      * not yet been modified after construction, null is returned.
      */
     @Raw @Basic
@@ -263,7 +263,7 @@ public abstract class FileSystemObject {
     }
 
     /**
-     * Check whether this filesystem object can have the given date as modification time.
+     * Check whether this file system object can have the given date as modification time.
      *
      * @param	date
      * 			The date to check.
@@ -382,28 +382,51 @@ public abstract class FileSystemObject {
     
     /**
      * Set the directory of this filesystem object to the given directory
-     * 
      * @param dir
      * 		  The new directory
+     * @effect This file system object gets added to the given directory
+     * 		   | dir.addAsItem(this)
      */
     @Raw
     public void setParentDirectory(Directory dir) {
-    	this.dir = dir;
     	dir.addAsItem(this);
-    }
-    
-    //Dit mag mogelijks niet, iets moet veranderen aan setDirectory zodat er geen addItem op null wordt uitgevoerd
-    public void makeRoot() {
-    	getParentDirectory().removeAsItem(this);
-    	setParentDirectory(null);
-    }
-    
-    public void move(Directory destination) {
-    	
+    	this.dir = dir;
     }
     
     /**
-     * Return the root of this filesystem object
+     * Makes this file system object a root object
+     * @effect This file system object gets removed from it's old parent directory
+     *         | getParentDirectory().removeAsItem(this)
+     * @effect This file system object's parent directory gets set to null
+     *         | setParentDirectory(null)
+     */
+    public void makeRoot() {
+    	getParentDirectory().removeAsItem(this);
+    	setParentDirectory(null); //Dit kan toch niet op null uitgevoerd worden?
+    }
+    
+    /**
+     * Moves a file system object to a given destination directory
+     * @param destination
+     *        The given directory
+     * @effect This file system object gets removed from the old parent directory
+     *         | getParentDirectory().removeAsItem(this)
+     * @effect The parent directory of this file system object is set to the given destination directory
+     *         | setParentDirectory(destination)
+     * @throws IllegalArgumentException
+     * 		   The given destination cannot contain this file system object
+     * 		   | !destination.canHaveAsItem(this)
+     */
+    public void move(Directory destination) throws IllegalArgumentException {
+    	if(!destination.canHaveAsItem(this))
+    		throw new IllegalArgumentException("The destination directory cannot contain this file system object");
+    	
+    	getParentDirectory().removeAsItem(this);
+    	setParentDirectory(destination);
+    }
+    
+    /**
+     * Return the root of this file system object
      * 
      * @return The file system object that is the root of this object
      */
@@ -426,5 +449,31 @@ public abstract class FileSystemObject {
      */
     public boolean isRoot() {
     	return getRoot() == null;
+    }
+    
+    /**
+     * Variable registering whether this file system object is terminated
+     */
+    private boolean isTerminated = false;
+    
+    /**
+     * Check whether this file system object is terminated
+     */
+    @Basic
+    public boolean isTerminated() {
+    	return(isTerminated);
+    }
+    
+    /**
+     * Terminates this file system object
+     * 
+     * @effect This file system object becomes a root object
+     * 		   | makeRoot()
+     * @post This file system object will be terminated
+     *       | this.isTerminated = true
+     */
+    public void terminate() {
+    	makeRoot();
+    	this.isTerminated = true;
     }
 }
