@@ -412,4 +412,13 @@ public abstract class FileSystemObject {
     	}
     	return root;
     }
+    
+    /**
+     * Check whether this file system object is a root object.
+     * 
+     * @return A boolean indicating whether this file system object is a root object or not.
+     */
+    public boolean isRoot() {
+    	return getRoot() == null;
+    }
 }

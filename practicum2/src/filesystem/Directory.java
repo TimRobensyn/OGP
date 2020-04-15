@@ -6,8 +6,9 @@ import java.util.ArrayList;
 /**
  * A class of directories
  * 
- * INVARS
- * 
+ * @invar   The contents associated with each directory must be proper contents
+ *          for that directory.
+ *          | hasProperItems()
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  * @version 1.0
  *
@@ -143,6 +144,50 @@ public class Directory extends FileSystemObject {
 		return item;
 	}
 	
+	
+	/**
+	 * Check whether this directory can have the given file system object as one of its content items.
+	 * 
+	 * @param  obj
+	 *         The file system object to check.
+	 * @return If the given file system object is not effective, it is equal to this directory,
+	 *         it is terminated or this directory is terminated, then return false.
+	 *         | if ( obj == null || obj == this 
+	 *         |   || obj.isTerminated() || this.isTerminated() )
+	 *         |   then result == false 
+	 *         Else if the given object is an item of this directory, then true if and only if this objects name
+	 *         does not occur at other objects in this directory.
+	 *         | else if ( this.hasAsItem(obj))
+	 *         |   then result == for one I in 1...getNbItems():
+	 *         |                    getItemAt(i).getName().equalsIgnoreCase(obj.getName())
+	 *         else the given object is not an item of this directory, then true if and only if the given objects
+	 *         name does not yet occur in this directory and the given object is a root item or its parent
+	 *         directory allows us to move the object to this directory.
+	 *         |   else result == ( !this.exists(obj.getName()) &&
+	 *         |                    ...
+	 */
+	@Raw
+	public boolean canHaveAsItem(FileSystemObject obj) {
+		if (obj == null || obj==this) //ook als obj terminated of this terminated --> false, LATER TOEVOEGEN
+		    return false;
+		if (hasAsItem(obj)) {
+			int indexOfObj = getIndexOf(obj);
+			String nameOfObj = obj.getName();
+			boolean bool = true;
+			for (int i=1; i<=getNbItems();i++) {
+				if (getItemAt(i).getName().equalsIgnoreCase(nameOfObj)&& i!=indexOfObj) bool = false;
+			}
+			return bool;
+		}
+		else {
+			return ( !this.exists(obj.getName()) &&
+					  obj.isRoot());
+			// NOG TOEVOEGEN: ofwel is obj een root en dan is het oke
+			//                ofwel is het geen root en dan moeten we het kunnen verplaatsen (hoe dit checken?)
+		}
+	}
+	
+	
 	/**
 	 * Check whether this directory can have the given file system object as one of its content items
 	 * at the given index.
@@ -178,9 +223,8 @@ public class Directory extends FileSystemObject {
 	 */
 	@Raw
 	public boolean canHaveAsItemAt(FileSystemObject obj, int index) {
-		// if (! canHaveAsItem(obj))
-		//     return false;
-		// Volgens één van de coding rules moet canHaveAsItem() in de klasse zitten, dit moet echter nog gebeuren.
+		if (! canHaveAsItem(obj))
+		    return false;
 		if ( (index<1) || (index>getNbItems()+1) )
 			return false;
 		
@@ -269,7 +313,7 @@ public class Directory extends FileSystemObject {
 	}
 	
 	/**
-	 * Checks whether this directory contains the given file system object
+	 * Checks whether this directory contains the given file system object.
 	 * @param  obj
 	 *         The file system object to be checked.
 	 * @return True if and only if a file system object equal to the given file system objects
@@ -294,38 +338,62 @@ public class Directory extends FileSystemObject {
 	/**
 	 * Add an item to the contents of this directory
 	 * 
-	 * @param obj
-	 *        The object that will be added to the directory
-	 * @post  The file system object will be added to the contents of the directory such that the contents are lexicographically ordered
-	 * 		  | int size = this.getNbItems();
-			  | if(size == 0) then contents.add(obj)
-		      | 	else
-		      | int pos = 0;
-		      | while(obj.isLexicographicallyAfter(this.getItemAt(pos)))
-		      |		pos = pos + 1
-		      | while(size != pos) 
-		      | 	contents.set(size+1, contents.get(size))
-		      | 	size = size - 1
-		      |	contents.set(pos, obj);
+	 * @param  obj
+	 *         The file system object that will be added to the content items of this directory.
+	 * @post   This directory has the given file system object as one of its content items.
+	 *         | new.hasAsItem(obj)
+	 * @post   The number of content items of this directory is incremented by 1.
+	 *         | new.getNbItems() == getNbItems()+1
+	 * @post   All content items for this directory at an index exceeding the index of the newly added 
+	 *         file system object, are registered as content item at one index higher.
+	 *         | for each I in new.getIndexOf(obj)..getNbItems():
+	 *         |   (new.getItemAt(I+1) == getItemAt(I))
+	 * @effect The modification time of this directory is updated.
+	 *         | setModificationTime()
+	 * @throws IllegalArgumentException
+	 *         This directory already has this file system object as one of its content items or 
+	 *         it cannot have the given file system object as content item.
+	 *         | (hasAsItem(obj) || !canHaveAsItem(obj))
 	 */
-	public void addItem(FileSystemObject obj) {
-		//Een checker canHaveAsItem en mss throw er bij
+	public void addAsItem(FileSystemObject obj) throws IllegalArgumentException{
+		if (hasAsItem(obj) || !canHaveAsItem(obj) )
+			throw new IllegalArgumentException("Cannot add the given file system object");	
+				
 		int size = this.getNbItems();
-		if(size == 0) {
-			contents.add(obj);
-		} else {
-			int pos = 0;
-			
-			while(obj.isLexicographicallyAfter(this.getItemAt(pos))) {
-				pos = pos + 1;
-			}
-			
-			while(size != pos) {
-				contents.set(size+1, contents.get(size));
-				size = size - 1;
-			}
-			contents.set(pos, obj);
+		int pos = 1;
+		while (pos <= size) {
+			if (obj.isLexicographicallyAfter(getItemAt(pos)))
+				pos++;
+			else break;
 		}
+		this.addItemAt(obj,pos);
+		this.setModificationTime();
+	}
+	
+	/**
+	 * Add the given file system object as a content item for this directory at the given index.
+	 * 
+	 * @param  obj
+	 *         The file system object to be added as content item.
+	 * @param  index
+	 *         The index of the object to be added.
+	 * @post   This directory has the given file system object as one of its content items at the given index.
+	 *         | new.getItemAt(index) == obj
+	 * @post   The number of content items of this directory is incremented by 1.
+	 *         | new.getNbItems() == getNbItems()+1
+	 * @post   All content items for this directory at an index exceeding the given index, are registered
+	 *         as content item at one index higher.
+	 *         | for each I in index..getNbItems():
+	 *         |   (new.getItemAt(I+1) == getItemAt(I))
+	 * @throws IllegalArgumentException
+	 *         This directory cannot have the given file system object as a content item
+	 *         at the given index.
+	 *         | !canHaveAsItemAt(obj,index)
+	 */
+	private void addItemAt(FileSystemObject obj, int index) throws IllegalArgumentException{
+		if (!canHaveAsItemAt(obj,index))
+			throw new IllegalArgumentException("Invalid file system object for this index.");
+		contents.add(index-1, obj);
 	}
 	
 	//Dit mag mogelijks niet
@@ -334,17 +402,17 @@ public class Directory extends FileSystemObject {
 	}
 	
 	/**
-	 * Checks whether this directory is a direct or indirect subdirectory of the given directory
+	 * Checks whether this directory is a direct or indirect subdirectory of the given directory.
 	 * 
 	 * @param dir
 	 * 		  The given directory
 	 * @return True if and only if this directory is a direct or indirect subdirectory of a directory equal to the given directory
-	 * 		   |result == false 
-	 * 		   |do
-	 *         | 	if(parent==dir) then
-	 *         |		result == true
-	 *         |	else parent=parent.getParentDirectory()
-	 *         |while(parent != null)
+	 * 		   | result == false 
+	 * 		   | do
+	 *         |  	if(parent==dir) then
+	 *         | 	  result == true
+	 *         |   	else parent=parent.getParentDirectory()
+	 *         | while(parent != null)
 	 */
 	public boolean isDirectOrIndirectSubdirectoryOf(Directory dir) {
 		Directory parent = this.getParentDirectory();
