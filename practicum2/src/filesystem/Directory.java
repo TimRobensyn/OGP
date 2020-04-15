@@ -121,10 +121,10 @@ public class Directory extends FileSystemObject {
 	
 	/**
 	 * Return the file system object in this directory that owns the given name
-	 * @param name
-	 *        The given name
-	 * @return the file system object in this directory that owns the given name if it is in
-	 *         this directory, returns null otherwise
+	 * @param  name
+	 *         The name of the file system object to get.
+	 * @return The file system object in this directory that owns the given name if it is in
+	 *         this directory, returns null otherwise.
 	 */
 	public FileSystemObject getItem(String name) {
 		FileSystemObject item = null;
@@ -186,8 +186,7 @@ public class Directory extends FileSystemObject {
 			//                ofwel is het geen root en dan moeten we het kunnen verplaatsen (hoe dit checken?)
 		}
 	}
-	
-	
+		
 	/**
 	 * Check whether this directory can have the given file system object as one of its content items
 	 * at the given index.
@@ -260,8 +259,9 @@ public class Directory extends FileSystemObject {
 		}
 		return true;
 	}
-	
 
+
+	
 	/**
 	 * Returns the index of a given file system object.
 	 * 
@@ -284,8 +284,6 @@ public class Directory extends FileSystemObject {
 			return index;
 		}		
 	}
-	
-	
 	
 	/**
 	 * Return the number of file system objects in this directory.

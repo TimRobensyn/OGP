@@ -141,13 +141,17 @@ public abstract class FileSystemObject {
      * @param	name
      * 			The new name for this filesystem object.
      * @effect  The name of this filesystem object is set to the given name, 
-     * 			if this is a valid name and the filesystem object is writable, 
+     * 			if this is a valid name, the filesystem object is writable and the file system object
+     *          is a root or its parent directory is writable, 
      * 			otherwise there is no change.
-     * 			| if (isValidName(name) && isWritable())
+     * 			| if ( isValidName(name) && isWritable()
+     *          |   && (isRoot() || getParentDirectory().isWritable()) )
      *          | then setName(name)
-     * @effect  If the name is valid and the filesystem object is writable, the modification time 
+     * @effect  If the name is valid, the file system object is writable and the file system object
+     *          is a root or its parent directory is writable, the modification time 
      * 			of this filesystem object is updated.
-     *          | if (isValidName(name) && isWritable())
+     *          | if ( isValidName(name) && isWritable()
+     *          |   && (isRoot() || getParentDirectory().isWritable()) )
      *          | then setModificationTime()
      * @throws  ObjectNotWritableException(this)
      *          This file is not writable
@@ -155,9 +159,11 @@ public abstract class FileSystemObject {
      */
     public void changeName(String name) throws ObjectNotWritableException {
         if (isWritable()) {
-            if (isValidName(name)){
+            if (isValidName(name) && (isRoot() || getParentDirectory().isWritable()) ){
+            	getParentDirectory().removeAsItem(this);
             	setName(name);
                 setModificationTime();
+                getParentDirectory().addAsItem(this);
             }
         } else {
             throw new ObjectNotWritableException(this);
