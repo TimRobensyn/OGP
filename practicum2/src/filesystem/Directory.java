@@ -261,26 +261,7 @@ public class Directory extends FileSystemObject {
 		return true;
 	}
 	
-	
-	/**
-	 * Checks whether this directory contains a file system object that owns the given name
-	 * 
-	 * @param  name
-	 * 		   The name to check.
-	 * @return True if and only if this directory contains a file system object with the given name.
-	 */
-	public boolean exists(String name) {
-		boolean bool = false;
-		int index = 0;
-		while((index != getNbItems())&&(bool == false)) {
-			if(getItemAt(index).getName() == name) {
-				bool = true;
-			}
-			index++;
-		}
-		return bool;
-	}
-	
+
 	/**
 	 * Returns the index of a given file system object.
 	 * 
@@ -304,6 +285,8 @@ public class Directory extends FileSystemObject {
 		}		
 	}
 	
+	
+	
 	/**
 	 * Return the number of file system objects in this directory.
 	 */
@@ -311,6 +294,8 @@ public class Directory extends FileSystemObject {
 	public int getNbItems() {
 		return contents.size();
 	}
+	
+	
 	
 	/**
 	 * Checks whether this directory contains the given file system object.
@@ -334,17 +319,37 @@ public class Directory extends FileSystemObject {
 		return bool;
 	}
 	
+	/**
+	 * Checks whether this directory contains a file system object that owns the given name
+	 * 
+	 * @param  name
+	 * 		   The name to check.
+	 * @return True if and only if this directory contains a file system object with the given name.
+	 */
+	public boolean exists(String name) {
+		boolean bool = false;
+		int index = 0;
+		while((index != getNbItems())&&(bool == false)) {
+			if(getItemAt(index).getName() == name) {
+				bool = true;
+			}
+			index++;
+		}
+		return bool;
+	}
+	
+	
 	
 	/**
-	 * Add an item to the contents of this directory
+	 * Add an file system object to the contents of this directory
 	 * 
 	 * @param  obj
 	 *         The file system object that will be added to the content items of this directory.
-	 * @post   This directory has the given file system object as one of its content items.
+	 * @effect This directory has the given file system object as one of its content items.
 	 *         | new.hasAsItem(obj)
-	 * @post   The number of content items of this directory is incremented by 1.
+	 * @effect The number of content items of this directory is incremented by 1.
 	 *         | new.getNbItems() == getNbItems()+1
-	 * @post   All content items for this directory at an index exceeding the index of the newly added 
+	 * @effect All content items for this directory at an index exceeding the index of the newly added 
 	 *         file system object, are registered as content item at one index higher.
 	 *         | for each I in new.getIndexOf(obj)..getNbItems():
 	 *         |   (new.getItemAt(I+1) == getItemAt(I))
@@ -355,7 +360,7 @@ public class Directory extends FileSystemObject {
 	 *         it cannot have the given file system object as content item.
 	 *         | (hasAsItem(obj) || !canHaveAsItem(obj))
 	 */
-	public void addAsItem(FileSystemObject obj) throws IllegalArgumentException{
+	public void addAsItem(FileSystemObject obj) throws IllegalArgumentException {
 		if (hasAsItem(obj) || !canHaveAsItem(obj) )
 			throw new IllegalArgumentException("Cannot add the given file system object");	
 				
@@ -366,8 +371,8 @@ public class Directory extends FileSystemObject {
 				pos++;
 			else break;
 		}
-		this.addItemAt(obj,pos);
-		this.setModificationTime();
+		addItemAt(obj,pos);
+		setModificationTime();
 	}
 	
 	/**
@@ -390,16 +395,63 @@ public class Directory extends FileSystemObject {
 	 *         at the given index.
 	 *         | !canHaveAsItemAt(obj,index)
 	 */
-	private void addItemAt(FileSystemObject obj, int index) throws IllegalArgumentException{
+	private void addItemAt(FileSystemObject obj, int index) throws IllegalArgumentException {
 		if (!canHaveAsItemAt(obj,index))
 			throw new IllegalArgumentException("Invalid file system object for this index.");
 		contents.add(index-1, obj);
 	}
 	
-	//Dit mag mogelijks niet
-	public void removeItem(FileSystemObject obj) {
-		this.contents.remove(obj);
+	/**
+	 * Remove an file system object as a content item associated with this directory.
+	 * 
+	 * @param  obj
+	 *         The file system object to be removed.
+	 * @effect This directory no longer has the file system object as one of its content items.
+	 *         | ! new.hasAsItem(obj)
+	 * @effect The number of content items associated with this directory is decremented by 1.
+	 *         | new.getNbItems() == this.getNbItems()-1
+	 * @effect All file system objects associated with this directory at an index exceeding the index
+	 *         of the file system object that was removed are registered as file system object at one index lower.
+	 *         | for each I in this.getIndexOf(obj)+1..getNbItems()
+	 *         |   (new.getItemAt(I-1) == this.getItemAt(I))
+	 * @throws IndexOutOfBoundsException
+	 *         The given index is not positive or it exceeds the number of content items
+	 *         associated with this directory.
+	 *         | (index<1 || index> getNbItems())
+	 */
+	public void removeAsItem(FileSystemObject obj) throws IllegalArgumentException {
+		if (!hasAsItem(obj))
+			throw new IllegalArgumentException("This file system object is not a content item of this directory.");
+		removeItemAt(getIndexOf(obj));
+		setModificationTime();
 	}
+	
+	/**
+	 * Remove the file system object for this directory at the given index.
+	 * 
+	 * @param  index
+	 *         The index of the file system object to be removed.
+	 * @post   This directory no longer has the file system object at the given index 
+	 *         as one of its content items.
+	 *         | ! new.hasAsItem(getItemAt(index))
+	 * @post   The number of content items associated with this directory is decremented by 1.
+	 *         | new.getNbItems() == this.getNbItems()-1
+	 * @post   All file system objects associated with this directory at an index exceeding the given index,
+	 *         are registered as file system object at one index lower.
+	 *         | for each I in index+1..getNbItems()
+	 *         |   (new.getItemAt(I-1) == this.getItemAt(I))
+	 * @throws IndexOutOfBoundsException
+	 *         The given index is not positive or it exceeds the number of content items
+	 *         associated with this directory.
+	 *         | (index<1 || index> getNbItems())
+	 */
+	private void removeItemAt(int index) throws IndexOutOfBoundsException {
+		if (index<1 || index> getNbItems())
+			throw new IndexOutOfBoundsException();
+		contents.remove(index-1);
+	}
+	
+	
 	
 	/**
 	 * Checks whether this directory is a direct or indirect subdirectory of the given directory.

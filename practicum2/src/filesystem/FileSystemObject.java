@@ -49,7 +49,7 @@ public abstract class FileSystemObject {
 	protected FileSystemObject(Directory dir, String name, boolean writable) {
 		setName(name);
 		setWritable(writable);
-		setDirectory(dir);
+		setParentDirectory(dir);
 	}
 	
 	
@@ -381,15 +381,15 @@ public abstract class FileSystemObject {
      * 		  The new directory
      */
     @Raw
-    public void setDirectory(Directory dir) {
+    public void setParentDirectory(Directory dir) {
     	this.dir = dir;
-    	dir.addItem(this);
+    	dir.addAsItem(this);
     }
     
     //Dit mag mogelijks niet, iets moet veranderen aan setDirectory zodat er geen addItem op null wordt uitgevoerd
     public void makeRoot() {
-    	getParentDirectory().removeItem(this);
-    	setDirectory(null);
+    	getParentDirectory().removeAsItem(this);
+    	setParentDirectory(null);
     }
     
     public void move(Directory destination) {
