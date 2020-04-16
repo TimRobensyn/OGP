@@ -182,7 +182,8 @@ public class Directory extends FileSystemObject {
 	 */
 	@Raw
 	public boolean canHaveAsItem(FileSystemObject obj) {
-		if (obj == null || obj==this || !this.isWritable()) //ook als obj terminated of this terminated --> false, LATER TOEVOEGEN
+		if (obj == null || obj==this || !this.isWritable() 
+			|| obj.isTerminated() || this.isTerminated() )
 		    return false;
 		if (hasAsItem(obj)) {
 			int indexOfObj = getIndexOf(obj);
@@ -372,7 +373,7 @@ public class Directory extends FileSystemObject {
 	 */
 	public void addAsItem(FileSystemObject obj) throws IllegalArgumentException {
 		if (hasAsItem(obj) || !canHaveAsItem(obj) )
-			throw new IllegalArgumentException("Cannot add the given file system object");	
+			throw new IllegalArgumentException("Cannot add the given file system object to this directory");	
 				
 		int size = this.getNbItems();
 		int pos = 1;

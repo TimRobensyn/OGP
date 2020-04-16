@@ -36,15 +36,15 @@ public abstract class FileSystemObject {
 	 * 		   The writability of the new file system object.
 	 * @effect The name of the file system object is set to the given name.
 	 *         If the given name is not valid, a default name is set.
-	 *       | setName(name)
+	 *         | setName(name)
 	 * @effect The writability of the new file system object is set to the given flag.
-	 *       | setWritable(writable)
+	 *         | setWritable(writable)
      * @post   The new creation time of this file is initialized to some time during
      *         constructor execution.
-     *       | (new.getCreationTime().getTime() >= System.currentTimeMillis()) &&
-     *       | (new.getCreationTime().getTime() <= (new System).currentTimeMillis())
+     *         | (new.getCreationTime().getTime() >= System.currentTimeMillis()) &&
+     *         | (new.getCreationTime().getTime() <= (new System).currentTimeMillis())
      * @post   The new file has no time of last modification.
-     *       | new.getModificationTime() == null
+     *         | new.getModificationTime() == null
 	 */
 	protected FileSystemObject(Directory dir, String name, boolean writable) {
 		setName(name);
@@ -62,6 +62,7 @@ public abstract class FileSystemObject {
 	 * 		   The writability of the new file system object.
 	 * @effect The new file system object is initialized with the given name and writability
 	 *         and no parent directory.
+	 *         | this(null,name,writable)
 	 */
 	protected FileSystemObject(String name, boolean writable) {
 		this(null,name,writable);
@@ -381,49 +382,77 @@ public abstract class FileSystemObject {
     }
     
     /**
-     * Set the directory of this filesystem object to the given directory
+     * Set the directory of this filesystem object to the given directory.
+     * 
      * @param  dir
      * 		   The new directory
      * @effect This file system object gets added to the given directory
      * 		   | dir.addAsItem(this)
      */
     @Raw
-    public void setParentDirectory(Directory dir) {
+    private void setParentDirectory(Directory dir) {
     	dir.addAsItem(this);
-    	this.dir = dir;
+    	if (dir != null)
+    		this.dir = dir;
     }
     
     /**
-     * Makes this file system object a root object
+     * Makes this file system object a root object.
      * 
-     * @effect This file system object gets removed from it's old parent directory
-     *         | getParentDirectory().removeAsItem(this)
-     * @effect This file system object's parent directory gets set to null
-     *         | setParentDirectory(null)
+     * @effect If this file system object is not a root, it is removed from it's old parent directory.
+     *         | if (!isRoot())
+     *         |   then getParentDirectory().removeAsItem(this)
+     * @effect If this file system object is not a root, its parent directory is set to null.
+     *         | if (!isRoot())
+     *         |   then setParentDirectory(null)
+     * @effect If this file system object is not a root, its modification time is updated.
+     *         | if (!isRoot())
+	 *         |   then setModificationTime() 
+	 * @note   Possible errors are caught by underlying methods.
      */
     public void makeRoot() {
-    	getParentDirectory().removeAsItem(this);
-    	setParentDirectory(null); //Dit kan toch niet op null uitgevoerd worden?
+    	if (!isRoot()) {
+	    	getParentDirectory().removeAsItem(this);
+	    	setParentDirectory(null);
+	    	
+	    	setModificationTime();
+    	}
     }
     
     /**
-     * Moves a file system object to a given destination directory
-     * @param destination
-     *        The given directory
-     * @effect This file system object gets removed from the old parent directory
-     *         | getParentDirectory().removeAsItem(this)
+     * Move a file system object to a given destination directory.
+     * 
+     * @param  destination
+     *         The given directory
+     * @effect If this file system object is not a root, it is removed from the old parent directory.
+     *         | if (!isRoot())
+     *         |   then getParentDirectory().removeAsItem(this)
      * @effect The parent directory of this file system object is set to the given destination directory
      *         | setParentDirectory(destination)
+     * @effect The modification time of this file system object is updated.
+	 *         | setModificationTime()         
      * @throws IllegalArgumentException
-     * 		   The given destination cannot contain this file system object
-     * 		   | !destination.canHaveAsItem(this)
+     * 		   The given destination cannot contain this file system object, the destination is null
+     *         or the given destination is equal to the current parent directory.
+     * 		   | ( !destination.canHaveAsItem(this) 
+     *         |   || destination==null
+     *         |   || destination==getParentDirectory() )
+     * @note   Other errors, such as those occurring because of termination/writability,
+     *         are caught by the used underlying methods.        
      */
     public void move(Directory destination) throws IllegalArgumentException {
-    	if(!destination.canHaveAsItem(this))
+    	if (destination==null) 
+    		throw new IllegalArgumentException("The destination directory cannot be null.");
+    	if (destination==getParentDirectory()) 
+    		throw new IllegalArgumentException("The destination directory cannot be the same as the current parent directory.");
+    	if (!destination.canHaveAsItem(this))
     		throw new IllegalArgumentException("The destination directory cannot contain this file system object");
     	
-    	getParentDirectory().removeAsItem(this);
+    	if (!isRoot()) 
+    		getParentDirectory().removeAsItem(this);
     	setParentDirectory(destination);
+    	
+    	setModificationTime();
     }
     
     /**

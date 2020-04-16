@@ -7,9 +7,9 @@ import be.kuleuven.cs.som.annotate.*;
  * A class of files.
  * 
  * @invar	Each file must have a valid size.
- * 		  | isValidSize(getSize())
+ * 		    | isValidSize(getSize())
  * @invar   The file type of each file must be a valid file type for any file.
- *        | isValidType(getType())
+ *          | isValidType(getType())
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  * @version 1.0
  *
@@ -35,13 +35,13 @@ public class File extends FileSystemObject {
 	 * @param  type
 	 *         The file type of the new file.
 	 * @pre    The type is effective
-	 *       | type != null
+	 *         | type != null
 	 * @effect The new file is a file system object with given parent directory, name and writability.
-	 *       | super(dir,name,writable)
+	 *         | super(dir,name,writable)
 	 * @effect The new file has the given size as its size.
-	 *       | setSize(size)
+	 *         | setSize(size)
 	 * @post   The new file has the given type as its file type.
-	 *       | new.getType() == type
+	 *         | new.getType() == type
 	 * 
 	 */
 	public File(Directory dir, String name, int size, boolean writable, FileType type) {
@@ -61,7 +61,7 @@ public class File extends FileSystemObject {
 	 *         The file type of the new file.
 	 * @effect The new file is initialized with the given parent directory, name and type,
 	 *         a zero size and true writability.
-	 *       | this(dir,name,0,true,type)
+	 *         | this(dir,name,0,true,type)
 	 */
 	public File(Directory dir, String name, FileType type) {
 		this(dir, name, 0, true, type);
@@ -81,7 +81,7 @@ public class File extends FileSystemObject {
 	 *         The file type of the new file.
 	 * @effect The new root file is initialized with the given name, size, writability, type 
 	 *         and no parent directory.
-	 *       | this(null,name,size,writable,type)
+	 *         | this(null,name,size,writable,type)
 	 */
 	public File(String name, int size, boolean writable, FileType type) {
 		this(null, name, size, writable, type);
@@ -96,7 +96,7 @@ public class File extends FileSystemObject {
 	 *         The file type of the new file.
 	 * @effect The new root file is initialized with the given name and type,
 	 *         a zero size and true writability.
-	 *       | this(null,name,0,true,type)
+	 *         | this(null,name,0,true,type)
 	 */
 	public File(String name, FileType type) {
 		this(name, 0, true, type);
