@@ -25,7 +25,9 @@ public class FileSystemObjectTest {
 	Date timeBeforeConstruction, timeAfterConstruction;
 	
 	Directory directoryNotWritable;
+	Directory directoryTerminated;
 	File fileNotWritable;
+	File fileTerminated;
 	Date timeBeforeConstructionNotWritable, timeAfterConstructionNotWritable;
 	
 	@Before
@@ -44,7 +46,9 @@ public class FileSystemObjectTest {
 
 		timeBeforeConstructionNotWritable = new Date();
 		directoryNotWritable = new Directory("directoryNotWritable",false);
-		fileNotWritable = new File("bestand.txt",100,false,FileType.Pdf);
+		fileNotWritable = new File("fileNotWritable",100,false,FileType.Pdf);
+		fileTerminated = new File("fileTerminated",100,true,FileType.Java);
+		directoryTerminated = new Directory("directoryTerminated");
 		timeAfterConstructionNotWritable = new Date();
 	}
 
@@ -285,6 +289,13 @@ public class FileSystemObjectTest {
 		fileNotWritable.changeName("NewLegalName");
 	}
 	
+	@Test (expected = IllegalStateException.class)
+	public void testChangeName_FileTerminated() {
+		fileTerminated.terminate();
+		fileTerminated.changeName("NewLegalName");
+		
+	}
+	
 	@Test
 	public void testChangeName_IllegalName() {
 		fileStringFileType.changeName("$IllegalName$");
@@ -324,6 +335,12 @@ public class FileSystemObjectTest {
 		fileNotWritable.enlarge(1);
 	}
 	
+	@Test(expected = IllegalStateException.class)
+	public void testEnlarge_FileTerminated() {
+		fileTerminated.terminate();
+		fileTerminated.enlarge(1);
+	}
+	
 	@Test
 	public void testShorten_LegalCase() {
 		fileStringIntBooleanFileType.shorten(1);
@@ -339,6 +356,12 @@ public class FileSystemObjectTest {
 		fileNotWritable.shorten(1);
 	}
 
+	@Test (expected = IllegalStateException.class)
+	public void testShorten_FileTerminated() {
+		fileTerminated.terminate();
+		fileTerminated.shorten(1);
+	}
+	
 	@Test
 	public void testIsValidCreationTime_LegalCase() {
 		Date now = new Date();
@@ -478,6 +501,56 @@ public class FileSystemObjectTest {
 		assertFalse(fileStringFileType.isWritable());
 		assertTrue(fileNotWritable.isWritable());
 	}
+	
+	@Test
+	public void testMakeRoot() {
+		assertFalse(fileDirStringFileType.isRoot());
+		fileDirStringFileType.makeRoot();
+		assertTrue(fileDirStringFileType.isRoot());
+	}
+	
+	@Test
+	public void testMove_LegalCase() {
+		assertEquals(directoryString, fileDirStringFileType.getParentDirectory());
+		fileDirStringFileType.move(directoryStringBoolean);
+		assertEquals(directoryStringBoolean, fileDirStringFileType.getParentDirectory());
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testMove_DestinationNull() {
+		fileDirStringFileType.move(null);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testMove_DestinationIsParent() {
+		fileDirStringFileType.move(directoryString);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testMove_DestinationCannotHaveAsItem() {
+		fileDirStringFileType.move(directoryNotWritable);
+	}
+	
+	
+	@Test
+	public void testGetRoot() {
+		File file = new File(directoryDirString,"new_file",100,true,FileType.Java);
+		assertEquals(directoryString, file.getRoot());
+	}
+	
+	@Test
+	public void testTerminate_LegalCase() {
+		assertFalse(directoryTerminated.isTerminated());
+		directoryTerminated.terminate();
+		assertTrue(directoryTerminated.isTerminated());
+	}
+	
+	@Test (expected = IllegalStateException.class)
+	public void testTerminate_IllegalCase() {
+		File fileInDirectoryTerminated = new File(directoryTerminated ,"fileInDirectoryTerminated", FileType.Java);
+		directoryTerminated.terminate();
+	}
+	
 	
 	private void sleep() {
         try {
