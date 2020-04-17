@@ -142,16 +142,20 @@ public abstract class FileSystemObject {
      * @param	name
      * 			The new name for this file system object.
      * @effect  The name of this file system object is set to the given name, 
-     * 			if this is a valid name, the file system object is writable and the file system object
-     *          is a root or its parent directory is writable, 
+     * 			if this is a valid name, not equal to the former name (ignoring case) the file system object
+     *          is writable, its parent directory has no other file system object with the same name (ignoring case) 
+     *          and the file system object is a root or its parent directory is writable, 
      * 			otherwise there is no change.
-     * 			| if ( isValidName(name) && isWritable()
+     * 			| if ( isValidName(name) && isWritable() 
+     *          |   && !getParentDirectory().exists(name) && !name.equalsIgnoreCase(getName()
      *          |   && (isRoot() || getParentDirectory().isWritable()) )
      *          | then setName(name)
-     * @effect  If the name is valid, the file system object is writable, its parent directory has no other
-     *          file system object with the same name (ignoring case) and the file system object is a root or 
-     *          its parent directory is writable, the modification time of this file system object is updated.
-     *          | if ( isValidName(name) && isWritable() && !getParentDirectory().exists(name)
+     * @effect  If the new name is valid, not equal to the former name (ignoring case) the file system object
+     *          is writable, its parent directory has no other file system object with the same name (ignoring case)
+     *          and the file system object is a root or its parent directory is writable, the modification time 
+     *          of this file system object is updated.
+     *          | if ( isValidName(name) && isWritable() 
+     *          |   && !getParentDirectory().exists(name) && !name.equalsIgnoreCase(getName()
      *          |   && (isRoot() || getParentDirectory().isWritable()) )
      *          | then setModificationTime()
      * @throws  IllegalStateException
@@ -159,13 +163,15 @@ public abstract class FileSystemObject {
      *          | isTerminated()
      * @throws  ObjectNotWritableException(this)
      *          This file system object is not writable.
-     *          | ! isWritable() 
+     *          | !isWritable() 
      */
     public void changeName(String name) throws IllegalStateException, ObjectNotWritableException {
     	if (isTerminated()) throw new IllegalStateException("This file system object is terminated.");
         if (isWritable()) {
-            if (isValidName(name) && !getParentDirectory().exists(name) && name!=getName()
-            	&& (isRoot() || getParentDirectory().isWritable()) ){
+            if (isValidName(name) 
+              && !getParentDirectory().exists(name) 
+              && !name.equalsIgnoreCase(getName())
+              && (isRoot() || getParentDirectory().isWritable()) ) {
             	
             	setName(name);
             	getParentDirectory().orderDirectory(this);

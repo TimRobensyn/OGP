@@ -349,9 +349,9 @@ public class Directory extends FileSystemObject {
 		return bool;
 	}
 	
+
 	/**
-	 * Add an file system object to the contents of this directory with no change of modification time 
-	 * for this directory.
+	 * Add an file system object to the contents of this directory.
 	 * 
 	 * @param  obj
 	 *         The file system object that will be added to the content items of this directory.
@@ -363,12 +363,14 @@ public class Directory extends FileSystemObject {
 	 *         file system object, are registered as content item at one index higher.
 	 *         | for each I in new.getIndexOf(obj)..getNbItems():
 	 *         |   (new.getItemAt(I+1) == getItemAt(I))
+	 * @effect The modification time of this directory is updated.
+	 *         | setModificationTime()
 	 * @throws IllegalArgumentException
 	 *         This directory already has this file system object as one of its content items or 
 	 *         it cannot have the given file system object as content item.
 	 *         | (hasAsItem(obj) || !canHaveAsItem(obj))
-	 */         
-	protected void addAsItemNoModification(FileSystemObject obj) throws IllegalArgumentException {
+	 */
+	public void addAsItem(FileSystemObject obj) throws IllegalArgumentException {
 		if (hasAsItem(obj) || !canHaveAsItem(obj) )
 			throw new IllegalArgumentException("Cannot add the given file system object to this directory");	
 				
@@ -380,20 +382,6 @@ public class Directory extends FileSystemObject {
 			else break;
 		}
 		addItemAt(obj,pos);
-	}
-	
-	/**
-	 * Add an file system object to the contents of this directory
-	 * 
-	 * @param  obj
-	 *         The file system object that will be added to the content items of this directory.
-	 * @effect This file system object is firstly added to this directory with no change in modification time.
-	 *         | addAsItemNoModification(obj)
-	 * @effect The modification time of this directory is updated.
-	 *         | setModificationTime()
-	 */
-	public void addAsItem(FileSystemObject obj) {
-		addAsItemNoModification(obj);
 		setModificationTime();
 	}
 	
@@ -487,6 +475,37 @@ public class Directory extends FileSystemObject {
 	
 	
 	/**
+	 * Orders a directory such that the names of its file system objects are alphabetically ordered 
+	 * after one objects name has been changed. 
+	 * 
+	 * @param  changedObj
+	 *         The object of which the name has changed.
+	 * @post   The content list of this directory is properly ordered.
+	 *         | hasProperItems()
+	 * @effect The changed object is first removed from the content list,
+	 *         | removeItemAt(getIndexOf(changedObj))
+	 *         then a new proper index is searched at which the object is inserted 
+	 *         in the content list.
+	 *         | addItemAt(changedObj,newIndex)
+	 * @note   Errors are caught by the underlying used methods, removeItemAt and addItemAt. 
+	 */
+	protected void orderDirectory(FileSystemObject changedObj) {
+		int index = getIndexOf(changedObj);
+		removeItemAt(index);
+		
+		int size = this.getNbItems();
+		int pos = 1;
+		while (pos <= size) {
+			if (changedObj.isLexicographicallyAfter(getItemAt(pos)))
+				pos++;
+			else break;
+		}
+		
+		addItemAt(changedObj,pos);
+	}
+	
+	
+	/**
 	 * Checks whether this directory is a direct or indirect subdirectory of the given directory.
 	 * 
 	 * @param dir
@@ -512,24 +531,7 @@ public class Directory extends FileSystemObject {
 		} while (parent != null);
 		return bool;
 	}
-	
-	
-	protected void orderDirectory(FileSystemObject changedObj) {
-		int index = getIndexOf(changedObj);
-		removeItemAt(index);
 		
-		int size = this.getNbItems();
-		int pos = 1;
-		while (pos <= size) {
-			if (changedObj.isLexicographicallyAfter(getItemAt(pos)))
-				pos++;
-			else break;
-		}
-		addItemAt(changedObj,pos);
-		
-		
-	}
-	
 	
 	/**********************************************************
      * Termination
