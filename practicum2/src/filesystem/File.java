@@ -240,13 +240,18 @@ public class File extends FileSystemObject {
      *         | setSize(getSize()+delta)
      * @effect The modification time is updated.
      *         | setModificationTime()
+     * @throws IllegalStateException
+     *         This file is terminated.
+     *         | isTerminated()
      * @throws ObjectNotWritableException(this)
      *         This file is not writable.
      *         | ! isWritable()
      */
     @Model 
-    private void changeSize(int delta) throws ObjectNotWritableException{
-        if (isWritable()) {
+    private void changeSize(int delta) throws IllegalStateException, ObjectNotWritableException{
+        if (isTerminated())
+        	throw new IllegalStateException("This file is terminated.");    	
+    	if (isWritable()) {
             setSize(getSize()+delta);
             setModificationTime();            
         }else{

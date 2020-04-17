@@ -222,16 +222,10 @@ public class Directory extends FileSystemObject {
 	 *         If the object is not in this directory, then true if and only if inserting this object
 	 *         in the list would not result in an unordered list.
 	 *         | else if (hasAsItem(obj))
-	 *         |   then result == (index==1 && getItemAt(index+1).isLexicographicallyAfter(obj))
-	 *		   |	   			  || (index==getNbItems() && 
-	 *		   |                       getItemAt(index-1).isLexicographicallyBefore(obj))
-	 *		   |	   			  || (getItemAt(index-1).isLexicographicallyBefore(obj) && 
-	 *		   |					  getItemAt(index+1).isLexicographicallyAfter(obj))
-	 *		   |   else result == (index==1 && getItemAt(index).isLexicographicallyAfter(obj))
-	 *		   |	   			  || (index==getNbItems()+1 && 
-	 *		   |                      getItemAt(index-1).isLexicographicallyBefore(obj))
-	 *		   |	              || (getItemAt(index-1).isLexicographicallyBefore(obj) && 
-	 *		   |                      getItemAt(index).isLexicographicallyAfter(obj));
+	 *         |   then result == (index == 1 ||  getItemAt(index-1).isLexicographicallyBefore(obj))
+			   |	              && (index == getNbItems() || getItemAt(index+1).isLexicographicallyAfter(obj)) )
+	 *		   |   else result == (index == 1 ||  getItemAt(index-1).isLexicographicallyBefore(obj))
+			   |	              && (index == getNbItems() || getItemAt(index+1).isLexicographicallyAfter(obj)) )
 	 */
 	@Raw
 	public boolean canHaveAsItemAt(FileSystemObject obj, int index) {
@@ -241,14 +235,12 @@ public class Directory extends FileSystemObject {
 			return false;
 		
 		if (hasAsItem(obj)) {
-			return (index==1 && getItemAt(index+1).isLexicographicallyAfter(obj))
-				   || (index==getNbItems() && getItemAt(index-1).isLexicographicallyBefore(obj))
-				   || (getItemAt(index-1).isLexicographicallyBefore(obj) && getItemAt(index+1).isLexicographicallyAfter(obj));
+			return (index == 1 ||  getItemAt(index-1).isLexicographicallyBefore(obj))
+					&& (index == getNbItems() || getItemAt(index+1).isLexicographicallyAfter(obj));
 		}
 		else {
-			return (index==1 && getItemAt(index).isLexicographicallyAfter(obj))
-				   || (index==getNbItems()+1 && getItemAt(index-1).isLexicographicallyBefore(obj))
-				   || (getItemAt(index-1).isLexicographicallyBefore(obj) && getItemAt(index).isLexicographicallyAfter(obj));
+			return (index == 1 ||  getItemAt(index-1).isLexicographicallyBefore(obj))
+					&& (index == getNbItems() + 1 || getItemAt(index).isLexicographicallyAfter(obj));
 		}
 	}
 	
@@ -339,8 +331,8 @@ public class Directory extends FileSystemObject {
 	 */
 	public boolean exists(String name) {
 		boolean bool = false;
-		int index = 0;
-		while((index != getNbItems())&&(bool == false)) {
+		int index = 1;
+		while((index <= getNbItems())&&(bool == false)) {
 			if(getItemAt(index).getName().equalsIgnoreCase(name)) {
 				bool = true;
 			}

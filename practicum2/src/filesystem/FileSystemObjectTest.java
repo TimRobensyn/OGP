@@ -6,7 +6,8 @@ import java.util.Date;
 import org.junit.*;
 
 /**
- * A JUnit test class for testing the public methods of the File Class  
+ * A JUnit test class for testing the public methods of the File Class 
+ *  
  * @author Tim Lauwers, Robbe Van Biervliet, Rim Robensyn
  *
  */
@@ -31,7 +32,7 @@ public class FileSystemObjectTest {
 	Date timeBeforeConstructionNotWritable, timeAfterConstructionNotWritable;
 	
 	@Before
-	public void setUpFixture(){
+	public void setUpMutableFixture(){
 		timeBeforeConstruction = new Date();
 		directoryStringBoolean = new Directory("directoryStringBoolean", true);
 		directoryString = new Directory("directoryString");
@@ -106,7 +107,9 @@ public class FileSystemObjectTest {
 		assertEquals("directoryStringBoolean",directoryStringBoolean.getName());
 		assertTrue(directoryStringBoolean.isWritable());
 		
-		assertNull(directoryStringBoolean.getModificationTime());
+		assertNotNull(directoryStringBoolean.getModificationTime()); 
+		// Er is een map toegevoegd aan directoryStringBoolean in de setup dus de modification time
+		// is geüpdatet.
 		assertFalse(timeBeforeConstruction.after(directoryStringBoolean.getCreationTime()));
 		assertFalse(directoryStringBoolean.getCreationTime().after(timeAfterConstruction));
 	}
@@ -130,7 +133,9 @@ public class FileSystemObjectTest {
 		assertEquals("directoryString",directoryString.getName());
 		assertTrue(directoryString.isWritable());
 		
-		assertNull(directoryString.getModificationTime());
+		assertNotNull(directoryString.getModificationTime());
+		// Er is een map toegevoegd aan directoryString in de setup dus de modification time
+		// is geüpdatet.
 		assertFalse(timeBeforeConstruction.after(directoryString.getCreationTime()));
 		assertFalse(directoryString.getCreationTime().after(timeAfterConstruction));
 	}
@@ -138,14 +143,18 @@ public class FileSystemObjectTest {
 	@Test
 	public void testDirectoryString_IllegalCase() {
 		timeBeforeConstruction = new Date();
-		directoryDirStringBoolean = new Directory("$IllegalName$");
+		Directory directoryStringIC = new Directory("$IllegalName$");
 		timeAfterConstruction = new Date();
-		assertTrue(directoryString.isRoot());
-		assertTrue(Directory.isValidName(directoryString.getName()));
-		assertTrue(directoryString.isWritable());
-		assertNull(directoryString.getModificationTime());
-		assertFalse(timeBeforeConstruction.after(directoryString.getCreationTime()));
-		assertFalse(directoryString.getCreationTime().after(timeAfterConstruction));
+		
+		assertTrue(directoryStringIC.isRoot());
+		assertNotEquals(directoryStringIC.getName(), "$IllegalName$");
+		assertTrue(directoryStringIC.isWritable());
+		assertNull(directoryStringIC.getModificationTime());
+		
+	
+		
+		assertFalse(timeBeforeConstruction.after(directoryStringIC.getCreationTime()));
+		assertFalse(directoryStringIC.getCreationTime().after(timeAfterConstruction));
 	}
 	
 	@Test
@@ -294,14 +303,14 @@ public class FileSystemObjectTest {
 		fileTerminated.terminate();
 		fileTerminated.changeName("NewLegalName");
 		
-	}
+	} 
 	
 	@Test
 	public void testChangeName_IllegalName() {
 		fileStringFileType.changeName("$IllegalName$");
-		assertEquals("new_object",fileStringFileType.getName());
+		assertEquals("fileStringFileType",fileStringFileType.getName());
 		assertNull(fileStringFileType.getModificationTime());
-	}
+	} 
 
 	@Test
 	public void testIsValidSize_LegalCase() {
@@ -349,7 +358,7 @@ public class FileSystemObjectTest {
 		assertNotNull(fileStringIntBooleanFileType.getModificationTime());
 		assertFalse(fileStringIntBooleanFileType.getModificationTime().before(timeAfterConstruction));
 		assertFalse(timeAfterShorten.before(fileStringIntBooleanFileType.getModificationTime()));
-	}
+	} 
 	
 	@Test (expected = ObjectNotWritableException.class)
 	public void testShorten_FileNotWritable() {

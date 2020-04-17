@@ -169,12 +169,13 @@ public abstract class FileSystemObject {
     	if (isTerminated()) throw new IllegalStateException("This file system object is terminated.");
         if (isWritable()) {
             if (isValidName(name) 
-              && !getParentDirectory().exists(name) 
+              && (isRoot() || !getParentDirectory().exists(name))
               && !name.equalsIgnoreCase(getName())
               && (isRoot() || getParentDirectory().isWritable()) ) {
             	
             	setName(name);
-            	getParentDirectory().orderDirectory(this);
+            	if (!isRoot())
+            		getParentDirectory().orderDirectory(this);
                 setModificationTime();
 
             }
@@ -403,9 +404,9 @@ public abstract class FileSystemObject {
      */
     @Raw
     private void setParentDirectory(Directory dir) {
-    	dir.addAsItem(this);
+    	this.dir = dir;
     	if (dir != null)
-    		this.dir = dir;
+    		dir.addAsItem(this);
     }
     
     /**
@@ -490,7 +491,7 @@ public abstract class FileSystemObject {
      * @return A boolean indicating whether this file system object is a root object or not.
      */
     public boolean isRoot() {
-    	return getRoot() == null;
+    	return getParentDirectory()==null;
     }
     
     
@@ -515,8 +516,9 @@ public abstract class FileSystemObject {
     /**
      * Terminate this file system object.
      * 
-     * @post   This file system object will be terminated.
-     *         | this.isTerminated = true
+     * @post   If this file system object is not yet terminated, it will be.
+     *         | if !isTerminated()
+     *         |   then this.isTerminated = true
      * @effect If this file system object is not yet terminated and it is not a root,
      *         it becomes a root object.
      *         | if !isTerminated() && !isRoot()
@@ -536,8 +538,9 @@ public abstract class FileSystemObject {
     		
     		if (!isRoot()) {
     			makeRoot();
-    			this.isTerminated = true;
-    		}   		
+    		}   
+    		
+    		this.isTerminated = true;
     	}
     }
     
