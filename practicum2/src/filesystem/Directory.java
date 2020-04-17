@@ -341,7 +341,7 @@ public class Directory extends FileSystemObject {
 		boolean bool = false;
 		int index = 0;
 		while((index != getNbItems())&&(bool == false)) {
-			if(getItemAt(index).getName() == name) {
+			if(getItemAt(index).getName().equalsIgnoreCase(name)) {
 				bool = true;
 			}
 			index++;
@@ -349,10 +349,9 @@ public class Directory extends FileSystemObject {
 		return bool;
 	}
 	
-	
-	
 	/**
-	 * Add an file system object to the contents of this directory
+	 * Add an file system object to the contents of this directory with no change of modification time 
+	 * for this directory.
 	 * 
 	 * @param  obj
 	 *         The file system object that will be added to the content items of this directory.
@@ -364,14 +363,12 @@ public class Directory extends FileSystemObject {
 	 *         file system object, are registered as content item at one index higher.
 	 *         | for each I in new.getIndexOf(obj)..getNbItems():
 	 *         |   (new.getItemAt(I+1) == getItemAt(I))
-	 * @effect The modification time of this directory is updated.
-	 *         | setModificationTime()
 	 * @throws IllegalArgumentException
 	 *         This directory already has this file system object as one of its content items or 
 	 *         it cannot have the given file system object as content item.
 	 *         | (hasAsItem(obj) || !canHaveAsItem(obj))
-	 */
-	public void addAsItem(FileSystemObject obj) throws IllegalArgumentException {
+	 */         
+	protected void addAsItemNoModification(FileSystemObject obj) throws IllegalArgumentException {
 		if (hasAsItem(obj) || !canHaveAsItem(obj) )
 			throw new IllegalArgumentException("Cannot add the given file system object to this directory");	
 				
@@ -383,6 +380,20 @@ public class Directory extends FileSystemObject {
 			else break;
 		}
 		addItemAt(obj,pos);
+	}
+	
+	/**
+	 * Add an file system object to the contents of this directory
+	 * 
+	 * @param  obj
+	 *         The file system object that will be added to the content items of this directory.
+	 * @effect This file system object is firstly added to this directory with no change in modification time.
+	 *         | addAsItemNoModification(obj)
+	 * @effect The modification time of this directory is updated.
+	 *         | setModificationTime()
+	 */
+	public void addAsItem(FileSystemObject obj) {
+		addAsItemNoModification(obj);
 		setModificationTime();
 	}
 	
@@ -466,14 +477,13 @@ public class Directory extends FileSystemObject {
 	 *         | ! isWritable()
 	 */
 	private void removeItemAt(int index) throws IndexOutOfBoundsException, ObjectNotWritableException {
-		if (index<1 || index> getNbItems())
+		if (index<1 || index>getNbItems())
 			throw new IndexOutOfBoundsException();
 		if(! isWritable()) {
 			throw new ObjectNotWritableException(this);
 		}
 		contents.remove(index-1);
 	}
-	
 	
 	
 	/**
@@ -502,6 +512,28 @@ public class Directory extends FileSystemObject {
 		} while (parent != null);
 		return bool;
 	}
+	
+	
+	protected void orderDirectory(FileSystemObject changedObj) {
+		int index = getIndexOf(changedObj);
+		removeItemAt(index);
+		
+		int size = this.getNbItems();
+		int pos = 1;
+		while (pos <= size) {
+			if (changedObj.isLexicographicallyAfter(getItemAt(pos)))
+				pos++;
+			else break;
+		}
+		addItemAt(changedObj,pos);
+		
+		
+	}
+	
+	
+	/**********************************************************
+     * Termination
+     **********************************************************/
 	
 	/**
 	 * Terminate this directory.

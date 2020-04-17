@@ -148,23 +148,29 @@ public abstract class FileSystemObject {
      * 			| if ( isValidName(name) && isWritable()
      *          |   && (isRoot() || getParentDirectory().isWritable()) )
      *          | then setName(name)
-     * @effect  If the name is valid, the file system object is writable and the file system object
-     *          is a root or its parent directory is writable, the modification time 
-     * 			of this file system object is updated.
-     *          | if ( isValidName(name) && isWritable()
+     * @effect  If the name is valid, the file system object is writable, its parent directory has no other
+     *          file system object with the same name (ignoring case) and the file system object is a root or 
+     *          its parent directory is writable, the modification time of this file system object is updated.
+     *          | if ( isValidName(name) && isWritable() && !getParentDirectory().exists(name)
      *          |   && (isRoot() || getParentDirectory().isWritable()) )
      *          | then setModificationTime()
+     * @throws  IllegalStateException
+     *          This file systemobject is terminated.
+     *          | isTerminated()
      * @throws  ObjectNotWritableException(this)
-     *          This file is not writable
+     *          This file system object is not writable.
      *          | ! isWritable() 
      */
-    public void changeName(String name) throws ObjectNotWritableException {
+    public void changeName(String name) throws IllegalStateException, ObjectNotWritableException {
+    	if (isTerminated()) throw new IllegalStateException("This file system object is terminated.");
         if (isWritable()) {
-            if (isValidName(name) && (isRoot() || getParentDirectory().isWritable()) ){
-            	getParentDirectory().removeAsItem(this);
+            if (isValidName(name) && !getParentDirectory().exists(name) && name!=getName()
+            	&& (isRoot() || getParentDirectory().isWritable()) ){
+            	
             	setName(name);
+            	getParentDirectory().orderDirectory(this);
                 setModificationTime();
-                getParentDirectory().addAsItem(this);
+
             }
         } else {
             throw new ObjectNotWritableException(this);
