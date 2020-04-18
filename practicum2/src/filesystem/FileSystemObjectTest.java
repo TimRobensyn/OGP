@@ -540,7 +540,6 @@ public class FileSystemObjectTest {
 		fileDirStringFileType.move(directoryNotWritable);
 	}
 	
-	
 	@Test
 	public void testGetRoot() {
 		File file = new File(directoryDirString,"new_file",100,true,FileType.Java);
@@ -560,6 +559,85 @@ public class FileSystemObjectTest {
 		directoryTerminated.terminate();
 	}
 	
+	@Test
+	public void testGetItem() {
+		assertEquals(directoryStringBoolean.getItem("directoryDirStringBoolean"), directoryDirStringBoolean);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testGetItem_ItemNotInDirectory() {
+		directoryStringBoolean.getItem("InvalidItem");
+	}
+	
+	@Test
+	public void testCanHaveAsItem_LegalCase() {
+		fileTerminated.terminate();
+		directoryTerminated.terminate();
+		
+		assertTrue(directoryString.canHaveAsItem(fileStringFileType));
+		assertTrue(directoryString.canHaveAsItem(fileDirStringFileType));
+	}
+
+	@Test
+	public void testCanHaveAsItem_IllegalCase() {
+		assertFalse(directoryString.canHaveAsItem(null));
+		assertFalse(directoryString.canHaveAsItem(directoryString));
+		assertFalse(directoryString.canHaveAsItem(fileNotWritable));
+		assertFalse(directoryString.canHaveAsItem(fileTerminated));
+		assertFalse(directoryTerminated.canHaveAsItem(fileStringFileType));
+	}
+	
+	@Test
+	public void testCanHaveAsItemAt_LegalCase() {
+		File new_file;
+		new_file = new File("new_file", 100, true, FileType.Java);
+		
+		assertTrue(directoryDirString.canHaveAsItemAt(new_file, 1));
+		assertTrue(directoryString.canHaveAsItemAt(new_file, 2));
+		
+		directoryString.addAsItem(new_file);
+		
+		assertTrue(directoryString.canHaveAsItemAt(fileStringFileType,2));
+		assertTrue(directoryString.canHaveAsItemAt(new_file, 2));
+		assertTrue(directoryString.canHaveAsItemAt(fileDirStringFileType, 1));
+	}
+	
+	@Test
+	public void testCanHaveAsItemAt_IllegalCase() {
+		assertFalse(directoryStringBoolean.canHaveAsItemAt(fileStringFileType, -1));
+		assertFalse(directoryStringBoolean.canHaveAsItemAt(fileStringFileType, 10));
+	}
+	
+	@Test
+	public void testHasProperItems() {
+		assertTrue(directoryString.hasProperItems());
+	}
+	
+	@Test
+	public void testGetIndexOf() {
+		File new_file;
+		new_file = new File(directoryString, "new_file", 100, true, FileType.Java);
+		
+		assertEquals(1, directoryString.getIndexOf(fileDirStringFileType));
+		assertEquals(2, directoryString.getIndexOf(new_file));
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testGetIndexOf_FileNotInDirectory() {
+		directoryString.getIndexOf(fileStringFileType);
+	}
+	
+	@Test
+	public void testHasAsItem() {
+		assertTrue(directoryString.hasAsItem(fileDirStringFileType));
+		assertFalse(directoryString.hasAsItem(fileStringFileType));
+	}
+	
+	@Test
+	public void testExists() {
+		assertTrue(directoryString.exists("fileDirStringFileType"));
+		assertFalse(directoryString.exists("InvalidFile"));
+	}
 	
 	private void sleep() {
         try {
