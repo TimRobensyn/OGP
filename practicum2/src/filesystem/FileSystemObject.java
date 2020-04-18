@@ -6,12 +6,14 @@ import java.util.Date;
 /**
  * An abstract class of file system objects.
  * 
- * @invar    Each disk item must have a properly spelled name.
- * 		   | isValidName(getName())
- * @invar    Each disk item must have a valid creation time.
- *         | isValidCreationTime(getCreationTime())
- * @invar    Each disk item must have a valid modification time.
- *         | canHaveAsModificationTime(getModificationTime())
+ * @invar    Each file system object must have a valid name.
+ * 		     | isValidName(getName())
+ * @invar    Each file system object must have a valid creation time.
+ *           | isValidCreationTime(getCreationTime())
+ * @invar    Each file system object must have a valid modification time.
+ *           | canHaveAsModificationTime(getModificationTime())
+ * @invar    Each file system object must have a valid parent directory.
+ *           | canHaveAsParentDirectory(getParentDirectory())
  * 
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  * @version 1.0
@@ -215,7 +217,7 @@ public abstract class FileSystemObject {
      *         |          && isValidName(obj.getName())
      *         |          && (getName().compareToIgnoreCase(obj.getName()) > 0)         
      */
-    public boolean isLexicographicallyAfter(FileSystemObject obj) {
+    public boolean isLexicographicallyAfter(@Raw FileSystemObject obj) {
     	return obj!=null && isValidName(obj.getName())
      		   && getName().compareToIgnoreCase(obj.getName()) > 0;
     }
@@ -288,6 +290,7 @@ public abstract class FileSystemObject {
      *         | ( (date.getTime() >= getCreationTime().getTime()) &&
      *         |   (date.getTime() <= System.currentTimeMillis())     )
      */
+    @Raw
     public boolean canHaveAsModificationTime(Date date) {
         return (date == null) ||
                ( (date.getTime() >= getCreationTime().getTime()) &&
@@ -395,6 +398,25 @@ public abstract class FileSystemObject {
     }
     
     /**
+     * Check whether this file system object can have this directory as its parent directory.
+     * 
+     * @param  dir
+     *         The directory to check.
+     * @return True if and only if the given directory is null and this file system object is a root object,
+     *         or if the given directory has this file system object as a content item and it can have this
+     *         file system object as a content item at the position it is at.
+     *         | result == ( (dir==null && isRoot())
+     *         |          || (dir.canHaveAsItemAt(this,dir.getIndexOf(this)) 
+    		   |             && dir.hasAsItem(this)) )
+     */
+    @Raw 
+	public boolean canHaveAsParentDirectory(Directory dir) {
+    	return ( (dir==null && isRoot()) ||
+    			 ( dir.canHaveAsItemAt(this,dir.getIndexOf(this)) 
+    			  && dir.hasAsItem(this) ) );
+    }
+    
+    /**
      * Set the directory of this filesystem object to the given directory.
      * 
      * @param  dir
@@ -490,6 +512,7 @@ public abstract class FileSystemObject {
      * 
      * @return A boolean indicating whether this file system object is a root object or not.
      */
+    
     public boolean isRoot() {
     	return getParentDirectory()==null;
     }

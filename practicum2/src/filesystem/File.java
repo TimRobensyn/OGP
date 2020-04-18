@@ -118,7 +118,7 @@ public class File extends FileSystemObject {
 	}
 	
 	/**
-	 * Check whether this type is a valid file type for any file.
+	 * Check whether this type is a valid file type for all files.
 	 * 
 	 * @param  type
 	 *         The file type to check.
@@ -127,7 +127,7 @@ public class File extends FileSystemObject {
 	 *       |   (type != null)
 	 */
 	@Raw
-	public boolean isValidType(FileType type) {
+	public static boolean isValidType(FileType type) {
 		return type != null;
 	}
 	

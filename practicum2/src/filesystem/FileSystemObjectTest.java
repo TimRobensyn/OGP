@@ -6,9 +6,10 @@ import java.util.Date;
 import org.junit.*;
 
 /**
- * A JUnit test class for testing the public methods of the File Class 
+ * A JUnit test class for testing the public methods of the File Class.
  *  
- * @author Tim Lauwers, Robbe Van Biervliet, Rim Robensyn
+ * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
+ * @version 1.0
  *
  */
 public class FileSystemObjectTest {
@@ -712,6 +713,7 @@ public class FileSystemObjectTest {
 		assertFalse(dir.isDirectOrIndirectSubdirectoryOf(dirdirdir));
 		assertFalse(dirdir.isDirectOrIndirectSubdirectoryOf(directoryNotWritable));
 	}
+	
 	private void sleep() {
         try {
             Thread.sleep(50);
