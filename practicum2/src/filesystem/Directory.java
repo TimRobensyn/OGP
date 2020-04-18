@@ -141,10 +141,10 @@ public class Directory extends FileSystemObject {
 			throw new IllegalArgumentException("This directory does not contain an object with the given name.");
 		} else {
 			FileSystemObject item = null;
-			int R = this.getNbItems()-1;
-			int L = 0;
-			while(L<= R) {
-				int mid = (int) Math.floor((R+L)/2);
+			int R = getNbItems();
+			int L = 1;
+			while(L <= R) {
+				int mid =  (int) Math.floor((R+L)/2);
 				String objName = this.getItemAt(mid).getName();
 				if(name.compareToIgnoreCase(objName) > 0) {
 					L = mid+1;
@@ -152,6 +152,7 @@ public class Directory extends FileSystemObject {
 					R = mid-1;
 				} else {
 					item = this.getItemAt(mid);
+					break;
 				}
 			}
 			return item;
@@ -545,5 +546,16 @@ public class Directory extends FileSystemObject {
 			throw new IllegalStateException("This directory is not empty.");
 		
 		super.terminate();
+	}
+	
+	
+	
+	
+	public void printList() {
+		for (int i=1; i<=getNbItems(); i++) {
+			System.out.print(i);
+			System.out.print(" ");
+			System.out.println(getItemAt(i).getName());
+		}
 	}
 }

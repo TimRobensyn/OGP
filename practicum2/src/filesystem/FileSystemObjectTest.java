@@ -555,6 +555,7 @@ public class FileSystemObjectTest {
 	
 	@Test (expected = IllegalStateException.class)
 	public void testTerminate_IllegalCase() {
+		@SuppressWarnings("unused")
 		File fileInDirectoryTerminated = new File(directoryTerminated ,"fileInDirectoryTerminated", FileType.Java);
 		directoryTerminated.terminate();
 	}
@@ -564,7 +565,7 @@ public class FileSystemObjectTest {
 		assertEquals(directoryStringBoolean.getItem("directoryDirStringBoolean"), directoryDirStringBoolean);
 	}
 	
-	@Test (expected = IllegalArgumentException.class)
+    @Test (expected = IllegalArgumentException.class)
 	public void testGetItem_ItemNotInDirectory() {
 		directoryStringBoolean.getItem("InvalidItem");
 	}
@@ -576,14 +577,17 @@ public class FileSystemObjectTest {
 		
 		assertTrue(directoryString.canHaveAsItem(fileStringFileType));
 		assertTrue(directoryString.canHaveAsItem(fileDirStringFileType));
-	}
+	} 
 
 	@Test
 	public void testCanHaveAsItem_IllegalCase() {
 		assertFalse(directoryString.canHaveAsItem(null));
 		assertFalse(directoryString.canHaveAsItem(directoryString));
-		assertFalse(directoryString.canHaveAsItem(fileNotWritable));
+		assertFalse(directoryNotWritable.canHaveAsItem(fileStringFileType));
+		
+		fileTerminated.terminate();
 		assertFalse(directoryString.canHaveAsItem(fileTerminated));
+		directoryTerminated.terminate();
 		assertFalse(directoryTerminated.canHaveAsItem(fileStringFileType));
 	}
 	
@@ -593,14 +597,18 @@ public class FileSystemObjectTest {
 		new_file = new File("new_file", 100, true, FileType.Java);
 		
 		assertTrue(directoryDirString.canHaveAsItemAt(new_file, 1));
-		assertTrue(directoryString.canHaveAsItemAt(new_file, 2));
+		assertTrue(directoryString.canHaveAsItemAt(new_file, 3));
 		
 		directoryString.addAsItem(new_file);
+		// Current file system objects in directoryString (by name):
+		// - directoryDirString
+		// - fileDirStringFileType
+		// - new_file
 		
-		assertTrue(directoryString.canHaveAsItemAt(fileStringFileType,2));
-		assertTrue(directoryString.canHaveAsItemAt(new_file, 2));
-		assertTrue(directoryString.canHaveAsItemAt(fileDirStringFileType, 1));
-	}
+		assertTrue(directoryString.canHaveAsItemAt(fileStringFileType,3));
+		assertTrue(directoryString.canHaveAsItemAt(new_file, 3));
+		assertTrue(directoryString.canHaveAsItemAt(fileDirStringFileType, 2));
+	} 
 	
 	@Test
 	public void testCanHaveAsItemAt_IllegalCase() {
@@ -618,8 +626,8 @@ public class FileSystemObjectTest {
 		File new_file;
 		new_file = new File(directoryString, "new_file", 100, true, FileType.Java);
 		
-		assertEquals(1, directoryString.getIndexOf(fileDirStringFileType));
-		assertEquals(2, directoryString.getIndexOf(new_file));
+		assertEquals(2, directoryString.getIndexOf(fileDirStringFileType));
+		assertEquals(3, directoryString.getIndexOf(new_file));
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
