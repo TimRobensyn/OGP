@@ -8,7 +8,7 @@ import be.kuleuven.cs.som.annotate.*;
  * 
  * @invar   The extension of each file type must be a valid extension
  *          for any file type.
- *        | isValidExtension(getExtension())
+ *          | isValidExtension(getExtension())
  * 
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  * @version 1.0
@@ -26,7 +26,7 @@ public enum FileType {
 	 * @param extension
 	 *        The extension for this new file type.
 	 * @post  The extension for this new file type is equal to the given extension.
-	 *      | new.getExtension() == extension
+	 *        | new.getExtension() == extension
 	 */
 	@Raw
 	private FileType(String extension) {
@@ -53,9 +53,9 @@ public enum FileType {
 	 * 		   The extension to check.
 	 * @return True if and only if the given extension is effective,
 	 *         not empty and only consists of lower case letters.
-	 *       | result ==
-	 *       |    ( extension != null
-	 *       |   && extension.matches("a-z") )
+	 *         | result ==
+	 *         |    ( extension != null
+	 *         |   && extension.matches("a-z") )
 	 */
 	public static boolean isValidExtension(String extension) {
 		return extension!=null && extension.matches("[a-z]+");
