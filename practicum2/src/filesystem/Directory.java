@@ -430,7 +430,7 @@ public class Directory extends FileSystemObject {
 	 */
 	public void removeAsItem(FileSystemObject obj) throws IllegalArgumentException {
 		if (!hasAsItem(obj))
-			throw new IllegalArgumentException("This file system object is not a content item of this directory.");
+			throw new IllegalArgumentException("This file system object is not an item of this directory.");
 		removeItemAt(getIndexOf(obj));
 		setModificationTime();
 	}
@@ -513,16 +513,14 @@ public class Directory extends FileSystemObject {
 	 */
 	public boolean isDirectOrIndirectSubdirectoryOf(Directory dir) {
 		Directory parent = this.getParentDirectory();
-		boolean bool = false;
-		do {
-			if(parent==dir) {
-				bool = true;
-				parent = null;
+		while (parent != null) {
+			if (parent == dir) {
+				return true;
 			} else {
 				parent = parent.getParentDirectory();
 			}
-		} while (parent != null);
-		return bool;
+		}
+		return false;
 	}
 		
 	

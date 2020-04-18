@@ -17,6 +17,9 @@ public class FileSystemObjectTest {
 	Directory directoryDirString;
 	Directory directoryStringBoolean;
 	Directory directoryString;
+	Directory dir;
+	Directory dirdir;
+	Directory dirdirdir;
 	
 	File fileDirStringIntBooleanFileType;
 	File fileDirStringFileType;
@@ -38,6 +41,9 @@ public class FileSystemObjectTest {
 		directoryString = new Directory("directoryString");
 		directoryDirStringBoolean = new Directory(directoryStringBoolean, "directoryDirStringBoolean", true);
 		directoryDirString = new Directory(directoryString, "directoryDirString");
+		dir = new Directory("dir");
+		dirdir = new Directory(dir, "dirdir");
+		dirdirdir = new Directory(dirdir, "dirdirdir");
 		
 		fileDirStringIntBooleanFileType = new File(directoryStringBoolean, "fileDirStringIntBooleanFileType", 100, true, FileType.Text);
 		fileDirStringFileType = new File(directoryString, "fileDirStringFileType", FileType.Pdf);
@@ -311,6 +317,25 @@ public class FileSystemObjectTest {
 		assertEquals("fileStringFileType",fileStringFileType.getName());
 		assertNull(fileStringFileType.getModificationTime());
 	} 
+	
+	@Test
+	public void testChangeName_TestFileOrder() {
+		Directory directory = new Directory("Directory");
+		File fileA = new File(directory,"A", FileType.Java);
+		File fileB = new File(directory,"B", FileType.Java);
+		File fileC = new File(directory,"C", FileType.Java);
+		assertEquals(1,directory.getIndexOf(fileA));
+		assertEquals(2,directory.getIndexOf(fileB));
+		assertEquals(3,directory.getIndexOf(fileC));
+		fileB.changeName("D");
+		assertEquals(1,directory.getIndexOf(fileA));
+		assertEquals(2,directory.getIndexOf(fileC));
+		assertEquals(3,directory.getIndexOf(fileB));
+		fileA.terminate();
+		fileB.terminate();
+		fileC.terminate();
+		directory.terminate();
+	}
 
 	@Test
 	public void testIsValidSize_LegalCase() {
@@ -647,6 +672,46 @@ public class FileSystemObjectTest {
 		assertFalse(directoryString.exists("InvalidFile"));
 	}
 	
+	@Test
+	public void testAddAsItem_LegalCase() {
+		sleep(); // To ensure the modificationTime is different from timeAfterConstruction
+		directoryString.addAsItem(fileStringFileType);
+		assertEquals("fileStringFileType", directoryString.getItemAt(3).getName());
+		assertTrue(directoryString.getModificationTime().after(timeAfterConstruction));
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testAddAsItem_AlreadyHasItem() {
+		directoryString.addAsItem(fileDirStringFileType);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testAddAsItem_NotWritable() {
+		directoryNotWritable.addAsItem(fileStringFileType);
+	}
+	
+	@Test
+	public void testRemoveAsItem_LegalCase() {
+		directoryString.removeAsItem(fileDirStringFileType);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testRemoveAsItem_FileNotInDirectory() {
+		directoryString.removeAsItem(fileStringFileType);
+	}
+	
+	@Test (expected = ObjectNotWritableException.class)
+	public void testRemoveAsItem_DirectoryNotWritable() {
+		directoryString.setWritable(false);
+		directoryString.removeAsItem(fileDirStringFileType);
+	}
+	
+	@Test
+	public void testIsDirectOrIndirectSubdirectoryOf() {
+		assertTrue(dirdirdir.isDirectOrIndirectSubdirectoryOf(dir));
+		assertFalse(dir.isDirectOrIndirectSubdirectoryOf(dirdirdir));
+		assertFalse(dirdir.isDirectOrIndirectSubdirectoryOf(directoryNotWritable));
+	}
 	private void sleep() {
         try {
             Thread.sleep(50);

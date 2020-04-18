@@ -3,7 +3,7 @@ package filesystem;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * A class for signaling illegal attempts to change a file.
+ * A class for signalling illegal attempts to change a file.
  * 
  * @author 	Tommy Messelis
  * @version	2.1
