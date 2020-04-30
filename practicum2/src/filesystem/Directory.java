@@ -182,7 +182,7 @@ public class Directory extends FileSystemObject {
 	 *         |                    (obj.isRoot() || obj.getParentDirectory().isWritable()) )
 	 */
 	@Raw
-	public boolean canHaveAsItem(FileSystemObject obj) {
+	public boolean canHaveAsItem(@Raw FileSystemObject obj) {
 		if (obj == null || obj==this || !this.isWritable() 
 			|| obj.isTerminated() || this.isTerminated() )
 		    return false;
@@ -294,7 +294,7 @@ public class Directory extends FileSystemObject {
 	/**
 	 * Return the number of file system objects in this directory.
 	 */
-	@Basic
+	@Basic @Raw
 	public int getNbItems() {
 		return contents.size();
 	}
@@ -309,9 +309,10 @@ public class Directory extends FileSystemObject {
 	 *         exists with this directory as its parent directory.
 	 *         | result == 
 	 *         |    there exists an I such that
-	 *         |    (I>0) && (I<=getNbItems()) && getItemAt(I)==obj
+	 *         |    (I>0) && (I<=getNbItems()) && (getItemAt(I)==obj)
 	 */
-	public boolean hasAsItem(FileSystemObject obj) {
+	@Raw
+	public boolean hasAsItem(@Raw FileSystemObject obj) {
 		boolean bool = false;
 		int index = 1;
 		while((index <= this.getNbItems()) && (bool == false)) {
@@ -363,11 +364,12 @@ public class Directory extends FileSystemObject {
 	 *         it cannot have the given file system object as content item.
 	 *         | (hasAsItem(obj) || !canHaveAsItem(obj))
 	 */
-	public void addAsItem(FileSystemObject obj) throws IllegalArgumentException {
+	@Raw
+	public void addAsItem(@Raw FileSystemObject obj) throws IllegalArgumentException {
 		if (hasAsItem(obj) || !canHaveAsItem(obj) )
 			throw new IllegalArgumentException("Cannot add the given file system object to this directory");	
 				
-		int size = this.getNbItems();
+		int size = getNbItems();
 		int pos = 1;
 		while (pos <= size) {
 			if (obj.isLexicographicallyAfter(getItemAt(pos)))
@@ -401,7 +403,7 @@ public class Directory extends FileSystemObject {
 	 * 		   This directory is not writable
 	 *         | ! isWritable()
 	 */
-	private void addItemAt(FileSystemObject obj, int index) throws IllegalArgumentException, ObjectNotWritableException {
+	private void addItemAt(@Raw FileSystemObject obj, int index) throws IllegalArgumentException, ObjectNotWritableException {
 		if (!canHaveAsItemAt(obj,index))
 			throw new IllegalArgumentException("Invalid file system object for this index.");
 		if(! isWritable()) {
