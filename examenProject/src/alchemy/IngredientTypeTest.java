@@ -22,8 +22,11 @@ public class IngredientTypeTest {
 	*/
 	@Test
 	public void nameTest() {
-		assertTrue(IngredientType.isValidName("Rat Shit"));
-		assertFalse(IngredientType.isValidName("Rat Shit2"));
+		assertFalse(IngredientType.isValidSimpleName("Rat with Shit")); 	//has "with"
+		assertFalse(IngredientType.isValidSimpleName("Rat 2day Shit"));		//has illegal character "2"
+		assertFalse(IngredientType.isValidSimpleName("No"));				//Word length too short
+		assertFalse(IngredientType.isValidSimpleName("rat Shit"));		//has incorrect case
+		assertTrue(IngredientType.isValidSimpleName("Rat's Shit (Yeah Pretty Disgusting)"));
 	}
 
 }
