@@ -16,8 +16,10 @@ public class IngredientType {
 	 * CONSTRUCTOR(S)
 	 ********************************************************/
 	
-	public IngredientType(String name) {
-		this.simpleName = name;
+	public IngredientType(String name, State state, long[] standardTemperature) {
+		setSimpleName(name);
+		setState(state);
+		setStandardTemperature(standardTemperature);
 	}
 	
 	/********************************************************
@@ -57,9 +59,15 @@ public class IngredientType {
 		}
 		return valid;
 	}
+	
 	/*
 	 * A basic method for setting the simple name of this ingredient.
 	 */
+	private void setSimpleName(String newName) {
+		if (isValidSimpleName(newName))
+			this.simpleName = newName;
+	}
+	
 	/*
 	 * A string containing the name of this type of ingredient
 	 */
@@ -69,5 +77,62 @@ public class IngredientType {
 	 * A string containing the special characters that can be used in an ingredient's name.
 	 */
 	private final static String specialCharacters = "'()";
+	
+	/************************************************************************
+	 * STATE
+	 ************************************************************************/
+	
+	/*
+	 * A basic method returning the state of this ingredient type.
+	 * 
+	 * @returns	state
+	 */
+	@Basic @Raw
+	public State getState() {
+		return this.state;
+	}
+	
+	/*
+	 * A private method setting the state of this ingredient type.
+	 */
+	@Basic
+	private void setState(State newState) {
+		if (State.isValidState(newState))
+			this.state = newState;
+	}
+	/*
+	 * A variable referencing the state of this ingredient type.
+	 */
+	private State state;
+	
+	/************************************************************************
+	 * STANDARDTEMPERATURE
+	 ************************************************************************/
+	
+	/*
+	 * A basic method for getting the standardTemperature
+	 */
+	public long[] getStandardTemperature() {
+		return this.standardTemperature;
+	}
+	
+	/*
+	 * A private method for setting the standardTemperature
+	 */
+	private void setStandardTemperature(long[] temperature) {
+		//TODO
+	}
+	/*
+	 * A variable indicating coolness (I have very high values here myself)
+	 */
+	private long coolness;
+	/*
+	 * A variable indicating hotness (Unexpectedly, high values here too!)
+	 */
+	private long hotness;
+	/*
+	 * An array containing coolness and hotness, thus the standardtemperature of this ingredient type
+	 */
+	private long[] standardTemperature = {coolness, hotness};
 
 }

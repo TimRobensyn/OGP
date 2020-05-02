@@ -10,5 +10,15 @@ import be.kuleuven.cs.som.annotate.*;
  */
 
 public class AlchemicIngredient {
-
+	
+	/**************************************************
+	 * CONSTRUCTORS
+	 **************************************************/
+	public AlchemicIngredient(IngredientType type, int quantity, long temperature) {
+		//TODO
+	}
+	public AlchemicIngredient(String name, State state, long standardTemperature, int quantity, long temperature) {
+		this(new IngredientType(name, state, standardTemperature), quantity, temperature);
+		//TODO
+	}
 }
