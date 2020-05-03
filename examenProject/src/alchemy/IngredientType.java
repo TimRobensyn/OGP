@@ -27,15 +27,17 @@ public class IngredientType {
 	 * NAME (defensief)
 	 ********************************************************/
 	
-	/*
-	 * Return the name of this ingredient's type in the form of a String.
+	/**
+	 * Return the name of this ingredient type.
+	 * 
+	 * @return  The name of this ingredient type.
 	 */
 	@Basic @Raw
 	public String getSimpleName() {
 		return this.simpleName;
 	}
 	
-	/*
+	/**
 	 * Check whether a string is a valid name.
 	 */
 	public static boolean isValidSimpleName(String name){
@@ -75,20 +77,40 @@ public class IngredientType {
 		return valid;
 	}
 	
-	/*
-	 * A basic method for setting the simple name of this ingredient.
+	/**
+	 * Set the simple name of this ingredient type to the given name.
+	 * 
+	 * @param  newName
+	 *         The new simple name of this ingredient type.
+	 * @post   If the given simple name is not empty and valid, the simple name 
+	 *         of this ingredient type is equal to the given name.
+	 *         | if ( !newName==null
+	 *         |    || isValidSimpleName(newName) )
+	 *         |  then new.getName().equals(newName)
+	 * @throws NullPointerException
+	 *         The given name is empty.
+	 *         | newName==null
+	 * @throws IllegalNameException
+	 *         The given name is not valid.
+	 *         | !isValidSimpleName(newName)
 	 */
-	private void setSimpleName(String newName) {
+	private void setSimpleName(String newName) 
+			throws NullPointerException, IllegalNameException {
+		if (newName == null) throw new NullPointerException();
+		
 		if (isValidSimpleName(newName))
 			this.simpleName = newName;
+		else {
+			throw new IllegalNameException(newName);
+		}
 	}
 	
-	/*
+	/**
 	 * A string containing the name of this type of ingredient
 	 */
 	public String simpleName;
 	
-	/*
+	/**
 	 * A string containing the special characters that can be used in an ingredient's name.
 	 */
 	private final static String specialCharacters = "'()";
@@ -97,17 +119,19 @@ public class IngredientType {
 	 * STATE
 	 ************************************************************************/
 	
-	/*
+	// OPMERKING, moet kunnen veranderd worden in het labo.
+	
+	/**
 	 * A basic method returning the state of this ingredient type.
 	 * 
-	 * @returns	The state of this ingredient type.
+	 * @return The state of this ingredient type.
 	 */
 	@Basic @Raw
 	public State getState() {
 		return this.state;
 	}
 	
-	/*
+	/**
 	 * A private method setting the state of this ingredient type.
 	 */
 	@Basic
@@ -115,7 +139,8 @@ public class IngredientType {
 		if (State.isValidState(newState))
 			this.state = newState;
 	}
-	/*
+	
+	/**
 	 * A variable referencing the state of this ingredient type.
 	 */
 	private State state;
@@ -124,20 +149,25 @@ public class IngredientType {
 	 * STANDARDTEMPERATURE
 	 ************************************************************************/
 	
-	/*
+	/**
 	 * A basic method for getting the standardTemperature
 	 */
+	@Basic
 	public long[] getStandardTemperature() {
 		return this.standardTemperature;
 	}
 	
-	/*
-	 * A private method for setting the standardTemperature
+	/**
+	 * Set the standard temperature of this ingredient type to the given temperature.
+	 * 
+	 * @param temperature
+	 *        The new standard temperature
 	 */
 	private void setStandardTemperature(long[] temperature) {
 		//TODO
 	}
-	/*
+	
+	/**
 	 * A variable indicating coolness (I have very high values here myself)
 	 */
 	private long coolness;
