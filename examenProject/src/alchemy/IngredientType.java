@@ -2,6 +2,7 @@ package alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
 import java.util.regex.*;
+import java.lang.*;
 
 /**
  * A class defining the type of an alchemic ingredient with a name, a standard temperature and a state (liquid or powder).
@@ -38,19 +39,36 @@ public class IngredientType {
 	 * Check whether a string is a valid name.
 	 */
 	public static boolean isValidSimpleName(String name){
+		
 		boolean valid = true;
 		String[] choppedUpName = name.split(" ");
-		
-		if ( (choppedUpName.length<2) 
-		     && (choppedUpName[0].length()<3) )
-			valid = false;
+		int numberOfWords = choppedUpName.length;
 		
 		for (String word: choppedUpName) {
-			if ( word.length()<2 ) {
+			// Check of het woord lang genoeg is naargelang het aantal woorden in de naam string.
+			if ( (numberOfWords<=1 && word.length()<=3) 
+				 || (numberOfWords>1 && word.length()<=2) ) {
+				valid = false;
+				break;
+			}
+				
+			String firstChar = word.substring(0,1);
+			String rest = word.substring(1);
+			
+			// Check of de eerste letter een hoofdletter of een speciaal teken is, tenzij 
+			// het woord with of mixed is.
+			if ( !( firstChar.matches("[A-Z"+specialCharacters+"]+")
+				  || word.equals("with") || word.equals("mixed")) ) {
 				valid = false;
 				break;
 			}
 			
+			// Check of het woord - op de eerste letter na - bestaat uit allemaal kleine letters
+			// of een speciaal teken.
+			if (! rest.matches("[a-z"+specialCharacters+"]+")) {
+				valid = false;
+				break;
+			}
 			
 		}
 		
