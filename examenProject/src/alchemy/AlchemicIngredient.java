@@ -15,10 +15,11 @@ public class AlchemicIngredient {
 	 * CONSTRUCTORS
 	 **************************************************/
 	public AlchemicIngredient(IngredientType type, int quantity, long temperature) {
-		//TODO
+		//TO DO
 	}
-	public AlchemicIngredient(String name, State state, long standardTemperature, int quantity, long temperature) {
+	
+	/*public AlchemicIngredient(String name, State state, long standardTemperature, int quantity, long temperature) {
 		this(new IngredientType(name, state, standardTemperature), quantity, temperature);
-		//TODO
-	}
+		//TO DO
+	}*/
 }

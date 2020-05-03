@@ -24,7 +24,7 @@ public class IllegalNameException extends RuntimeException{
 	 * @param	name
 	 * 			The name that caused the exception.
 	 * @post	The name of this illegal name exception is set to the given name.
-	 * 			|new.getName() == name
+	 * 			| new.getName() == name
 	 */
 	@Raw
 	public IllegalNameException(String name) {

@@ -13,7 +13,7 @@ import java.util.regex.*;
 public class IngredientType {
 	
 	/********************************************************
-	 * CONSTRUCTOR(S)
+	 * CONSTRUCTOR(EN)
 	 ********************************************************/
 	
 	public IngredientType(String name, State state, long[] standardTemperature) {
@@ -29,8 +29,7 @@ public class IngredientType {
 	/*
 	 * Return the name of this ingredient's type in the form of a String.
 	 */
-	@Basic
-	@Raw
+	@Basic @Raw
 	public String getSimpleName() {
 		return this.simpleName;
 	}
@@ -41,22 +40,20 @@ public class IngredientType {
 	public static boolean isValidSimpleName(String name){
 		boolean valid = true;
 		String[] choppedUpName = name.split(" ");
-		if ((choppedUpName.length<2)&&(choppedUpName[0].length()<3))
+		
+		if ( (choppedUpName.length<2) 
+		     && (choppedUpName[0].length()<3) )
 			valid = false;
-		for (String word : choppedUpName) {
-			if (word.matches("^[" + specialCharacters + "]?[Ww]ith$")||(word.matches("^[" + specialCharacters + "]?[Mm]ixed$"))) {
+		
+		for (String word: choppedUpName) {
+			if ( word.length()<2 ) {
 				valid = false;
 				break;
 			}
-			if (word.length()<2) {
-				valid = false;
-				break;
-			}
-			if (!word.matches("^[" + specialCharacters + "]?[A-Z][a-z'()]*$")){
-				valid = false;
-				break;
-			}
+			
+			
 		}
+		
 		return valid;
 	}
 	
@@ -85,7 +82,7 @@ public class IngredientType {
 	/*
 	 * A basic method returning the state of this ingredient type.
 	 * 
-	 * @returns	state
+	 * @returns	The state of this ingredient type.
 	 */
 	@Basic @Raw
 	public State getState() {
