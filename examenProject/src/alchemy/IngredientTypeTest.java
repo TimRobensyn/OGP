@@ -1,6 +1,7 @@
 package alchemy;
+
 import static org.junit.Assert.*;
-import org.junit.*;
+import org.junit.Test;
 
 /**
  * A test class for IngredientType.
@@ -11,16 +12,16 @@ import org.junit.*;
 
 public class IngredientTypeTest {
 	
-	/*private IngredientType legalIngredientType;
+	/* private IngredientType legalIngredientType;
 	private IngredientType typeWithNumber;
 	
 	@Before
 	public void setupMutableFixture() {
 		legalIngredientType = new IngredientType("Rat Shit");
 		typeWithNumber = new IngredientType("Rat Shit 2");
-	}
-	*/
-	@Test
+	} */
+	
+    @Test
 	public void nameTest() {
 		assertFalse(IngredientType.isValidSimpleName("Rat with Shit")); 	//has "with"
 		assertFalse(IngredientType.isValidSimpleName("Rat 2day Shit"));		//has illegal character "2"

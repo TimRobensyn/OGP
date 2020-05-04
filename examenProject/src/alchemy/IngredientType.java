@@ -42,12 +42,14 @@ public class IngredientType {
 		boolean valid = true;
 		String[] choppedUpName = name.split(" ");
 		
-		if ((choppedUpName.length<2)&&(choppedUpName[0].length()<3)) // Naam van 1 woord is minstens 3 tekens lang.
+		// Naam van 1 woord is minstens 3 tekens lang.
+		if ( choppedUpName.length<2
+		   && choppedUpName[0].length()<3 ) // Naam van 1 woord is minstens 3 tekens lang.
 			valid = false;
 		
 		for (String word : choppedUpName) {
 			
-			//Geen with of mixed in de naam
+			// Geen with of mixed in de naam
 			if (word.matches("^[" + specialCharacters + "]?[Ww]ith$")||(word.matches("^[" + specialCharacters + "]?[Mm]ixed$"))) {
 				valid = false;
 				break;
@@ -123,7 +125,11 @@ public class IngredientType {
 	}
 	
 	/**
-	 * A private method setting the state of this ingredient type.
+	 * Set the state of this ingredient type to the given state.
+	 * 
+	 * @param newState
+	 *        The new state for this ingredient type.
+	 * @post  The state of this ingredient type is equal to the given state.
 	 */
 	@Basic
 	private void setState(State newState) {
@@ -136,13 +142,193 @@ public class IngredientType {
 	 */
 	private State state;
 	
+	
+	
+	
 	/************************************************************************
-	 * STANDARDTEMPERATURE
+	 * Coldness/Hotness (Rim has both)
 	 ************************************************************************/
 	
 	/**
-	 * A basic method for getting the standardTemperature
+	 * Check whether the given number is a valid value for coldness or hotness for
+	 * all ingredient types.
+	 * 
+	 * @param  temp
+	 *         The temperature to check.
+	 * @return True if and only if the given temperature is positive and 
+	 *         not above the temperature upper limit.
+	 *         | result == (temp>=0
+	 *         |           && temp<=getTemperatureUpperLimit())
+	 *         
 	 */
+	private static boolean isValidTemperatureValue(long temp) {
+		return (temp>=0 && temp<=getTemperatureUpperLimit());
+	}
+	
+	
+	/**
+	 * Set the coldness of this ingredient type to the given value.
+	 * 
+	 * @param coldness
+	 *        The new coldness of this ingredient type.
+	 * @post  If the given value valid, the coldness 
+	 *        of this ingredient type is set to the given value.
+	 *        | if (isValidTemperatureValue(coldness))
+	 *        |   then new.coldness == coldness
+	 */
+	private void setColdness(long coldness) {
+		if (isValidTemperatureValue(coldness))
+			this.coldness = coldness;
+	}
+	
+	
+	private long getColdness() {
+		return this.coldness;
+	}
+	
+	/**
+	 * A variable indicating the coldness of this ingredient type.
+	 */
+	private long coldness = 0;
+	
+
+	
+	/**
+	 * Set the hotness of this ingredient type to the given value.
+	 * 
+	 * @param hotness
+	 *        The new hotness of this ingredient type.
+	 * @post  If the given value is valid, the hotness 
+	 *        of this ingredient type is set to the given value.
+	 *        | if (isValidTemperatureValue(hotness))
+	 *        |   then new.hotness == hotness
+	 */
+	private void setHotness(long hotness) {
+		if (isValidTemperatureValue(hotness))
+			this.hotness = hotness;
+	}
+	
+	private long getHotness() {
+		return this.hotness;
+	}
+	
+	/**
+	 * A variable indicating the hotness of this ingredient type.
+	 */	
+	private long hotness = 0;
+	
+	
+	/**
+	 * Lower the temperature of this ingredient type with the given amount.
+	 * 
+	 * @param tempValue
+	 */
+	public void cool(long tempValue) {
+		//TODO
+	}
+	
+	/**
+	 * Increase the temperature of this ingredient type with the given amount.
+	 * 
+	 * @param tempValue
+	 */
+	public void heat(long tempValue) {
+		//TODO
+	}
+	
+	
+	
+	/************************************************************************
+	 * TEMPERATURE UPPER LIMIT
+	 ************************************************************************/
+	
+	/**
+	 * Get the temperature upper limit of all ingredient types.
+	 * 
+	 * @return The temperature upper limit of all ingredient types.
+	 */
+	@Basic @Immutable
+	public static long getTemperatureUpperLimit() {
+		return IngredientType.tempUpperLimit;
+	}
+	
+	/**
+	 * Set the temperature upper limit of all ingredient types to the given temperature.
+	 * 
+	 * @param temperature
+	 *        The new temperature upper limit of all ingredient types.
+	 * @post  If the given temperature does not exceed the maximal possible 
+	 *        value for a long type of number, the temperature upper limit for all 
+	 *        ingredient types is set to the given temperature.
+	 *        | if (temperature <= Long.MAX_VALUE)
+	 *        |   then IngredientType.getTemperatureUpperLimit() == temperature
+	 */
+	public static void setTemperatureUpperLimit(long temperature) {
+		if (temperature <= Long.MAX_VALUE)
+			IngredientType.tempUpperLimit = temperature;
+	}
+	
+	/**
+	 * A variable containing the temperature upper limit of all ingredient types.
+	 */
+	private static long tempUpperLimit = 10000;
+	
+	
+	/************************************************************************
+	 * TEMPERATURE
+	 ************************************************************************/
+	
+	/**
+	 * Check whether the given temperature is valid temperature for all
+	 * ingredient types.
+	 * 
+	 * @param  temperature
+	 *         The temperature to check.
+	 * @return True if and only if the temperature array containts exactly two elements,
+	 *         both elements are valid temperature values and those elements aren't both
+	 *         not zero.
+	 *         | result == ( temperature.length==2
+	 *         |          && isValidTemperatureValue(temperature[0])
+	 *         |          && isValidTemperatureValue(temperature[1])
+	 *         |          && !(temperature[0]!=0 && temperature[1]!=0) ) 
+	 */
+	public static boolean isValidTemperature(long[] temperature) {
+		if (temperature.length==2) {
+			long coldValue = temperature[0];
+			long heatValue = temperature[1];
+			return (isValidTemperatureValue(coldValue) 
+					&& isValidTemperatureValue(heatValue)
+					&& !(coldValue!=0 && heatValue!=0) );
+		}
+		else return false;
+		
+	}
+	
+	
+	/**
+	 * Get the temperature of this ingredient type.
+	 * 
+	 * @return The temperature of this ingredient type.
+	 */
+	@Basic @Immutable
+	public long[] getTemperature() {
+		long[] temp = {this.getColdness(), this.getHotness()};
+		return temp;
+	}
+
+	
+	
+	
+	/************************************************************************
+	 * STANDARD TEMPERATURE
+	 ************************************************************************/
+	
+	/**
+	 * Get the standard temperature of this ingredient type.
+	 * 
+	 * @return The standrad temperature of this ingredient type.
+	 */
+	@Basic @Immutable
 	public long[] getStandardTemperature() {
 		return this.standardTemperature;
 	}
@@ -152,24 +338,22 @@ public class IngredientType {
 	 * 
 	 * @param temperature
 	 *        The new standard temperature
+	 * @post  If the given temperature is valid and both the standard coldness and
+	 *        hotness are not zero at the same time, the standard temperature
+	 *        of this ingredient type is set to the given temperature.
+	 *        | if (isValidTemperature(temperature)
+	 *        |    && !(temperature[0]==0 && temperature[0]==0))
+	 *        |   then new.getStandardTemperature() == temperature
 	 */
 	private void setStandardTemperature(long[] temperature) {
-		//TODO
+		if (isValidTemperature(temperature)
+		   && !(temperature[0]==0 && temperature[0]==0))
+			this.standardTemperature = temperature;
 	}
 	
 	/**
-	 * A variable indicating coolness (I have very high values here myself)
+	 * An array containing coldness and hotness, thus the standardtemperature of this ingredient type.
 	 */
-	private long coolness;
-	
-	/**
-	 * A variable indicating hotness (Unexpectedly, high values here too!)
-	 */	
-	private long hotness;
-	
-	/**
-	 * An array containing coolness and hotness, thus the standardtemperature of this ingredient type
-	 */
-	private long[] standardTemperature = {coolness, hotness};
+	private long[] standardTemperature = {0, 0};
 
 }
