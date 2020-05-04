@@ -2,7 +2,6 @@ package alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
 import java.util.regex.*;
-import java.lang.*;
 
 /**
  * A class defining the type of an alchemic ingredient with a name, a standard temperature and a state (liquid or powder).
@@ -28,9 +27,7 @@ public class IngredientType {
 	 ********************************************************/
 	
 	/**
-	 * Return the name of this ingredient type.
-	 * 
-	 * @return  The name of this ingredient type.
+	 * Return the name of this ingredient's type in the form of a String.
 	 */
 	@Basic @Raw
 	public String getSimpleName() {
@@ -44,36 +41,30 @@ public class IngredientType {
 		
 		boolean valid = true;
 		String[] choppedUpName = name.split(" ");
-		int numberOfWords = choppedUpName.length;
 		
-		for (String word: choppedUpName) {
-			// Check of het woord lang genoeg is naargelang het aantal woorden in de naam string.
-			if ( (numberOfWords<=1 && word.length()<=3) 
-				 || (numberOfWords>1 && word.length()<=2) ) {
-				valid = false;
-				break;
-			}
-				
-			String firstChar = word.substring(0,1);
-			String rest = word.substring(1);
+		if ((choppedUpName.length<2)&&(choppedUpName[0].length()<3)) // Naam van 1 woord is minstens 3 tekens lang.
+			valid = false;
+		
+		for (String word : choppedUpName) {
 			
-			// Check of de eerste letter een hoofdletter of een speciaal teken is, tenzij 
-			// het woord with of mixed is.
-			if ( !( firstChar.matches("[A-Z"+specialCharacters+"]+")
-				  || word.equals("with") || word.equals("mixed")) ) {
+			//Geen with of mixed in de naam
+			if (word.matches("^[" + specialCharacters + "]?[Ww]ith$")||(word.matches("^[" + specialCharacters + "]?[Mm]ixed$"))) {
 				valid = false;
 				break;
 			}
 			
-			// Check of het woord - op de eerste letter na - bestaat uit allemaal kleine letters
-			// of een speciaal teken.
-			if (! rest.matches("[a-z"+specialCharacters+"]+")) {
+			//Elk woord is minstens 2 letters lang
+			if (word.length()<2) {
 				valid = false;
 				break;
 			}
 			
+			//Elk woord begint met een hoofdletter (hier kan een speciaal teken voor staan), de rest van de letters zijn klein of speciaal
+			if (!word.matches("^[" + specialCharacters + "]?[A-Z][a-z" + specialCharacters + "]*$")){
+				valid = false;
+				break;
+			}
 		}
-		
 		return valid;
 	}
 	
@@ -119,12 +110,12 @@ public class IngredientType {
 	 * STATE
 	 ************************************************************************/
 	
-	// OPMERKING, moet kunnen veranderd worden in het labo.
+	// OPMERKING, moet kunnen veranderd worden in het labo
 	
 	/**
 	 * A basic method returning the state of this ingredient type.
 	 * 
-	 * @return The state of this ingredient type.
+	 * @returns	The state of this ingredient type.
 	 */
 	@Basic @Raw
 	public State getState() {
@@ -152,7 +143,6 @@ public class IngredientType {
 	/**
 	 * A basic method for getting the standardTemperature
 	 */
-	@Basic
 	public long[] getStandardTemperature() {
 		return this.standardTemperature;
 	}
@@ -171,11 +161,13 @@ public class IngredientType {
 	 * A variable indicating coolness (I have very high values here myself)
 	 */
 	private long coolness;
-	/*
+	
+	/**
 	 * A variable indicating hotness (Unexpectedly, high values here too!)
-	 */
+	 */	
 	private long hotness;
-	/*
+	
+	/**
 	 * An array containing coolness and hotness, thus the standardtemperature of this ingredient type
 	 */
 	private long[] standardTemperature = {coolness, hotness};

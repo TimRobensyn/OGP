@@ -19,7 +19,7 @@ public class IngredientTypeTest {
 		legalIngredientType = new IngredientType("Rat Shit");
 		typeWithNumber = new IngredientType("Rat Shit 2");
 	}
-	
+	*/
 	@Test
 	public void nameTest() {
 		assertFalse(IngredientType.isValidSimpleName("Rat with Shit")); 	//has "with"
@@ -27,6 +27,6 @@ public class IngredientTypeTest {
 		assertFalse(IngredientType.isValidSimpleName("No"));				//Word length too short
 		assertFalse(IngredientType.isValidSimpleName("rat Shit"));		//has incorrect case
 		assertTrue(IngredientType.isValidSimpleName("Rat's Shit (Yeah Pretty Disgusting)"));
-	} */
+	} 
 
 }
