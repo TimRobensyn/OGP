@@ -1,7 +1,6 @@
 package alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
-import java.util.regex.*;
 
 /**
  * A class defining the type of an alchemic ingredient with a name, a standard temperature and a state (liquid or powder).
@@ -144,100 +143,6 @@ public class IngredientType {
 	
 	
 	
-	
-	/************************************************************************
-	 * Coldness/Hotness (Rim has both)
-	 ************************************************************************/
-	
-	/**
-	 * Check whether the given number is a valid value for coldness or hotness for
-	 * all ingredient types.
-	 * 
-	 * @param  temp
-	 *         The temperature to check.
-	 * @return True if and only if the given temperature is positive and 
-	 *         not above the temperature upper limit.
-	 *         | result == (temp>=0
-	 *         |           && temp<=getTemperatureUpperLimit())
-	 *         
-	 */
-	private static boolean isValidTemperatureValue(long temp) {
-		return (temp>=0 && temp<=getTemperatureUpperLimit());
-	}
-	
-	
-	/**
-	 * Set the coldness of this ingredient type to the given value.
-	 * 
-	 * @param coldness
-	 *        The new coldness of this ingredient type.
-	 * @post  If the given value valid, the coldness 
-	 *        of this ingredient type is set to the given value.
-	 *        | if (isValidTemperatureValue(coldness))
-	 *        |   then new.coldness == coldness
-	 */
-	private void setColdness(long coldness) {
-		if (isValidTemperatureValue(coldness))
-			this.coldness = coldness;
-	}
-	
-	
-	private long getColdness() {
-		return this.coldness;
-	}
-	
-	/**
-	 * A variable indicating the coldness of this ingredient type.
-	 */
-	private long coldness = 0;
-	
-
-	
-	/**
-	 * Set the hotness of this ingredient type to the given value.
-	 * 
-	 * @param hotness
-	 *        The new hotness of this ingredient type.
-	 * @post  If the given value is valid, the hotness 
-	 *        of this ingredient type is set to the given value.
-	 *        | if (isValidTemperatureValue(hotness))
-	 *        |   then new.hotness == hotness
-	 */
-	private void setHotness(long hotness) {
-		if (isValidTemperatureValue(hotness))
-			this.hotness = hotness;
-	}
-	
-	private long getHotness() {
-		return this.hotness;
-	}
-	
-	/**
-	 * A variable indicating the hotness of this ingredient type.
-	 */	
-	private long hotness = 0;
-	
-	
-	/**
-	 * Lower the temperature of this ingredient type with the given amount.
-	 * 
-	 * @param tempValue
-	 */
-	public void cool(long tempValue) {
-		//TODO
-	}
-	
-	/**
-	 * Increase the temperature of this ingredient type with the given amount.
-	 * 
-	 * @param tempValue
-	 */
-	public void heat(long tempValue) {
-		//TODO
-	}
-	
-	
-	
 	/************************************************************************
 	 * TEMPERATURE UPPER LIMIT
 	 ************************************************************************/
@@ -274,49 +179,6 @@ public class IngredientType {
 	private static long tempUpperLimit = 10000;
 	
 	
-	/************************************************************************
-	 * TEMPERATURE
-	 ************************************************************************/
-	
-	/**
-	 * Check whether the given temperature is valid temperature for all
-	 * ingredient types.
-	 * 
-	 * @param  temperature
-	 *         The temperature to check.
-	 * @return True if and only if the temperature array containts exactly two elements,
-	 *         both elements are valid temperature values and those elements aren't both
-	 *         not zero.
-	 *         | result == ( temperature.length==2
-	 *         |          && isValidTemperatureValue(temperature[0])
-	 *         |          && isValidTemperatureValue(temperature[1])
-	 *         |          && !(temperature[0]!=0 && temperature[1]!=0) ) 
-	 */
-	public static boolean isValidTemperature(long[] temperature) {
-		if (temperature.length==2) {
-			long coldValue = temperature[0];
-			long heatValue = temperature[1];
-			return (isValidTemperatureValue(coldValue) 
-					&& isValidTemperatureValue(heatValue)
-					&& !(coldValue!=0 && heatValue!=0) );
-		}
-		else return false;
-		
-	}
-	
-	
-	/**
-	 * Get the temperature of this ingredient type.
-	 * 
-	 * @return The temperature of this ingredient type.
-	 */
-	@Basic @Immutable
-	public long[] getTemperature() {
-		long[] temp = {this.getColdness(), this.getHotness()};
-		return temp;
-	}
-
-	
 	
 	
 	/************************************************************************
@@ -346,7 +208,7 @@ public class IngredientType {
 	 *        |   then new.getStandardTemperature() == temperature
 	 */
 	private void setStandardTemperature(long[] temperature) {
-		if (isValidTemperature(temperature)
+		if (AlchemicIngredient.isValidTemperature(temperature)
 		   && !(temperature[0]==0 && temperature[0]==0))
 			this.standardTemperature = temperature;
 	}
