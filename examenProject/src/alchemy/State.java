@@ -47,13 +47,12 @@ public enum State {
 	 * A static checker checking whether an object is a valid state.
 	 */
 	public static boolean isValidState(Object state) {
-		for (State validState : State.values()) {
+		for (State validState: State.values()) {
 			if (state.equals(validState))
 				return true;
 		}
 		return false;
 	}
-	
-	
+
 	
 }

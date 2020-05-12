@@ -15,9 +15,9 @@ public class AlchemicIngredient {
 	 * CONSTRUCTORS
 	 **************************************************/
 	public AlchemicIngredient(IngredientType type, int quantity, long temperature) {
+		this.quantity = quantity;
 		setType(type);
 	}
-	
 	/*public AlchemicIngredient(String name, State state, long standardTemperature, int quantity, long temperature) {
 		this(new IngredientType(name, state, standardTemperature), quantity, temperature);
 		//TO DO
@@ -56,9 +56,104 @@ public class AlchemicIngredient {
 	private IngredientType type = null;
 	
 	
+	/************************************************************************
+	 * Quantity
+	 ************************************************************************/
+	
+	/**
+	 * A variable referencing the quantity of this alchemic ingredient in number of spoons.
+	 */
+	private final int quantity;
+	
+	/**
+	 * Returns the amount of drops of this alchemic ingredient.
+	 * 
+	 * @pre The state of the ingredient type of alchemic ingredient is a liquid.
+	 *      | this.getType().getState() = LIQUID
+	 */
+	public int getNbOfDrops() {
+		return quantity*dropsInSpoon;
+	}
+	
+	/**
+	 * Returns the amount of vials of this alchemic ingredient.
+	 * 
+	 * @pre The state of the ingredient type of alchemic ingredient is a liquid.
+	 *      | this.getType().getState() = LIQUID
+	 */
+	public float getNbOfVials() {
+		return quantity/spoonsInVial;
+	}
+	
+	/**
+	 * Returns the amount of bottles of this alchemic ingredient.
+	 * 
+	 * @pre The state of the ingredient type of alchemic ingredient is a liquid.
+	 *      | this.getType().getState() = LIQUID
+	 */
+	public float getNbOfBottles() {
+		return getNbOfVials()/vialsInBottle;
+	}
+	
+	/**
+	 * Returns the amount of jugs of this alchemic ingredient.
+	 * 
+	 * @pre The state of the ingredient type of alchemic ingredient is a liquid.
+	 *      | this.getType().getState() = LIQUID
+	 */
+	public float getNbOfJugs() {
+		return getNbOfBottles()/bottlesInJug;
+	}
+	
+	/**
+	 * Returns the amount of barrels of this alchemic ingredient.
+	 * 
+	 * @pre The state of the ingredient type of alchemic ingredient is a liquid.
+	 *      | this.getType().getState() = LIQUID
+	 */
+	public float getNbOfBarrels() {
+		return getNbOfJugs()/jugsInBarrel;
+	}
+	
+	/**
+	 * Returns the amount of storerooms of this alchemic ingredient.
+	 * 
+	 * @pre The state of the ingredient type of alchemic ingredient is a liquid.
+	 *      | this.getType().getState() = LIQUID
+	 */
+	public float getNbOfStorerooms() {
+		return getNbOfBarrels()/barrelsInStoreroom;
+	}
+	
+	/**
+	 * Variables referencing the number of a smaller quantity unit included in the quantity unit
+	 * one level higher for a liquid.
+	 * 
+	 * @note The order is: drops, spoons, vials, bottles, jugs, barrels, storerooms
+	 */
+	private static final int dropsInSpoon = 8;
+	private static final int spoonsInVial = 5;
+	private static final int vialsInBottle = 3;
+	private static final int bottlesInJug = 7;
+	private static final int jugsInBarrel = 12;
+	private static final int barrelsInStoreroom = 5;
+	
+	/**
+	 * Variables referencing the number of a smaller quantity unit included in the quantity unit
+	 * one level higher for a powder.
+	 * 
+	 * @note The order is: pinches, spoons, sachets, boxes, sacks, chests, storerooms
+	 */
+	private static final int pinchesInSpoon = 6;
+	private static final int spoonsInSachet = 7;
+	private static final int sachetsInBox = 6;
+	private static final int boxesInSack = 3;
+	private static final int sacksInChest = 10;
+	private static final int chestsInStoreroom = 5;
+	
 	
 	/************************************************************************
-	 * Coldness/Hotness (Rim has both)
+	 * Coldness/Hotness
 	 ************************************************************************/
 	
 	/**
