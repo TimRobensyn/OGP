@@ -12,6 +12,6 @@ import be.kuleuven.cs.som.annotate.*;
 
 public enum Quantity {
 	
+	SPOON, VIAL, BOTTLE, JUG, BARREL, SACHET, BOX, SACK, CHEST;
 	
-
 }
