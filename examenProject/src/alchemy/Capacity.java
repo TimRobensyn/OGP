@@ -14,7 +14,7 @@ public enum Capacity {
 	
 	SPOON(1), VIAL(5), BOTTLE(15), JUG(105), BARREL(1260), SACHET(7), BOX(42), SACK(126), CHEST(1260);
 	
-	/**\
+	/**
 	 * Initialize this capacity with the given amount
 	 * @param amount
 	 * 		  The amount of this capacity

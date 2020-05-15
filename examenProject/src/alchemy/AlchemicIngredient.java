@@ -61,11 +61,6 @@ public class AlchemicIngredient {
 	 ************************************************************************/
 	
 	/**
-	 * A variable referencing the quantity of this alchemic ingredient in number of spoons.
-	 */
-	private final int quantity;
-	
-	/**
 	 * Check whether the given quantity is a valid quantity for an alchemic ingredient.
 	 * 
 	 * @param quantity
@@ -87,7 +82,34 @@ public class AlchemicIngredient {
 	public int getNbOfDrops() {
 		assert (this.getType().getState() == State.LIQUID) : 
 			"Precondition: Ingredient type of alchemic ingredient is a liquid";
-		return quantity*dropsInSpoon;
+		return quantity;
+	}
+
+	/**
+	 * Returns the amount of pinches of this alchemic ingredient.
+	 * 
+	 * @pre The state of the ingredient type of alchemic ingredient is a powder.
+	 *      | this.getType().getState() = POWDER
+	 */
+	public int getNbOfPinches() {
+		assert (this.getType().getState() == State.POWDER) : 
+			"Precondition: Ingredient type of alchemic ingredient is a powder";
+		return quantity;
+	}
+	
+	/**
+	 * Return the amount of spoons of this ingredients
+	 */
+	public final int getNbOfSpoons() {
+		if (getType().getState() == State.LIQUID) {
+			return quantity*dropsInSpoon;
+		}
+		if (getType().getState() == State.POWDER) {
+			return quantity*pinchesInSpoon;
+		}
+		else {
+			return 0; //TODO elegantere oplossing dan deze onnodige else
+		}
 	}
 	
 	/**
@@ -96,7 +118,7 @@ public class AlchemicIngredient {
 	 * @pre The state of the ingredient type of alchemic ingredient is a liquid.
 	 *      | this.getType().getState() = LIQUID
 	 */
-	public float getNbOfVials() {
+	public int getNbOfVials() {
 		assert (this.getType().getState() == State.LIQUID) : 
 			"Precondition: Ingredient type of alchemic ingredient is a liquid";
 		return quantity/spoonsInVial;
@@ -108,7 +130,7 @@ public class AlchemicIngredient {
 	 * @pre The state of the ingredient type of alchemic ingredient is a liquid.
 	 *      | this.getType().getState() = LIQUID
 	 */
-	public float getNbOfBottles() {
+	public int getNbOfBottles() {
 		return getNbOfVials()/vialsInBottle;
 	}
 	
@@ -134,17 +156,7 @@ public class AlchemicIngredient {
 	
 
 	
-	/**
-	 * Returns the amount of pinches of this alchemic ingredient.
-	 * 
-	 * @pre The state of the ingredient type of alchemic ingredient is a powder.
-	 *      | this.getType().getState() = POWDER
-	 */
-	public int getNbOfPinches() {
-		assert (this.getType().getState() == State.POWDER) : 
-			"Precondition: Ingredient type of alchemic ingredient is a powder";
-		return quantity*pinchesInSpoon;
-	}
+
 	
 	/**
 	 * Returns the amount of sachets of this alchemic ingredient.
@@ -202,6 +214,12 @@ public class AlchemicIngredient {
 		}
 		return number;
 	}
+	
+	
+	/**
+	 * A variable referencing the quantity of this alchemic ingredient in number of spoons.
+	 */
+	private final int quantity;
 	
 	/**
 	 * Variables referencing the number of a smaller quantity unit included in the quantity unit

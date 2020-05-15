@@ -20,7 +20,7 @@ public class IngredientContainer {
 	 * 		  The contents in this container
 	 */
 	@Raw
-	public IngredientContainer(Capacity capacity, int contents) {
+	public IngredientContainer(Capacity capacity, AlchemicIngredient contents) {
 		setCapacity(capacity);
 		setContents(contents);
 	}
@@ -60,8 +60,11 @@ public class IngredientContainer {
 	 * Returns the contents in this container
 	 */
 	@Raw @Basic
-	public int getContents() {
-		return this.contents;
+	public int getContentQuantity() {
+		if (contents.getType().getState()==State.LIQUID) {
+			return contents.
+		}
+		return this.contents.;
 	}
 	
 	/**
@@ -71,15 +74,18 @@ public class IngredientContainer {
 	 * @pre The given contents is not less than 0 or greater than the capacity of this container
 	 *		| (contents >= 0) && (contents <= this.getCapacity())
 	 */
-	public void setContents(int contents) {
-		assert((contents >= 0) && (contents <= this.getCapacity())) :
-			"Precondition: Contents is not less than 0 or more than the container's capacity";
+	public void setContents(AlchemicIngredient contents) {
+		if (contents.getType().getState()==State.LIQUID) {
+			assert((contents.getNbOfVials() >= 0) && (contents <= this.getCapacity())) :
+				"Precondition: Contents is not less than 0 or more than the container's capacity";
+		}
+		
 		this.contents = contents;
 	}
 	
 	/**
 	 * Variable storing the contents in this container
 	 */
-	private int contents = 0;
+	private AlchemicIngredient contents = null;
 
 }
