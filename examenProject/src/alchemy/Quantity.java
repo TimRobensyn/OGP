@@ -16,6 +16,6 @@ public interface Quantity {
 	 * Returns the amount of this capacity
 	 */
 	@Basic @Raw @Immutable
-	public int getCapacity();
+	public int getQuantity();
 
 }

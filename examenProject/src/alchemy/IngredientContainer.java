@@ -20,7 +20,7 @@ public class IngredientContainer {
 	 * 		  The contents in this container
 	 */
 	@Raw
-	public IngredientContainer(AlchemicIngredient contents, Quantity capacity) {
+	public IngredientContainer(AlchemicIngredient contents, ContainerType capacity) {
 		setContents(contents);
 		setCapacity(capacity);
 	}
@@ -38,17 +38,13 @@ public class IngredientContainer {
 	}
 
 	/**
-	 * Returns the quantitiy of the content in this container.
+	 * Returns the quantity of the content in this container.
 	 */
 	@Raw @Basic
 	public int getContentQuantity() {
-		if (contents.getType().getState()==State.LIQUID) {
-			return contents.getNbOfDrops();
-		}
-		if (contents.getType().getState()==State.POWDER) {
-			return contents.getNbOfPinches();
-		}
-		else {
+		if ((contents.getType().getState()==State.LIQUID) || (contents.getType().getState()==State.POWDER)) {
+			return contents.getQuantity();
+		} else {
 			return 0;
 		}
 	}
@@ -62,11 +58,11 @@ public class IngredientContainer {
 	 */
 	public void setContents(AlchemicIngredient contents) {
 		if (contents.getType().getState()==State.LIQUID) {
-			assert((contents.getNbOfDrops() >= 0) && (contents.getNbOfDrops() <= this.getCapacity())) :
+			assert((contents.getQuantity() >= 0) && (contents.getQuantity() <= this.getCapacity())) :
 				"Precondition: Contents is not less than 0 or more than the container's capacity";
 		}
 		if (contents.getType().getState()==State.POWDER) {
-			assert((contents.getNbOfPinches() >= 0) && (contents.getNbOfPinches() <= this.getCapacity())):
+			assert((contents.getQuantity() >= 0) && (contents.getQuantity() <= this.getCapacity())):
 				"Precondition: Contents is not less than 0 or more than the container's capacity";
 		}
 		
@@ -82,14 +78,19 @@ public class IngredientContainer {
 	 * Capacity
 	 ************************************************************************/
 	
-	public enum container{SPOON,VIAL,BOTTLE,JUG,BARREL,SACHET,BOX,SACK,CHEST,STOREROOM}
-	
 	/**
 	 * Return the capacity of this container.
 	 */
 	@Raw @Basic @Immutable
 	public int getCapacity() {
-		return this.capacity.getCapacity();
+		if(contents.getType().getState()==State.LIQUID) {
+			return LiquidQuantity.valueOf(capacity.toString()).getQuantity();
+		}
+		else if(contents.getType().getState()==State.POWDER) {
+			return PowderQuantity.valueOf(capacity.toString()).getQuantity();
+		} else {
+			return 0;
+		}
 	}
 	
 	/**
@@ -97,27 +98,25 @@ public class IngredientContainer {
 	 * @param capacity
 	 * 		  The capacity that this
 	 */
-	private final void setCapacity(container capacity) {
-		assert (((capacity.equals(LiquidQuantity.DROP))
-				&&(capacity.equals(PowderQuantity.PINCH)))
-				&&((capacity.equals(LiquidQuantity.STOREROOM))
-				&&(capacity.equals(PowderQuantity.STOREROOM)))):
-					"Container cannot be drop, pinch or storeroom";
+	private final void setCapacity(ContainerType capacity) {
 		if (contents.getType().getState()==State.LIQUID) {
-			assert (contents.getQuantity()<=LiquidQuantity.valueOf(capacity.toString()).getCapacity()):
+			assert (contents.getQuantity()<=LiquidQuantity.valueOf(capacity.toString()).getQuantity()):
 				"Container is not big enough";
-		}
-		if (contents.getType().getState()==State.POWDER) {
 			this.capacity = capacity;
 		}
-		else {
-			
-		}
+		if (contents.getType().getState()==State.POWDER) {
+			assert (contents.getQuantity()<=PowderQuantity.valueOf(capacity.toString()).getQuantity()):
+				"Container is not big enough";
+			this.capacity = capacity;
+		} //else {
+			//IK WEET NI WA RIM HIER WOU ZETTEN?
+		//}
 	}
+	
 	/**
 	 * Variable storing the capacity of this container
 	 */
-	private final container capacity;
+	private ContainerType capacity;
 	
 	
 	
