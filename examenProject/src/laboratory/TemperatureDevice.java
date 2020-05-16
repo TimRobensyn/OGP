@@ -1,7 +1,7 @@
 package laboratory;
 
 import be.kuleuven.cs.som.*;
-import alchemy.;
+import alchemy.*;
 
 /**
  * A subclass of Device for cooling boxes.
@@ -24,7 +24,7 @@ public abstract class TemperatureDevice extends Device {
 	
 	@Override
 	public void loadIngredient(IngredientContainer container) throws DeviceFullException {
-		// TODO Auto-generated method stub
+		if (startIngredient == null);
 
 	}
 
@@ -32,7 +32,7 @@ public abstract class TemperatureDevice extends Device {
 	public IngredientContainer emptyDevice() {
 		if (processedIngredient == null)
 			return null;
-		IngredientContainer outputContainer = alchemy.IngredientContainer(Capacity.JUG,15);
+		IngredientContainer outputContainer = IngredientContainer(processedIngredient, Capacity.JUG);
 		return outputContainer;
 	}
 

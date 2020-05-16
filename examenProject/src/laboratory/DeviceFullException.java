@@ -42,6 +42,19 @@ public class DeviceFullException extends RuntimeException{
 	}
 	
 	/**
+	 * Initialize a new device full exception with the given device (but no container).
+	 * 
+	 * @param	fullDevice
+	 * 			The device hat caused the exception because it was full.
+	 * @post	The fullDevice variable of this device full exception is set to the given device.
+	 * 			| new.getFullDevice == device
+	 */
+	@Raw
+	public DeviceFullException(Device device) {
+		this(device, null);
+	}
+	
+	/**
 	 * Return the full device which caused this exception.
 	 */
 	@Raw @Immutable @Basic
