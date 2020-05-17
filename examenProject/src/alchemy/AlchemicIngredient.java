@@ -15,9 +15,10 @@ public class AlchemicIngredient {
 	 * CONSTRUCTORS
 	 **************************************************/
 	public AlchemicIngredient(IngredientType type, int quantity, Temperature temperature) {
+		assert(Quantity.isValidQuantity(quantity)):
+			"Quantity is not valid";
 		this.type = type;
-		if (Quantity.isValidQuantity(quantity))
-			this.quantity = quantity;
+		this.quantity = quantity;
 		this.temperature = temperature;
 	}
 	
