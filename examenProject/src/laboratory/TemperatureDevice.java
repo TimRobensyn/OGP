@@ -1,6 +1,6 @@
 package laboratory;
 
-import be.kuleuven.cs.som.*;
+import be.kuleuven.cs.som.annotate.*;
 import alchemy.*;
 
 /**
@@ -29,12 +29,12 @@ public abstract class TemperatureDevice extends Device {
 	}
 
 	@Override
-	public final IngredientContainer emptyDevice() {
-		if (processedIngredient == null)
-			return null;
-		IngredientContainer outputContainer = IngredientContainer(//TODO);
-		return outputContainer;
-	}
+	public final IngredientContainer emptyDevice() //{
+//		if (processedIngredient == null)
+//			return null;
+//		IngredientContainer outputContainer = IngredientContainer(//TODO);
+//		return outputContainer;
+//	}
 	
 	/**
 	 * Return the temperature of this device in an array of two long values

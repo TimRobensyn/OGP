@@ -47,9 +47,9 @@ CONTSTRUCTOR
     </coordinates>
     <panel_attributes>IngredientType (totaal)
 --
--name: Name
--state: enum{LIQUID,POWDER}
--standardTemperature: long[]
+-name: Name (final)
+-state: State (final)
+-standardTemperature: long[] (final)
 --
 
 CONSTRUCTOR
@@ -293,8 +293,8 @@ emptyIngredient()
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>774</x>
-      <y>204</y>
+      <x>804</x>
+      <y>192</y>
       <w>120</w>
       <h>108</h>
     </coordinates>
@@ -314,12 +314,12 @@ getFullName()
     <id>Relation</id>
     <coordinates>
       <x>738</x>
-      <y>204</y>
-      <w>48</w>
-      <h>18</h>
+      <y>192</y>
+      <w>78</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;60.0;10.0</additional_attributes>
+    <additional_attributes>10.0;30.0;110.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -534,5 +534,55 @@ has &gt;</panel_attributes>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
     <additional_attributes>10.0;100.0;710.0;100.0;710.0;10.0;690.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>798</x>
+      <y>324</y>
+      <w>144</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Temperature
+--
+-temperature: {coldness,hotness}
+--
+getColdness()
+getHotness()
+getTemperature()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>738</x>
+      <y>228</y>
+      <w>72</w>
+      <h>114</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;100.0;170.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>510</x>
+      <y>216</y>
+      <w>300</w>
+      <h>138</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;100.0;210.0;480.0;190.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>732</x>
+      <y>324</y>
+      <w>78</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;220.0;110.0;10.0</additional_attributes>
   </element>
 </diagram>
