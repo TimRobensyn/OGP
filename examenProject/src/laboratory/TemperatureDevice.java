@@ -22,7 +22,16 @@ public abstract class TemperatureDevice extends Device {
 	 */
 	private AlchemicIngredient processedIngredient = null;
 	
-	@Override
+	/**
+	 * Loads the ingredients in a given container into this temperature device
+	 * 
+	 * @param container
+	 * 		  The given container
+	 * @throws DeviceFullException
+	 * 		   This device is full
+	 * 		   | startIngredient != null
+	 */
+	@Override @Raw
 	public final void loadIngredient(IngredientContainer container) throws DeviceFullException{
 		if(startIngredient != null) {
 			throw new DeviceFullException(this, container);
@@ -31,13 +40,35 @@ public abstract class TemperatureDevice extends Device {
 		container = null;
 	}
 
+	/**
+	 * Empties the device and creates a new container containing the processed ingredient of this device. 
+	 * The container is the smallest container that can contain the processed ingredient.
+	 * HELP IK NIET WEET WAT MET DEZE COMMENTAAR TE DOEN MAN
+	 */
 	@Override
-	public final IngredientContainer emptyDevice() //{
-//		if (processedIngredient == null)
-//			return null;
-//		IngredientContainer outputContainer = IngredientContainer(//TODO);
-//		return outputContainer;
-//	}
+	public final IngredientContainer emptyDevice() {
+		if (processedIngredient == null)
+			return null;
+		int index = 1;
+		ContainerType containerType=null;
+		if(processedIngredient.getType().getState() == State.LIQUID) {
+			LiquidQuantity Units[] = LiquidQuantity.values();
+			while(processedIngredient.getQuantity() > Units[index].getNbOfSmallestUnit()) {
+				index = index + 1;
+			}
+			containerType = ContainerType.valueOf(Units[index].toString());
+		} else if(processedIngredient.getType().getState() == State.POWDER) {
+			PowderQuantity Units[] = PowderQuantity.values();
+			while(processedIngredient.getQuantity() > Units[index].getNbOfSmallestUnit()) {
+				index = index + 1;
+			}
+			containerType = ContainerType.valueOf(Units[index].toString());
+		}
+		
+		IngredientContainer outputContainer = new IngredientContainer(processedIngredient, containerType);
+		processedIngredient = null;
+		return outputContainer;
+	}
 	
 	/**
 	 * Return the temperature of this device in an array of two long values

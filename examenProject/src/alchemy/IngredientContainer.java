@@ -37,6 +37,17 @@ public class IngredientContainer {
 		}
 	}
 	
+	/**
+	 * Initialize this empty container with the given capacity
+	 * @param 	capacity
+	 * 		 	The capacity of this container
+	 * @pre		//TODO
+	 */
+	@Raw
+	public IngredientContainer(ContainerType newCapacity) {
+		this(null, newCapacity);
+	}
+	
 	/************************************************************************
 	 * Contents
 	 ************************************************************************/
