@@ -4,7 +4,7 @@ import be.kuleuven.cs.som.annotate.*;
 
 public enum PowderQuantity implements Quantity{
 	
-	PINCH(1), SPOON(6), SACHET(7), BOX(6), SACK(3), CHEST(10), STOREROOM(5);
+	PINCH(1,1), SPOON(6,2), SACHET(7,3), BOX(6,4), SACK(3,5), CHEST(10,6), STOREROOM(5,7);
 	
 	/**
 	 * Initialize this capacity with the given amount
@@ -12,8 +12,9 @@ public enum PowderQuantity implements Quantity{
 	 * 		  The amount of this capacity
 	 */
 	@Raw
-	private PowderQuantity(int amount) {
+	private PowderQuantity(int amount, int index) {
 		this.quantity = amount;
+		this.index = index;
 	}
 	
 	/**
@@ -28,5 +29,31 @@ public enum PowderQuantity implements Quantity{
 	 * Variable storing the amount of capacity
 	 */
 	private final int quantity;
+
+	/**
+	 * Returns the index of this unit.
+	 */
+	@Basic @Raw @Immutable @Override
+	public int getIndex() {
+		return this.index;
+	}
+	
+	/**
+	 * Variable storing the index of the unit
+	 */
+	private final int index;
+
+	/**
+	 * Return the quantity of this unit in drops.
+	 */
+	@Raw @Immutable @Override
+	public int getNbOfSmallestUnit() {
+		int NbOfPinches = 1;
+		for (PowderQuantity quantity : PowderQuantity.values()) {
+			if (quantity.getIndex()<=this.index)
+				NbOfPinches = NbOfPinches*quantity.getQuantity();
+		}
+		return NbOfPinches;
+	}
 
 }

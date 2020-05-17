@@ -12,9 +12,9 @@ public class CapacityTest {
 	
 	@Test
 	public void noInspirationForANameTest() {
-		int cap = Capacity.BARREL.getCapacity();
-		assertEquals(cap, 12*Capacity.JUG.getCapacity());
-		System.out.println(Capacity.values());
+		int cap = LiquidQuantity.BARREL.getNbOfSmallestUnit();
+		assertEquals(cap, 12*LiquidQuantity.JUG.getNbOfSmallestUnit());
+		System.out.println(LiquidQuantity.values());
 		int geheleDeling = 17/4;
 		int rest = 17%4;
 		int geheleDeling2 = 18/4;
@@ -23,6 +23,10 @@ public class CapacityTest {
 		System.out.println(rest);
 		System.out.println(geheleDeling2);
 		System.out.println(rest2);
+		
+		int jugAmount = LiquidQuantity.JUG.getNbOfSmallestUnit();
+		System.out.println(jugAmount);
+		assertEquals(jugAmount,840);
 	}
 
 }

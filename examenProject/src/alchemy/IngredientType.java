@@ -111,8 +111,6 @@ public class IngredientType {
 	 * STATE
 	 ************************************************************************/
 	
-	// OPMERKING, moet kunnen veranderd worden in het labo
-	
 	/**
 	 * A basic method returning the state of this ingredient type.
 	 * 
@@ -141,46 +139,6 @@ public class IngredientType {
 	 */
 	private State state;
 	
-	
-	
-	/************************************************************************
-	 * TEMPERATURE UPPER LIMIT
-	 ************************************************************************/
-	
-	/**
-	 * Get the temperature upper limit of all ingredient types.
-	 * 
-	 * @return The temperature upper limit of all ingredient types.
-	 */
-	@Basic @Immutable
-	public static long getTemperatureUpperLimit() {
-		return IngredientType.tempUpperLimit;
-	}
-	
-	/**
-	 * Set the temperature upper limit of all ingredient types to the given temperature.
-	 * 
-	 * @param temperature
-	 *        The new temperature upper limit of all ingredient types.
-	 * @post  If the given temperature does not exceed the maximal possible 
-	 *        value for a long type of number, the temperature upper limit for all 
-	 *        ingredient types is set to the given temperature.
-	 *        | if (temperature <= Long.MAX_VALUE)
-	 *        |   then IngredientType.getTemperatureUpperLimit() == temperature
-	 */
-	public static void setTemperatureUpperLimit(long temperature) {
-		if (temperature <= Long.MAX_VALUE)
-			IngredientType.tempUpperLimit = temperature;
-	}
-	
-	/**
-	 * A variable containing the temperature upper limit of all ingredient types.
-	 */
-	private static long tempUpperLimit = 10000;
-	
-	
-	
-	
 	/************************************************************************
 	 * STANDARD TEMPERATURE
 	 ************************************************************************/
@@ -188,11 +146,11 @@ public class IngredientType {
 	/**
 	 * Get the standard temperature of this ingredient type.
 	 * 
-	 * @return The standrad temperature of this ingredient type.
+	 * @return The standard temperature of this ingredient type.
 	 */
 	@Basic @Immutable
 	public long[] getStandardTemperature() {
-		return this.standardTemperature;
+		return this.standardTemperature.getTemperature();
 	}
 	
 	/**
@@ -208,14 +166,17 @@ public class IngredientType {
 	 *        |   then new.getStandardTemperature() == temperature
 	 */
 	private void setStandardTemperature(long[] temperature) {
-		if (AlchemicIngredient.isValidTemperature(temperature)
-		   && !(temperature[0]==0 && temperature[0]==0))
-			this.standardTemperature = temperature;
+		if (Temperature.isValidTemperature(temperature)
+		   && !(temperature[0]==0 && temperature[0]==0)) {
+			Temperature newTemperature = new Temperature(temperature);
+			this.standardTemperature = newTemperature;
+		}
+			
 	}
 	
 	/**
-	 * An array containing coldness and hotness, thus the standardtemperature of this ingredient type.
+	 * A variable containing the Temperature object that is the standard temperature of this type.
 	 */
-	private long[] standardTemperature = {0, 0};
+	private final Temperature standardTemperature;
 
 }

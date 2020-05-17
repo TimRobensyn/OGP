@@ -16,13 +16,13 @@ public abstract class BottomlessDevice extends Device {
 	
 
 	@Override
-	public void loadIngredient(IngredientContainer container) throws DeviceFullException {
+	public final void loadIngredient(IngredientContainer container) throws DeviceFullException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public IngredientContainer emptyDevice() {
+	public final IngredientContainer emptyDevice() {
 		// TODO Auto-generated method stub
 		return null;
 	}

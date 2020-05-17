@@ -14,15 +14,27 @@ public class IngredientContainer {
 	
 	/**
 	 * Initialize this container with the given capacity and contents
-	 * @param capacity
-	 * 		  The capacity of this container
-	 * @param contents
-	 * 		  The contents in this container
+	 * @param 	capacity
+	 * 		 	The capacity of this container
+	 * @param	contents
+	 * 			The contents in this container
+	 * @pre		//TODO
 	 */
 	@Raw
-	public IngredientContainer(AlchemicIngredient contents, ContainerType capacity) {
+	public IngredientContainer(AlchemicIngredient contents, ContainerType newCapacity) {
 		setContents(contents);
-		setCapacity(capacity);
+		if (contents.getType().getState()==State.LIQUID) {
+			assert (contents.getQuantity()<=LiquidQuantity.valueOf(newCapacity.toString()).getNbOfSmallestUnit()):
+				"Container is not big enough";
+			capacity = newCapacity;
+		}
+		else if (contents.getType().getState()==State.POWDER) {
+			assert (contents.getQuantity()<=PowderQuantity.valueOf(newCapacity.toString()).getNbOfSmallestUnit()):
+				"Container is not big enough";
+			capacity = newCapacity;
+		} else {
+			capacity = null;
+		}
 	}
 	
 	/************************************************************************
@@ -42,11 +54,10 @@ public class IngredientContainer {
 	 */
 	@Raw @Basic
 	public int getContentQuantity() {
-		if ((contents.getType().getState()==State.LIQUID) || (contents.getType().getState()==State.POWDER)) {
+		if (State.isValidState(contents.getType().getState()))
 			return contents.getQuantity();
-		} else {
+		else
 			return 0;
-		}
 	}
 	
 	/**
@@ -92,33 +103,9 @@ public class IngredientContainer {
 			return 0;
 		}
 	}
-	
-	/**
-	 * Set the capacity of this container to the given capacity.
-	 * @param capacity
-	 * 		  The capacity that this
-	 */
-	private final void setCapacity(ContainerType capacity) {
-		if (contents.getType().getState()==State.LIQUID) {
-			assert (contents.getQuantity()<=LiquidQuantity.valueOf(capacity.toString()).getQuantity()):
-				"Container is not big enough";
-			this.capacity = capacity;
-		}
-		if (contents.getType().getState()==State.POWDER) {
-			assert (contents.getQuantity()<=PowderQuantity.valueOf(capacity.toString()).getQuantity()):
-				"Container is not big enough";
-			this.capacity = capacity;
-		} //else {
-			//IK WEET NI WA RIM HIER WOU ZETTEN?
-		//}
-	}
-	
-	/**
-	 * Variable storing the capacity of this container
-	 */
-	private ContainerType capacity;
-	
-	
-	
 
+	/**
+	 * Variable storing the capacity of this container.
+	 */
+	private final ContainerType capacity; //Geïnitialiseerd in de constructor om te waarborgen dat de variabele idd final is)
 }
