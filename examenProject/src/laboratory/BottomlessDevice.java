@@ -15,18 +15,52 @@ import alchemy.*;
 
 public abstract class BottomlessDevice extends Device {
 	
+	/**
+	 * A variable for the loaded ingredients in the device
+	 */
+	private ArrayList<AlchemicIngredient> startIngredients = new ArrayList<AlchemicIngredient>();
 	
+	/**
+	 * A variable for the processed ingredients still in the device
+	 */
+	private ArrayList<AlchemicIngredient> processedIngredients = new ArrayList<AlchemicIngredient>();
 
-	@Override
-	public final void loadIngredient(IngredientContainer container) throws DeviceFullException {
-		// TODO Auto-generated method stub
-
+	/**
+	 * Loads a new ingredient into this device
+	 */
+	@Override @Raw
+	public final void loadIngredient(IngredientContainer container) {
+		this.startIngredients.add(container.getIngredient());
+		container = null;
 	}
 
+	/**
+	 * Empties the first ingredient from this device into a new container. 
+	 * This container is the smallest container that can contain the ingredient.
+	 */
 	@Override
 	public final IngredientContainer emptyDevice() {
-		// TODO Auto-generated method stub
-		return null;
+		if (processedIngredients.get(0) == null)
+			return null;
+		int index = 1;
+		ContainerType containerType=null;
+		if(processedIngredients.get(0).getType().getState() == State.LIQUID) {
+			LiquidQuantity Units[] = LiquidQuantity.values();
+			while(processedIngredients.get(0).getQuantity() > Units[index].getNbOfSmallestUnit()) {
+				index = index + 1;
+			}
+			containerType = ContainerType.valueOf(Units[index].toString());
+		} else if(processedIngredients.get(0).getType().getState() == State.POWDER) {
+			PowderQuantity Units[] = PowderQuantity.values();
+			while(processedIngredients.get(0).getQuantity() > Units[index].getNbOfSmallestUnit()) {
+				index = index + 1;
+			}
+			containerType = ContainerType.valueOf(Units[index].toString());
+		}
+		
+		IngredientContainer outputContainer = new IngredientContainer(processedIngredients.get(0), containerType);
+		processedIngredients.remove(0);
+		return outputContainer;
 	}
 
 	@Override
@@ -35,6 +69,4 @@ public abstract class BottomlessDevice extends Device {
 
 	}
 
-	private ArrayList<AlchemicIngredient> deviceContents = new ArrayList<AlchemicIngredient>();
-	
 }
