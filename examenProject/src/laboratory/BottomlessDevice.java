@@ -1,6 +1,9 @@
 package laboratory;
 
 import be.kuleuven.cs.som.*;
+
+import java.util.ArrayList;
+
 import alchemy.*;
 
 /**
@@ -33,4 +36,6 @@ public abstract class BottomlessDevice extends Device {
 
 	}
 
+	private ArrayList<AlchemicIngredient> deviceContents = new ArrayList<AlchemicIngredient>();
+	
 }

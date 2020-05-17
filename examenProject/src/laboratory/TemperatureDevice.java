@@ -23,9 +23,12 @@ public abstract class TemperatureDevice extends Device {
 	private AlchemicIngredient processedIngredient = null;
 	
 	@Override
-	public final void loadIngredient(IngredientContainer container) throws DeviceFullException {
-		if (startIngredient == null);
-
+	public final void loadIngredient(IngredientContainer container) throws DeviceFullException{
+		if(startIngredient != null) {
+			throw new DeviceFullException(this, container);
+		}
+		this.startIngredient = container.getIngredient();
+		container = null;
 	}
 
 	@Override
