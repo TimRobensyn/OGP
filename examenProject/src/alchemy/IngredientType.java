@@ -14,14 +14,22 @@ public class IngredientType {
 	/********************************************************
 	 * CONSTRUCTOR(EN)
 	 ********************************************************/
-	
+	/**
+	 * 
+	 * @param name
+	 * @param state
+	 * @param standardTemperature
+	 */
 	public IngredientType(Name name, State state, long[] standardTemperature) {
+		
 		if (Name.isValidName(name))
 			name = new Name("Water");
 		this.name = name;
+		
 		if (State.isValidState(state))
 			state = State.LIQUID;
 		this.state = state;
+		
 		Temperature newStandardTemperature;
 		if (Temperature.isValidTemperature(standardTemperature)) {
 			newStandardTemperature = new Temperature(standardTemperature);
@@ -30,7 +38,11 @@ public class IngredientType {
 		}
 		this.standardTemperature = newStandardTemperature;
 	}
-	
+	/**
+	 * 
+	 * @param name
+	 * @param standardTemperature
+	 */
 	public IngredientType(Name name, Temperature standardTemperature) {
 		this(name, State.LIQUID, standardTemperature.getTemperature());
 	}
@@ -43,21 +55,21 @@ public class IngredientType {
 	 * Return the simple name of this ingredient type.
 	 */
 	public String getSimpleName() {
-		name.getSimpleName();
+		return name.getSimpleName();
 	}
 	
 	/**
 	 * Return the special name of this mixed ingredient type.
 	 */
 	public String getSpecialName() {
-		name.getSpecialName();
+		return name.getSpecialName();
 	}
 
 	/**
 	 * Return the full name of this ingredient type.
 	 */
 	public String getFullName() {
-		name.getFullName();
+		return ""; //TODO
 	}
 	
 	/**
@@ -99,25 +111,25 @@ public class IngredientType {
 		return this.standardTemperature.getTemperature();
 	}
 	
-	/**
-	 * Set the standard temperature of this ingredient type to the given temperature.
-	 * 
-	 * @param temperature
-	 *        The new standard temperature
-	 * @post  If the given temperature is valid and both the standard coldness and
-	 *        hotness are not zero at the same time, the standard temperature
-	 *        of this ingredient type is set to the given temperature.
-	 *        | if (isValidTemperature(temperature)
-	 *        |    && !(temperature[0]==0 && temperature[0]==0))
-	 *        |   then new.getStandardTemperature() == temperature
-	 */
-	private void setStandardTemperature(long[] temperature) {
-		if (Temperature.isValidTemperature(temperature)) {
-			Temperature newTemperature = new Temperature(temperature);
-			this.standardTemperature = newTemperature;
-		}
-			
-	}
+//	/**
+//	 * Set the standard temperature of this ingredient type to the given temperature.
+//	 * 
+//	 * @param temperature
+//	 *        The new standard temperature
+//	 * @post  If the given temperature is valid and both the standard coldness and
+//	 *        hotness are not zero at the same time, the standard temperature
+//	 *        of this ingredient type is set to the given temperature.
+//	 *        | if (isValidTemperature(temperature)
+//	 *        |    && !(temperature[0]==0 && temperature[0]==0))
+//	 *        |   then new.getStandardTemperature() == temperature
+//	 */
+//	private void setStandardTemperature(long[] temperature) {
+//		if (Temperature.isValidTemperature(temperature)) {
+//			Temperature newTemperature = new Temperature(temperature);
+//			this.standardTemperature = newTemperature;
+//		}
+//			
+//	} ==> Niet nodig omdat standardTemperature final is. (Hergebruik evt. documentatie)
 	
 	/**
 	 * A variable containing the Temperature object that is the standard temperature of this type.
