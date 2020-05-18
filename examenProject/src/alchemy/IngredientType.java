@@ -16,20 +16,39 @@ public class IngredientType {
 	 ********************************************************/
 	
 	/**
-	 * Initialize an ingredient type object with simpleNames, a special name, a state and a standard temperature.
+	 * Initialize an ingredient type object with an array of simpleNames, a special name,
+	 * a state and a standard temperature.
 	 * 
-	 * @param	simpleNames
-	 * 			The array of strings that contains
+	 * @param simpleNames
+	 * 		  The array of simple names of the new ingredient type.
 	 * @param specialName
+	 *        The special name of the new ingredient type.
 	 * @param state
+	 *        The state of the new ingredient type.
 	 * @param standardTemperature
+	 *        The standard temperature of the new ingredient type.
+	 * @post  If the given simple names, special name, state and temperature are all valid, 
+	 *        the simple names of this ingredient type are equal to the given array. Else, it is 
+	 *        equal to the array consisting of the single element 'Water'.
+	 *        | 
+	 *        | getSimpleNames() == simpleNames
+	 * @post  If the given simple names, special name, state and temperature are all valid, 
+	 *        the special name of this ingredient type is equal to the given name. Else
+	 *        | getSpecialName() == specialName
+	 * @post  If the given simple names, special name, state and temperature are all valid,
+	 *        the state of this ingredient type is equal to the given state.
+	 *        | getState() == state
+	 * @post  If the given simple names, special name, state and temperature are all valid,
+	 *        the standard temperature of this ingredient type is equal to the given
+	 *        values.
+	 *        | getStandardTemperature() == standardTemperature
 	 */
 	public IngredientType(String[] simpleNames, String specialName, State state, long[] standardTemperature) {
 		
-		if (((!areValidSimpleNames(simpleNames))
-				||!isValidSimpleName(specialName)
-				||!State.isValidState(state))
-				||!Temperature.isValidTemperature(standardTemperature)) {
+		if (( (!areValidSimpleNames(simpleNames))
+			 ||!isValidSimpleName(specialName)
+			 ||!State.isValidState(state))
+			 ||!Temperature.isValidTemperature(standardTemperature)) {
 			this.simpleNames = new String[] {"Water"};
 			this.specialName = null;
 			this.state = State.LIQUID;
@@ -197,6 +216,7 @@ public class IngredientType {
 	 */
 	@Raw
 	public String getSimpleName() {
+		
 		int size = getSimpleNames().length;
 		if (size==1)
 			return getSimpleNames()[0];
