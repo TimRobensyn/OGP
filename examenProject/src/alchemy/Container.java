@@ -9,7 +9,7 @@ import be.kuleuven.cs.som.annotate.*;
  * @author	Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  */
 
-public enum ContainerType {
+public enum Container {
 	
 	SPOON,VIAL,BOTTLE,JUG,BARREL,SACHET,BOX,SACK,CHEST
 

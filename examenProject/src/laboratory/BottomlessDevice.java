@@ -42,20 +42,12 @@ public abstract class BottomlessDevice extends Device {
 	public final IngredientContainer emptyDevice() {
 		if (processedIngredients.get(0) == null)
 			return null;
-		int index = 1;
-		ContainerType containerType=null;
+		Container containerType=null;
 		if(processedIngredients.get(0).getType().getState() == State.LIQUID) {
-			LiquidQuantity Units[] = LiquidQuantity.values();
-			while(processedIngredients.get(0).getQuantity() > Units[index].getNbOfSmallestUnit()) {
-				index = index + 1;
-			}
-			containerType = ContainerType.valueOf(Units[index].toString());
-		} else if(processedIngredients.get(0).getType().getState() == State.POWDER) {
-			PowderQuantity Units[] = PowderQuantity.values();
-			while(processedIngredients.get(0).getQuantity() > Units[index].getNbOfSmallestUnit()) {
-				index = index + 1;
-			}
-			containerType = ContainerType.valueOf(Units[index].toString());
+			containerType = LiquidQuantity.getContainer(processedIngredients.get(0).getQuantity());
+		}
+		else if (processedIngredients.get(0).getType().getState() == State.POWDER) {
+			containerType = PowderQuantity.getContainer(processedIngredients.get(0).getQuantity());
 		}
 		
 		IngredientContainer outputContainer = new IngredientContainer(processedIngredients.get(0), containerType);

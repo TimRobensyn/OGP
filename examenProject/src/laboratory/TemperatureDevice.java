@@ -49,21 +49,28 @@ public abstract class TemperatureDevice extends Device {
 	public final IngredientContainer emptyDevice() {
 		if (processedIngredient == null)
 			return null;
-		int index = 1;
-		ContainerType containerType=null;
+		Container containerType=null;
 		if(processedIngredient.getType().getState() == State.LIQUID) {
-			LiquidQuantity Units[] = LiquidQuantity.values();
-			while(processedIngredient.getQuantity() > Units[index].getNbOfSmallestUnit()) {
-				index = index + 1;
-			}
-			containerType = ContainerType.valueOf(Units[index].toString());
-		} else if(processedIngredient.getType().getState() == State.POWDER) {
-			PowderQuantity Units[] = PowderQuantity.values();
-			while(processedIngredient.getQuantity() > Units[index].getNbOfSmallestUnit()) {
-				index = index + 1;
-			}
-			containerType = ContainerType.valueOf(Units[index].toString());
+			containerType = LiquidQuantity.getContainer(processedIngredient.getQuantity());
 		}
+		else if (processedIngredient.getType().getState() == State.POWDER) {
+			containerType = PowderQuantity.getContainer(processedIngredient.getQuantity());
+		}
+//		int index = 1;
+//		Container containerType=null;
+//		if(processedIngredient.getType().getState() == State.LIQUID) {
+//			LiquidQuantity Units[] = LiquidQuantity.values();
+//			while(processedIngredient.getQuantity() > Units[index].getNbOfSmallestUnit()) {
+//				index = index + 1;
+//			}
+//			containerType = Container.valueOf(Units[index].toString());
+//		} else if(processedIngredient.getType().getState() == State.POWDER) {
+//			PowderQuantity Units[] = PowderQuantity.values();
+//			while(processedIngredient.getQuantity() > Units[index].getNbOfSmallestUnit()) {
+//				index = index + 1;
+//			}
+//			containerType = Container.valueOf(Units[index].toString());
+//		}
 		
 		IngredientContainer outputContainer = new IngredientContainer(processedIngredient, containerType);
 		processedIngredient = null;

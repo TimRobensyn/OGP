@@ -32,6 +32,12 @@ public interface Quantity {
 	@Raw @Immutable
 	public int getNbOfSmallestUnit();
 	
+//	/**
+//	 * Return the smallest container that can hold the given amount. 
+//	 */
+//	@Raw
+//	public Container getContainer(int amount);
+	
 	/**
 	 * Check whether the given quantity is a valid quantity for an alchemic ingredient.
 	 * 

@@ -59,15 +59,45 @@ public enum LiquidQuantity implements Quantity {
 		return NbOfDrops;
 	}
 	
-	/**
-	 * Return the quantity of this unit in drops.
-	 */
-	@Raw @Immutable @Override
-	public int getNbOfSmallestUnit() {
-		int NbOfDrops = 1;
-		LiquidQuantity[] units = LiquidQuantity.values();
-		for (int index = 1; index < units.; index++)){
-			//TODO
+//	/**
+//	 * Return the quantity of this unit in drops.
+//	 */
+//	@Raw @Immutable @Override
+//	public int getNbOfSmallestUnit() {
+//		int NbOfDrops = 1;
+//		LiquidQuantity[] units = LiquidQuantity.values();
+//		for (int index = 1; index < units.; index++)){
+//			//TODO
+//	}
+	
+	//TODO doc
+	public static Container getContainer(int drops) {
+		for (Container container:Container.values()) {			
+			for (LiquidQuantity quantity:LiquidQuantity.values()) {
+				if (container.toString()==quantity.toString()) {
+					if (drops <= quantity.getNbOfSmallestUnit())
+						return container;
+					
+				}
+			}
+		}
+		return Container.BARREL;
+//		int index = 1;
+//		while ((getNbOfSmallestUnitArray()[index]<drops)
+//				&&(index<getNbOfSmallestUnitArray().length)){
+//			index += 1;
+//		}
+//		LiquidQuantity.values().
+//		return Container.valueOf(LiquidQuantity.values()[index].toString());
 	}
+	
+	//TODO doc
+//	private static int[] getNbOfSmallestUnitArray() {
+//		int[] result = new int[LiquidQuantity.values().length];
+//		for (LiquidQuantity quantity : LiquidQuantity.values()) {
+//			result[quantity.getIndex()]	= quantity.getNbOfSmallestUnit();	
+//		}
+//		return result;
+//	}
 
 }

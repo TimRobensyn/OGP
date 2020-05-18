@@ -55,5 +55,27 @@ public enum PowderQuantity implements Quantity{
 		}
 		return NbOfPinches;
 	}
+	
+	//TODO doc
+	public static Container getContainer(int drops) {
+		for (Container container:Container.values()) {			
+			for (PowderQuantity quantity:PowderQuantity.values()) {
+				if (container.toString()==quantity.toString()) {
+					if (drops <= quantity.getNbOfSmallestUnit())
+						return container;
+				}
+			}
+		}
+		return Container.CHEST;
+	}
+	
+//	//TODO doc
+//	private static int[] getNbOfSmallestUnitArray() {
+//		int[] result = new int[PowderQuantity.values().length];
+//		for (PowderQuantity quantity : PowderQuantity.values()) {
+//			result[quantity.getIndex()]	= quantity.getNbOfSmallestUnit();	
+//		}
+//		return result;
+//	}
 
 }

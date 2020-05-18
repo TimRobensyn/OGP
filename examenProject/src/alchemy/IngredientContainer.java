@@ -21,7 +21,7 @@ public class IngredientContainer {
 	 * @pre		//TODO
 	 */
 	@Raw
-	public IngredientContainer(AlchemicIngredient contents, ContainerType newCapacity) {
+	public IngredientContainer(AlchemicIngredient contents, Container newCapacity) {
 		setContents(contents);
 		if (contents.getType().getState()==State.LIQUID) {
 			assert (contents.getQuantity()<=LiquidQuantity.valueOf(newCapacity.toString()).getNbOfSmallestUnit()):
@@ -44,7 +44,7 @@ public class IngredientContainer {
 	 * @pre		//TODO
 	 */
 	@Raw
-	public IngredientContainer(ContainerType newCapacity) {
+	public IngredientContainer(Container newCapacity) {
 		this(null, newCapacity);
 	}
 	
@@ -118,5 +118,5 @@ public class IngredientContainer {
 	/**
 	 * Variable storing the capacity of this container.
 	 */
-	private final ContainerType capacity; //Geïnitialiseerd in de constructor om te waarborgen dat de variabele idd final is)
+	private final Container capacity; //Geïnitialiseerd in de constructor om te waarborgen dat de variabele idd final is)
 }
