@@ -19,8 +19,7 @@ public class CoolingBox extends TemperatureDevice {
 	 */
 	@Raw
 	public CoolingBox(Temperature temperature, IngredientContainer startIngredient) {
-		setTemperature(temperature);
-		loadIngredient(startIngredient);
+		super(temperature,startIngredient);
 	}
 	
 	/**
@@ -29,7 +28,7 @@ public class CoolingBox extends TemperatureDevice {
 	 */
 	@Raw
 	public CoolingBox(Temperature temperature) {
-		setTemperature(temperature);
+		super(temperature);
 	}
 
 	/**
@@ -41,7 +40,8 @@ public class CoolingBox extends TemperatureDevice {
 		if(difference>0) {
 			AlchemicIngredient newIngredient = getStartIngredient();
 			newIngredient.cool(difference);
-			setProcessedIngredient(newIngredient);			
+			setProcessedIngredient(newIngredient);
+			setStartIngredient(null);
 		}
 	}
 

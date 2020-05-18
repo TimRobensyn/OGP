@@ -179,7 +179,13 @@ public class AlchemicIngredient {
 	public void cool(long amount) {
 		temperature.cool(amount);
 	}
-
+	
+	/**
+	 * Heat this ingredient //TODO
+	 */
+	public void heat(long amount) {
+		temperature.heat(amount);
+	}
 	
 	/**
 	 * A variable keeping the temperature of this ingredient.

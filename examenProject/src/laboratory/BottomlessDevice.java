@@ -16,6 +16,36 @@ import alchemy.*;
 public abstract class BottomlessDevice extends Device {
 	
 	/**
+	 * Constructor enal //TODO
+	 */
+	@Model @Raw
+	public BottomlessDevice(IngredientContainer[] ingredientArray) {
+		for (IngredientContainer container : ingredientArray) {
+			loadIngredient(container);
+		}
+	}
+	
+	/**
+	 * Constructor enal //TODO
+	 */
+	@Model @Raw
+	public BottomlessDevice() {}
+	
+	/**
+	 * @return	startIngredients
+	 */
+	public ArrayList<AlchemicIngredient> getStartIngredients() {
+		return startIngredients;
+	}
+	
+	/**
+	 * Clear the startIngredients arrayList.
+	 */
+	protected void clearStartIngredients() {
+		startIngredients = new ArrayList<AlchemicIngredient>();
+	}
+
+	/**
 	 * A variable for the loaded ingredients in the device
 	 */
 	private ArrayList<AlchemicIngredient> startIngredients = new ArrayList<AlchemicIngredient>();
@@ -30,7 +60,7 @@ public abstract class BottomlessDevice extends Device {
 	 */
 	@Override @Raw
 	public final void loadIngredient(IngredientContainer container) {
-		this.startIngredients.add(container.getIngredient());
+		this.getStartIngredients().add(container.getIngredient());
 		container = null;
 	}
 

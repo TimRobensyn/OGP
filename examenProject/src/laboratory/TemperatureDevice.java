@@ -13,11 +13,36 @@ import alchemy.*;
 public abstract class TemperatureDevice extends Device {
 	
 	/**
+	 * A model constructor for this kind of device, setting a temperature
+	 * and loading an ingredient.
+	 */
+	@Model @Raw
+	public TemperatureDevice(Temperature temperature, IngredientContainer startIngredient) {
+		setTemperature(temperature);
+		loadIngredient(startIngredient);
+	}
+	
+	/**
+	 * A model constructor for this kind of device, setting the temperature.
+	 */
+	@Model @Raw
+	public TemperatureDevice(Temperature temperature) {
+		setTemperature(temperature);
+	}
+	
+	/**
 	 * Return the loaded ingredient in this device.
 	 */
 	@Basic
 	protected AlchemicIngredient getStartIngredient() {
 		return startIngredient;
+	}
+	
+	/**
+	 * Set the startIngredient variable to the given ingredient.
+	 */
+	protected void setStartIngredient(AlchemicIngredient ingredient) {
+		startIngredient = ingredient;
 	}
 	
 	/**
@@ -51,7 +76,7 @@ public abstract class TemperatureDevice extends Device {
 		if(startIngredient != null) {
 			throw new DeviceFullException(this, container);
 		}
-		this.startIngredient = container.getIngredient();
+		setStartIngredient(container.getIngredient());
 		container = null;
 	}
 
@@ -88,7 +113,7 @@ public abstract class TemperatureDevice extends Device {
 //		}
 		
 		IngredientContainer outputContainer = new IngredientContainer(processedIngredient, containerType);
-		processedIngredient = null;
+		setProcessedIngredient(null);
 		return outputContainer;
 	}
 	
