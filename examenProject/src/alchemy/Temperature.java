@@ -122,14 +122,15 @@ public class Temperature {
 	 *		   |          && new.getColdness() = old.getColdness()+tempValue-old.getHotness()
 	 */
 	public void cool(long tempValue) {
-		if (tempValue<=getHotness())
-		    setHotness(getHotness()-tempValue);
-		
-		else if (tempValue>getHotness()
-			  && tempValue<=getHotness()+getTemperatureUpperLimit()-getColdness()) {
-			long prevHotness = getHotness();
-			setHotness(0);
-			setColdness(getColdness()+tempValue-prevHotness);
+		if (tempValue>0) {
+			if (tempValue<=getHotness())
+				setHotness(getHotness()-tempValue);		
+			else if (tempValue>getHotness()
+					&& tempValue<=getHotness()+getTemperatureUpperLimit()-getColdness()) {
+				long prevHotness = getHotness();
+				setHotness(0);
+				setColdness(getColdness()+tempValue-prevHotness);
+			}
 		}
 		
 	}
@@ -139,29 +140,33 @@ public class Temperature {
 	 * 
 	 * @param  tempValue
 	 *         The value to increase the temperature of this Temperature object with.
-	 * @effect If the given value is not above the current coldness, the coldness is decreased 
+	 * @effect If the given value is negative or zero, do nothing.
+	 * 		   If the given value is not above the current coldness, the coldness is decreased 
 	 *         with this value.
-	 *         | if (tempValue<=getColdness())
+	 *         | if (tempValue<=getColdness()&&(!tempValue>0))
 	 *         |     then new.getColdness() = old.getColdness()-tempValue
 	 *         If the given value is above the current coldness and it is lesser than or equal to the 
 	 *         current coldness summed up with the temperature upper limit value and decreased with the 
 	 *         current hotness, the coldness is set to zero and the hotness is increased with the 
 	 *         difference between the given value and the previous coldness.
 	 *         | if (tempValue>getColdness()
+	 *         |  && (!tempValue>0)
 	 *		   |  && tempValue<=getColdness()+IngredientType.getTemperatureUpperLimit()-getHotness())
 	 *		   |     then new.getColdness() = 0
 	 *		   |          && new.getHotness() = old.getHotness()+tempValue-old.getColdness()
 	 */
 	public void heat(long tempValue) {
-		if (tempValue<=getColdness())
-			setColdness(getColdness()-tempValue);
-		
-		else if (tempValue>getColdness()
-			  && tempValue<=getColdness()+getTemperatureUpperLimit()-getHotness() ) {
-			long prevColdness = getColdness();
-			setColdness(0);
-			setHotness(getHotness()+tempValue-prevColdness);
+		if (tempValue>0) {
+			if (tempValue<=getColdness())
+				setColdness(getColdness()-tempValue);
+			else if (tempValue>getColdness()
+				  && tempValue<=getColdness()+getTemperatureUpperLimit()-getHotness() ) {
+				long prevColdness = getColdness();
+				setColdness(0);
+				setHotness(getHotness()+tempValue-prevColdness);
+			}
 		}
+		
 		
 	}
 	
@@ -176,7 +181,7 @@ public class Temperature {
 	 * 
 	 * @param  temperature
 	 *         The temperature to check.
-	 * @return True if and only if the temperature array containts exactly two elements,
+	 * @return True if and only if the temperature array contains exactly two elements,
 	 *         both elements are valid temperature values and those elements aren't both
 	 *         not zero.
 	 *         | result == ( temperature.length==2
@@ -223,6 +228,12 @@ public class Temperature {
 		else return 0;
 	}
 	
+	/**
+	 * Return the difference between two temperatures, positive if first temperature is bigger than the second.
+	 */
+	public static long temperatureDifference(Temperature first, Temperature second) {
+		return -first.getColdness()+first.getHotness()-(-second.getColdness()+second.getHotness());
+	}
 //	public static int compareTemperature(long[] first, long[] second) {
 //		compareTemperature(new Temperature(1L,0L), new Temperature(0L,1L));
 //	}

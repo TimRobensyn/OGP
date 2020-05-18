@@ -155,6 +155,20 @@ public class AlchemicIngredient {
 	public long[] getTemperature() {
 		return temperature.getTemperature();
 	}
+	
+	/**
+	 * Return the temperature object of this class.
+	 */
+	public Temperature getTemperatureObject() {
+		return temperature;
+	}
+	
+	/**
+	 * Cool this ingredient //TODO
+	 */
+	public void cool(long amount) {
+		temperature.cool(amount);
+	}
 
 	
 	/**
@@ -176,5 +190,6 @@ public class AlchemicIngredient {
 	public Temperature getStandardTemperatureObject() {
 		return type.getStandardTemperatureObject();
 	}
+
 	
 }

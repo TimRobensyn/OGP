@@ -26,6 +26,13 @@ public abstract class TemperatureDevice extends Device {
 	private AlchemicIngredient startIngredient = null;
 	
 	/**
+	 * Set the processedIngredient variable to the given Alchemic Ingredient.
+	 */
+	protected void setProcessedIngredient(AlchemicIngredient ingredient) {
+		processedIngredient = ingredient;
+	}
+	
+	/**
 	 * A variable for the processed ingredient still in the device
 	 */
 	private AlchemicIngredient processedIngredient = null;
