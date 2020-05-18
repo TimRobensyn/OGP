@@ -10,7 +10,7 @@ import alchemy.*;
  * amount of ingredients.
  * 
  * @version	1.0
- * @author Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
+ * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  */
 
 public abstract class BottomlessDevice extends Device {
