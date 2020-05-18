@@ -43,6 +43,7 @@ public class IngredientType {
 		}
 
 	}
+	
 	/**
 	 * Initialize an ingredient type object without a special name with simple names, a state and a Temperature object.
 	 * @param simpleNames
@@ -52,9 +53,12 @@ public class IngredientType {
 	public IngredientType(String[] simpleNames, State state, Temperature standardTemperature) {
 		this(simpleNames, null, state, standardTemperature.getTemperature());
 	}
+	
+	
 	public IngredientType(String name, State state, Temperature standardTemperature) {
 		this(new String[] {name}, null, state, standardTemperature.getTemperature());
 	}
+	
 	/**
 	 * 
 	 * @param name
@@ -121,6 +125,8 @@ public class IngredientType {
 		}
 		return valid;
 	}
+	
+	
 	/**
 	 * Check an array of strings to see if it is a valid array of simpleNames
 	 * @param 	simpleNames
@@ -143,6 +149,7 @@ public class IngredientType {
 		}
 		return true;
 	}
+	
 	
 //	/**
 //	 * Add a simple name of this ingredient type to the given name.
@@ -171,6 +178,7 @@ public class IngredientType {
 //		
 //		if (!getSimpleNames().contains(newName)) simpleNames.add(newName);
 //	}
+	
 	
 	/**
 	 * Return the name of this ingredient's type in the form of a formatted String.
@@ -286,11 +294,16 @@ public class IngredientType {
 		return this.standardTemperature.getTemperature();
 	}
 	
+	/**
+	 * Returns the temperature object that is associated with the standard temperature of this ingredient type.
+	 */
 	public Temperature getStandardTemperatureObject() {
 		return this.standardTemperature;
 	}
+	
+	
 	/**
-	 * A variable containing the Temperature object that is the standard temperature of this type.
+	 * A variable containing the Temperature object that is the standard temperature of this ingredient type.
 	 */
 	private final Temperature standardTemperature;
 

@@ -56,18 +56,35 @@ public class AlchemicIngredient {
 	 */
 	private final IngredientType type;
 	
+	
+	/*******************************************************
+	 * FULL NAME
+	 ******************************************************/
+	
+	
 	/**
-	 * Return the full name of this ingredient. This is the special name followed
-	 * by the formatted simple names between brackets or, in case the ingredient type has no special
-	 * name yet,
-	 * @return	String
-	 * 			specialName ([Cooled/Heated] simpleNames)
+	 * Set the full name of this alchemic ingredient.
+	 * 
+	 * @post If this alchemic ingredient has a special name, the full name is the special name followed by the
+	 *       formatted simple names between brackets, possibly with a prefactor indicating whether this alchemic
+	 *       ingredient is warmer or cooler than the standard temperature of its ingredient type. If this ingredient
+	 *       has no special name, the full consists of the simplenames with the prefactor.
+	 *       | if (this.temperature < getStandardTemperature())
+	 *       |    prefactor == "Cooled"
+	 *       | else if (this.temperature > getStandardTemperature())
+	 *       |    prefactor == "Heated"
+	 *       | else
+	 *       |    prefactor == ""
+	 *       | 
+	 *       | if (getType().getSpecialName() != null)
+	 *       |    this.fullName == this.specialName (prefactor this.simpleNames)
+	 *       | else
+	 *       |    this.fullname == prefactor this.simpleNames
 	 */
-	public String getFullName() {
-		String fullName = "";
+	private void setFullName() {
 		
 		//Add cooled or heated to simple name
-		switch(Temperature.compareTemperature(getTemperatureObject(),getStandardTemperatureObject())){
+		switch(Temperature.compareTemperature(this.temperature,getStandardTemperatureObject())){
 		case -1:
 			fullName.concat("Cooled ");
 			break;
@@ -79,11 +96,21 @@ public class AlchemicIngredient {
 		}
 		
 		//Add special name
-		if (type.getSpecialName()!=null) {
+		if (getType().getSpecialName()!=null) {
 			fullName = type.getSpecialName() + " (" + fullName + ")";
 		}
-		return fullName;
+		
 	}
+	
+	/**
+	 * After setting the full name of this alchemic ingredient, return it.
+	 */
+	public String getFullName() {
+		setFullName();
+		return this.fullName;
+	}
+	
+	private String fullName = "";
 	
 	/************************************************************************
 	 * Quantity
@@ -126,10 +153,8 @@ public class AlchemicIngredient {
 	public long[] getTemperature() {
 		return temperature.getTemperature();
 	}
+
 	
-	private Temperature getTemperatureObject() {
-		return temperature;
-	}
 	/**
 	 * A variable keeping the temperature of this ingredient.
 	 */

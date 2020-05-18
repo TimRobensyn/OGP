@@ -199,12 +199,27 @@ public class Temperature {
 		return isValidTemperature(temperature.getTemperature());
 	}
 	
-	//TODO documentatie
+	/**
+	 * Compares two temperatures and checks whether the first is cooler or warmer than the second.
+	 * 
+	 * @param  first
+	 *         The temperature to check.
+	 * @param  second
+	 *         The temperature to compare with.     
+	 * @return Returns one if the first temperature is warmer than the second, minus one if it's cooler
+	 *         and 0 if both temperatures are equal.
+	 *         | if (first > second)
+	 *         |    return 1
+	 *         | else if (first < second)
+	 *         |    return -1
+	 *         | else
+	 *         |    return 0
+	 */
 	public static int compareTemperature(Temperature first, Temperature second) {
 		long firstComparable = -first.getColdness()+first.getHotness();
 		long secondComparable = -second.getColdness()+second.getHotness();
 		if (firstComparable<secondComparable) return -1;
-		if (firstComparable>secondComparable) return 1;
+		else if (firstComparable>secondComparable) return 1;
 		else return 0;
 	}
 	
