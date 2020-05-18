@@ -11,11 +11,30 @@ import alchemy.*;
  */
 
 public class CoolingBox extends TemperatureDevice {
+	
+	/**
+	 * Prachtige constructor //TODO
+	 * @param temperature
+	 * @param ingredient
+	 */
+	@Raw
+	public CoolingBox(Temperature temperature, IngredientContainer startIngredient) {
+		setTemperature(temperature);
+		loadIngredient(startIngredient);
+	}
+	
+	/**
+	 * Andere constructor //TODO
+	 * @param temperature
+	 */
+	@Raw
+	public CoolingBox(Temperature temperature) {
+		setTemperature(temperature);
+	}
 
 	@Override
 	public void process() {
-		// TODO Auto-generated method stub
-
+		Temperature.compareTemperature(getStartIngredient().getStandardTemperatureObject(),getTemperatureObject());
 	}
 
 }

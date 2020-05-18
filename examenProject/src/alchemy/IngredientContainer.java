@@ -63,7 +63,7 @@ public class IngredientContainer {
 	/**
 	 * Returns the quantity of the content in this container.
 	 */
-	@Raw @Basic
+	@Raw
 	public int getContentQuantity() {
 		if (State.isValidState(contents.getType().getState()))
 			return contents.getQuantity();

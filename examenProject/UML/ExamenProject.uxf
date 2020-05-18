@@ -22,7 +22,7 @@ getSpecialName()
 setSpecialName()
 getFullName()
 
-CONTSTRUCTOR
+CONSTRUCTOR
 (quantity, type, temperature=standardTemperature)
 (quantity) --&gt;Water,[0,20]</panel_attributes>
     <additional_attributes/>
@@ -492,7 +492,7 @@ has &gt;</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>960</x>
+      <x>952</x>
       <y>352</y>
       <w>192</w>
       <h>96</h>
@@ -511,32 +511,32 @@ getTemperature()</panel_attributes>
     <coordinates>
       <x>888</x>
       <y>320</y>
-      <w>88</w>
+      <w>80</w>
       <h>56</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;90.0;50.0</additional_attributes>
+    <additional_attributes>10.0;10.0;80.0;50.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>584</x>
       <y>232</y>
-      <w>392</w>
+      <w>384</w>
       <h>144</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>10.0;100.0;100.0;10.0;380.0;10.0;470.0;160.0</additional_attributes>
+    <additional_attributes>10.0;100.0;100.0;10.0;380.0;10.0;460.0;160.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>880</x>
       <y>352</y>
-      <w>96</w>
+      <w>88</w>
       <h>288</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>10.0;340.0;100.0;10.0</additional_attributes>
+    <additional_attributes>10.0;340.0;90.0;10.0</additional_attributes>
   </element>
 </diagram>

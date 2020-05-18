@@ -13,6 +13,14 @@ import alchemy.*;
 public abstract class TemperatureDevice extends Device {
 	
 	/**
+	 * Return the loaded ingredient in this device.
+	 */
+	@Basic
+	protected AlchemicIngredient getStartIngredient() {
+		return startIngredient;
+	}
+	
+	/**
 	 * A variable for the loaded ingredient in the device
 	 */
 	private AlchemicIngredient startIngredient = null;
@@ -82,6 +90,13 @@ public abstract class TemperatureDevice extends Device {
 	 */
 	public final long[] getTemperature() {
 		return temperature.getTemperature();
+	}
+	
+	/**
+	 * Return the temperature object of this device.
+	 */
+	public Temperature getTemperatureObject() {
+		return temperature;
 	}
 
 	/**

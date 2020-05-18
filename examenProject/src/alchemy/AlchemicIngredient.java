@@ -14,7 +14,9 @@ public class AlchemicIngredient {
 	/**************************************************
 	 * CONSTRUCTORS
 	 **************************************************/
-	public AlchemicIngredient(IngredientType type, int quantity, Temperature temperature) {
+	//TODO doc
+	@Raw
+	public AlchemicIngredient(IngredientType type, int quantity) {
 		assert(Quantity.isValidQuantity(quantity)):
 			"Quantity is not valid";
 		assert(type!=null):
@@ -23,20 +25,21 @@ public class AlchemicIngredient {
 			"Temperature is not valid";
 		this.type = type;
 		this.quantity = quantity;
-		this.temperature = temperature;
+		this.temperature = type.getStandardTemperatureObject();
+	}
+
+	//TODO doc
+	@Raw
+	public AlchemicIngredient(String name, State state, Temperature standardTemperature, int quantity) {
+		this(new IngredientType(name,state,standardTemperature), quantity);
 	}
 	
-	public AlchemicIngredient(IngredientType type, int quantity, long[] temperatureArray) {
-		this(type,quantity, new Temperature(temperatureArray));
+	//TODO doc (standaard water)
+	@Raw
+	public AlchemicIngredient(int quantity) {
+		this("Water",State.LIQUID,new Temperature(0L,20L),quantity);
 	}
-	
-	public AlchemicIngredient(String name, State state, Temperature standardTemperature, int quantity, Temperature temperature) {
-		this(new IngredientType(name,state,standardTemperature), quantity, temperature);
-	}
-	/*public AlchemicIngredient(String name, State state, long standardTemperature, int quantity, long temperature) {
-		this(new IngredientType(name, state, standardTemperature), quantity, temperature);
-		//TO DO
-	}*/
+
 
 	
 	/************************************************************************
