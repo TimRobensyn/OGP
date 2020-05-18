@@ -64,7 +64,6 @@ public class AlchemicIngredient {
 	 * FULL NAME
 	 ******************************************************/
 	
-	
 	/**
 	 * Set the full name of this alchemic ingredient.
 	 * 
@@ -120,7 +119,7 @@ public class AlchemicIngredient {
 	 ************************************************************************/
 	
 	/**
-	 * Return the quantity of this ingredient in drops or pinches (depending on the state)
+	 * Return the quantity of this ingredient in drops or pinches (depending on the state).
 	 */
 	public int getQuantity() {
 		return quantity;
@@ -162,6 +161,7 @@ public class AlchemicIngredient {
 	 * A variable keeping the temperature of this ingredient.
 	 */
 	private Temperature temperature;
+	
 	
 	/**
 	 * Get the standard temperature of this ingredient.

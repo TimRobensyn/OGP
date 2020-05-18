@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="14.3.0">
-  <zoom_level>8</zoom_level>
+  <zoom_level>16</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>328</x>
-      <y>256</y>
-      <w>264</w>
-      <h>208</h>
+      <x>864</x>
+      <y>576</y>
+      <w>528</w>
+      <h>416</h>
     </coordinates>
     <panel_attributes>AlchemicIngredient
 --
@@ -30,10 +30,10 @@ CONSTRUCTOR
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>16</x>
-      <y>16</y>
-      <w>1144</w>
-      <h>472</h>
+      <x>240</x>
+      <y>96</y>
+      <w>2288</w>
+      <h>944</h>
     </coordinates>
     <panel_attributes>alchemy
 --
@@ -43,10 +43,10 @@ CONSTRUCTOR
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>656</x>
-      <y>272</y>
-      <w>240</w>
-      <h>208</h>
+      <x>1520</x>
+      <y>608</y>
+      <w>480</w>
+      <h>416</h>
     </coordinates>
     <panel_attributes>IngredientType (totaal)
 --
@@ -68,10 +68,10 @@ CONSTRUCTOR
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>16</x>
-      <y>504</y>
-      <w>1144</w>
-      <h>368</h>
+      <x>240</x>
+      <y>1072</y>
+      <w>2288</w>
+      <h>736</h>
     </coordinates>
     <panel_attributes>laboratory
 --
@@ -81,10 +81,10 @@ CONSTRUCTOR
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>920</x>
-      <y>568</y>
-      <w>200</w>
-      <h>48</h>
+      <x>2048</x>
+      <y>1200</y>
+      <w>400</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>CoolingBox
 --
@@ -95,10 +95,10 @@ process() --&gt;cool</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>920</x>
-      <y>640</y>
-      <w>200</w>
-      <h>48</h>
+      <x>2048</x>
+      <y>1344</y>
+      <w>400</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>Oven
 --
@@ -109,10 +109,10 @@ process() --&gt;heat</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>920</x>
-      <y>712</y>
-      <w>200</w>
-      <h>56</h>
+      <x>2048</x>
+      <y>1488</y>
+      <w>400</w>
+      <h>112</h>
     </coordinates>
     <panel_attributes>Kettle
 --
@@ -123,10 +123,10 @@ process() --&gt;mix</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>920</x>
-      <y>784</y>
-      <w>200</w>
-      <h>56</h>
+      <x>2048</x>
+      <y>1632</y>
+      <w>400</w>
+      <h>112</h>
     </coordinates>
     <panel_attributes>Transmogrifier
 --
@@ -137,10 +137,10 @@ process() --&gt;changeState</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>144</x>
-      <y>528</y>
-      <w>168</w>
-      <h>200</h>
+      <x>496</x>
+      <y>1120</y>
+      <w>336</w>
+      <h>400</h>
     </coordinates>
     <panel_attributes>Laboratory (defensief)
 --
@@ -161,10 +161,10 @@ execute(Recipe,int)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>32</x>
-      <y>224</y>
-      <w>240</w>
-      <h>128</h>
+      <x>272</x>
+      <y>512</y>
+      <w>480</w>
+      <h>256</h>
     </coordinates>
     <panel_attributes>IngredientContainer
 --
@@ -178,10 +178,10 @@ CONSTRUCTOR</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>456</x>
-      <y>568</y>
-      <w>184</w>
-      <h>120</h>
+      <x>1120</x>
+      <y>1200</y>
+      <w>368</w>
+      <h>240</h>
     </coordinates>
     <panel_attributes>/Device/
 --
@@ -195,10 +195,10 @@ CONSTRUCTOR</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>632</x>
-      <y>568</y>
-      <w>56</w>
-      <h>168</h>
+      <x>1472</x>
+      <y>1200</y>
+      <w>112</w>
+      <h>336</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;30.0;10.0;30.0;190.0;50.0;190.0</additional_attributes>
@@ -206,10 +206,10 @@ CONSTRUCTOR</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>632</x>
-      <y>568</y>
-      <w>56</w>
-      <h>24</h>
+      <x>1472</x>
+      <y>1200</y>
+      <w>112</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
@@ -217,10 +217,10 @@ CONSTRUCTOR</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>672</x>
-      <y>568</y>
-      <w>216</w>
-      <h>120</h>
+      <x>1552</x>
+      <y>1200</y>
+      <w>432</w>
+      <h>240</h>
     </coordinates>
     <panel_attributes>/TemperatureDevice/
 --
@@ -237,10 +237,10 @@ setTemperature()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>880</x>
-      <y>568</y>
-      <w>56</w>
-      <h>24</h>
+      <x>1968</x>
+      <y>1200</y>
+      <w>112</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
@@ -248,10 +248,10 @@ setTemperature()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>880</x>
-      <y>568</y>
-      <w>56</w>
-      <h>96</h>
+      <x>1968</x>
+      <y>1200</y>
+      <w>112</w>
+      <h>192</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;30.0;10.0;30.0;100.0;50.0;100.0</additional_attributes>
@@ -259,10 +259,10 @@ setTemperature()
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>672</x>
-      <y>712</y>
-      <w>216</w>
-      <h>128</h>
+      <x>1552</x>
+      <y>1488</y>
+      <w>432</w>
+      <h>256</h>
     </coordinates>
     <panel_attributes>/BottomlessDevice/
 --
@@ -280,10 +280,10 @@ emptyIngredient()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>880</x>
-      <y>712</y>
-      <w>56</w>
-      <h>24</h>
+      <x>1968</x>
+      <y>1488</y>
+      <w>112</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
@@ -291,10 +291,10 @@ emptyIngredient()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>880</x>
-      <y>712</y>
-      <w>56</w>
-      <h>96</h>
+      <x>1968</x>
+      <y>1488</y>
+      <w>112</w>
+      <h>192</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;30.0;10.0;30.0;100.0;50.0;100.0</additional_attributes>
@@ -302,10 +302,10 @@ emptyIngredient()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>584</x>
-      <y>272</y>
-      <w>88</w>
-      <h>24</h>
+      <x>1376</x>
+      <y>608</y>
+      <w>176</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;90.0;10.0</additional_attributes>
@@ -313,10 +313,10 @@ emptyIngredient()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>264</x>
-      <y>256</y>
-      <w>80</w>
-      <h>24</h>
+      <x>736</x>
+      <y>576</y>
+      <w>160</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;10.0</additional_attributes>
@@ -324,10 +324,10 @@ emptyIngredient()
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>296</x>
-      <y>48</y>
-      <w>168</w>
-      <h>24</h>
+      <x>800</x>
+      <y>160</y>
+      <w>336</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>LiquidQuantity (enum)</panel_attributes>
     <additional_attributes/>
@@ -335,10 +335,10 @@ emptyIngredient()
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>296</x>
-      <y>112</y>
-      <w>168</w>
-      <h>24</h>
+      <x>800</x>
+      <y>288</y>
+      <w>336</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>PowderQuantity (enum)</panel_attributes>
     <additional_attributes/>
@@ -346,10 +346,10 @@ emptyIngredient()
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>96</x>
-      <y>48</y>
-      <w>144</w>
-      <h>112</h>
+      <x>400</x>
+      <y>160</y>
+      <w>288</w>
+      <h>224</h>
     </coordinates>
     <panel_attributes>/Quantity (=interface)/
 --
@@ -362,10 +362,10 @@ getNbOfSmallestUnit()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>232</x>
-      <y>48</y>
-      <w>80</w>
-      <h>24</h>
+      <x>672</x>
+      <y>160</y>
+      <w>160</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;10.0</additional_attributes>
@@ -373,10 +373,10 @@ getNbOfSmallestUnit()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>232</x>
-      <y>48</y>
-      <w>80</w>
-      <h>88</h>
+      <x>672</x>
+      <y>160</y>
+      <w>160</w>
+      <h>176</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;40.0;10.0;40.0;90.0;80.0;90.0</additional_attributes>
@@ -384,10 +384,10 @@ getNbOfSmallestUnit()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>264</x>
-      <y>176</y>
-      <w>80</w>
-      <h>88</h>
+      <x>736</x>
+      <y>416</y>
+      <w>160</w>
+      <h>176</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
     <additional_attributes>10.0;90.0;80.0;10.0</additional_attributes>
@@ -395,10 +395,10 @@ getNbOfSmallestUnit()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>304</x>
-      <y>576</y>
-      <w>168</w>
-      <h>40</h>
+      <x>816</x>
+      <y>1216</y>
+      <w>336</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=1..1
@@ -409,10 +409,10 @@ has &gt;</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>904</x>
-      <y>152</y>
-      <w>232</w>
-      <h>72</h>
+      <x>2016</x>
+      <y>368</y>
+      <w>464</w>
+      <h>144</h>
     </coordinates>
     <panel_attributes>Recipe
 --
@@ -423,10 +423,10 @@ has &gt;</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>328</x>
-      <y>176</y>
-      <w>152</w>
-      <h>24</h>
+      <x>864</x>
+      <y>416</y>
+      <w>304</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>ContainerType (enum)</panel_attributes>
     <additional_attributes/>
@@ -434,10 +434,10 @@ has &gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>456</x>
-      <y>112</y>
-      <w>56</w>
-      <h>88</h>
+      <x>1120</x>
+      <y>288</y>
+      <w>112</w>
+      <h>176</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
     <additional_attributes>30.0;90.0;50.0;90.0;50.0;10.0;10.0;10.0</additional_attributes>
@@ -445,10 +445,10 @@ has &gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>456</x>
-      <y>48</y>
-      <w>72</w>
-      <h>152</h>
+      <x>1120</x>
+      <y>160</y>
+      <w>144</w>
+      <h>304</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
     <additional_attributes>30.0;170.0;70.0;170.0;70.0;10.0;10.0;10.0</additional_attributes>
@@ -456,10 +456,10 @@ has &gt;</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>640</x>
-      <y>136</y>
-      <w>216</w>
-      <h>56</h>
+      <x>1488</x>
+      <y>336</y>
+      <w>432</w>
+      <h>112</h>
     </coordinates>
     <panel_attributes>RecipeBook
 --
@@ -469,10 +469,10 @@ has &gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>848</x>
-      <y>144</y>
-      <w>72</w>
-      <h>32</h>
+      <x>1904</x>
+      <y>352</y>
+      <w>144</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 </panel_attributes>
@@ -481,10 +481,10 @@ has &gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>584</x>
-      <y>184</y>
-      <w>584</w>
-      <h>96</h>
+      <x>1376</x>
+      <y>432</y>
+      <w>1168</w>
+      <h>192</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
     <additional_attributes>10.0;100.0;710.0;100.0;710.0;10.0;690.0;10.0</additional_attributes>
