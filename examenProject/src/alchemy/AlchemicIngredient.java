@@ -26,6 +26,12 @@ public class AlchemicIngredient {
 		this.temperature = temperature;
 	}
 	
+	/**
+	 * 
+	 * @param type
+	 * @param quantity
+	 * @param temperatureArray
+	 */
 	public AlchemicIngredient(IngredientType type, int quantity, long[] temperatureArray) {
 		this(type,quantity, new Temperature(temperatureArray));
 	}
@@ -33,10 +39,6 @@ public class AlchemicIngredient {
 	public AlchemicIngredient(String name, State state, Temperature standardTemperature, int quantity, Temperature temperature) {
 		this(new IngredientType(name,state,standardTemperature), quantity, temperature);
 	}
-	/*public AlchemicIngredient(String name, State state, long standardTemperature, int quantity, long temperature) {
-		this(new IngredientType(name, state, standardTemperature), quantity, temperature);
-		//TO DO
-	}*/
 
 	
 	/************************************************************************
@@ -60,7 +62,6 @@ public class AlchemicIngredient {
 	/*******************************************************
 	 * FULL NAME
 	 ******************************************************/
-	
 	
 	/**
 	 * Set the full name of this alchemic ingredient.
@@ -117,7 +118,7 @@ public class AlchemicIngredient {
 	 ************************************************************************/
 	
 	/**
-	 * Return the quantity of this ingredient in drops or pinches (depending on the state)
+	 * Return the quantity of this ingredient in drops or pinches (depending on the state).
 	 */
 	public int getQuantity() {
 		return quantity;
@@ -159,6 +160,7 @@ public class AlchemicIngredient {
 	 * A variable keeping the temperature of this ingredient.
 	 */
 	private Temperature temperature;
+	
 	
 	/**
 	 * Get the standard temperature of this ingredient.
