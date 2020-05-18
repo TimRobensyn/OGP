@@ -32,9 +32,17 @@ public class CoolingBox extends TemperatureDevice {
 		setTemperature(temperature);
 	}
 
+	/**
+	 * If the ingredient is hotter than //TODO
+	 */
 	@Override
 	public void process() {
-		Temperature.compareTemperature(getStartIngredient().getStandardTemperatureObject(),getTemperatureObject());
+		long difference = Temperature.temperatureDifference(getStartIngredient().getTemperatureObject(), getTemperatureObject());
+		if(difference>0) {
+			AlchemicIngredient newIngredient = getStartIngredient();
+			newIngredient.cool(difference);
+			setProcessedIngredient(newIngredient);			
+		}
 	}
 
 }
