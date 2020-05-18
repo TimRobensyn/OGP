@@ -14,7 +14,21 @@ public class AlchemicIngredient {
 	/**************************************************
 	 * CONSTRUCTORS
 	 **************************************************/
-	//TODO doc
+	/**
+	 * Initialize a new alchemic ingredient with the given type and quantity.
+	 * 
+	 * @param type
+	 *        The ingredient type of the new alchemic ingredient.
+	 * @param quantity
+	 *        The quantity (in spoons/drops/pinches??) of the new alchemic ingredient.
+	 * @post  The type of this alchemic ingredient is equal to the given type.
+	 *        | getType() == type
+	 * @post  The quantity of this alchemic ingredient is equal to the given quantity.
+	 *		  | getQuantity() == quantity
+	 * @post  The temperature of this alchemic ingredient is equal to the standard temperature of 
+	 * 	      its type.
+	 * 		  | getTemperature() == getType().getStandardTemperature()
+	 */
 	@Raw
 	public AlchemicIngredient(IngredientType type, int quantity) {
 		assert(Quantity.isValidQuantity(quantity)):
@@ -28,16 +42,20 @@ public class AlchemicIngredient {
 		this.temperature = type.getStandardTemperatureObject();
 	}
 
-	//TODO doc
-	@Raw
-	public AlchemicIngredient(String name, State state, Temperature standardTemperature, int quantity) {
-		this(new IngredientType(name,state,standardTemperature), quantity);
-	}
-	
-	//TODO doc (standaard water)
+	/**
+	 * Initialize a new alchemic ingredient of type 'Water' with given quantity.
+	 * 
+	 * @param  quantity
+	 *		   The quantity of the new alchemic ingredient.
+	 * @post   The quantity of this alchemic ingredient is equal to the given quantity.
+	 *		   | getQuantity() == quantity
+	 * @effect The new alchemic ingredient is initialized with the given quantity, 
+	 *         its type is a new type with name "Water", state liquid and temperature {0, 20}.
+	 *         | this(new IngredientType("Water",State.LIQUID,new Temperature(0L,20L)),quantity)
+	 */
 	@Raw
 	public AlchemicIngredient(int quantity) {
-		this("Water",State.LIQUID,new Temperature(0L,20L),quantity);
+		this(new IngredientType("Water",State.LIQUID,new Temperature(0L,20L)),quantity);
 	}
 
 
@@ -70,7 +88,7 @@ public class AlchemicIngredient {
 	 * @post If this alchemic ingredient has a special name, the full name is the special name followed by the
 	 *       formatted simple names between brackets, possibly with a prefactor indicating whether this alchemic
 	 *       ingredient is warmer or cooler than the standard temperature of its ingredient type. If this ingredient
-	 *       has no special name, the full consists of the simplenames with the prefactor.
+	 *       has no special name, the full name consists of the simple names with the prefactor.
 	 *       | if (this.temperature < getStandardTemperature())
 	 *       |    prefactor == "Cooled"
 	 *       | else if (this.temperature > getStandardTemperature())
@@ -83,7 +101,8 @@ public class AlchemicIngredient {
 	 *       | else
 	 *       |    this.fullname == prefactor this.simpleNames
 	 */
-	private void setFullName() {
+	public String getFullName() {
+		String fullName = "";
 		
 		//Add cooled or heated to simple name
 		switch(Temperature.compareTemperature(this.temperature,getStandardTemperatureObject())){
@@ -102,17 +121,8 @@ public class AlchemicIngredient {
 			fullName = type.getSpecialName() + " (" + fullName + ")";
 		}
 		
+		return fullName;		
 	}
-	
-	/**
-	 * After setting the full name of this alchemic ingredient, return it.
-	 */
-	public String getFullName() {
-		setFullName();
-		return this.fullName;
-	}
-	
-	private String fullName = "";
 	
 	/************************************************************************
 	 * Quantity
@@ -187,6 +197,9 @@ public class AlchemicIngredient {
 		return this.type.getStandardTemperature();
 	}
 	
+	/**
+	 * Return the standard temperature object of the type of this alchemic ingredient.
+	 */
 	public Temperature getStandardTemperatureObject() {
 		return type.getStandardTemperatureObject();
 	}
