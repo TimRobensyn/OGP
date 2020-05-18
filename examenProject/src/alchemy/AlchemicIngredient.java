@@ -17,16 +17,22 @@ public class AlchemicIngredient {
 	public AlchemicIngredient(IngredientType type, int quantity, Temperature temperature) {
 		assert(Quantity.isValidQuantity(quantity)):
 			"Quantity is not valid";
+		assert(type!=null):
+			"IngredientType is not valid";
+		assert(Temperature.isValidTemperature(temperature)):
+			"Temperature is not valid";
 		this.type = type;
 		this.quantity = quantity;
 		this.temperature = temperature;
 	}
 	
 	public AlchemicIngredient(IngredientType type, int quantity, long[] temperatureArray) {
-		Temperature temperature = Temperature(temperatureArray);
-		this(type,quantity,temperature);
+		this(type,quantity, new Temperature(temperatureArray));
 	}
 	
+	public AlchemicIngredient(String name, State state, Temperature standardTemperature, int quantity, Temperature temperature) {
+		this(new IngredientType(name,state,standardTemperature), quantity, temperature);
+	}
 	/*public AlchemicIngredient(String name, State state, long standardTemperature, int quantity, long temperature) {
 		this(new IngredientType(name, state, standardTemperature), quantity, temperature);
 		//TO DO
@@ -43,27 +49,41 @@ public class AlchemicIngredient {
 	@Basic @Immutable
 	public IngredientType getType() {
 		return this.type;
-	}
-	
-//	/**
-//	 * Set the type of this alchemic ingredient to the given type.
-//	 * 
-//	 * @param type
-//	 *        The type to be set.
-//	 * @post  The type of this alchemic ingredient is equal to the given type.
-//	 *        | new.getType() = type
-//	 */
-//	private void setType(IngredientType type) {
-//		this.type = type;
-//	}
-	
-	
+	}	
 	
 	/**
 	 * Variable indicating the type of this alchemic ingredient.
 	 */
 	private final IngredientType type;
 	
+	/**
+	 * Return the full name of this ingredient. This is the special name followed
+	 * by the formatted simple names between brackets or, in case the ingredient type has no special
+	 * name yet,
+	 * @return	String
+	 * 			specialName ([Cooled/Heated] simpleNames)
+	 */
+	public String getFullName() {
+		String fullName = "";
+		
+		//Add cooled or heated to simple name
+		switch(Temperature.compareTemperature(getTemperatureObject(),getStandardTemperatureObject())){
+		case -1:
+			fullName.concat("Cooled ");
+			break;
+		case 1:
+			fullName.concat("Heated ");
+			break;
+		default:
+			fullName.concat(type.getSimpleName());
+		}
+		
+		//Add special name
+		if (type.getSpecialName()!=null) {
+			fullName = type.getSpecialName() + " (" + fullName + ")";
+		}
+		return fullName;
+	}
 	
 	/************************************************************************
 	 * Quantity
@@ -107,9 +127,26 @@ public class AlchemicIngredient {
 		return temperature.getTemperature();
 	}
 	
+	private Temperature getTemperatureObject() {
+		return temperature;
+	}
 	/**
 	 * A variable keeping the temperature of this ingredient.
 	 */
 	private Temperature temperature;
+	
+	/**
+	 * Get the standard temperature of this ingredient.
+	 * 
+	 * @return The standard temperature of this ingredient.
+	 */
+	@Basic @Immutable
+	public long[] getStandardTemperature() {
+		return this.type.getStandardTemperature();
+	}
+	
+	public Temperature getStandardTemperatureObject() {
+		return type.getStandardTemperatureObject();
+	}
 	
 }

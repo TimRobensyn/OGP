@@ -52,13 +52,16 @@ public class IngredientType {
 	public IngredientType(String[] simpleNames, State state, Temperature standardTemperature) {
 		this(simpleNames, null, state, standardTemperature.getTemperature());
 	}
+	public IngredientType(String name, State state, Temperature standardTemperature) {
+		this(new String[] {name}, null, state, standardTemperature.getTemperature());
+	}
 	/**
 	 * 
 	 * @param name
 	 * @param standardTemperature
 	 */
 	public IngredientType(String name, Temperature standardTemperature) {
-		this(new String[] {name}, null, State.LIQUID, standardTemperature.getTemperature());
+		this(new String[] {name}, State.LIQUID, standardTemperature);
 	}
 	
 	/********************************************************
@@ -95,9 +98,11 @@ public class IngredientType {
 		
 		for (String word : choppedUpName) {
 			
-			//Geen with of mixed in de naam (ook niet met speciale characters rond)
-			if (word.matches("^[" + specialCharacters + "]?[Ww]ith[" + specialCharacters + "]?$")
-					||(word.matches("^[" + specialCharacters + "]?[Mm]ixed[" + specialCharacters + "]?$"))) {
+			//Geen with, mixed, cooled of heated in de naam (ook niet met speciale characters rond)
+			if ((word.matches("^[" + specialCharacters + "]?[Ww]ith[" + specialCharacters + "]?$")
+					||(word.matches("^[" + specialCharacters + "]?[Mm]ixed[" + specialCharacters + "]?$")))
+					||(word.matches("^[" + specialCharacters + "]?[Cc]ooled[" + specialCharacters + "]?$")
+					||(word.matches("^[" + specialCharacters + "]?[Hh]eated[" + specialCharacters + "]?$")))){
 				valid = false;
 				break;
 			}
@@ -172,22 +177,19 @@ public class IngredientType {
 	 * 
 	 * @return	A string containing all the simple names of this name object formatted according to size
 	 * @return	If there's only one simple name, return that name.
-	 * 			| if (getSimpleNames().size()==1)
-	 * 			|   then return getSimpleNames().get(0)
+	 * 			| if (getSimpleNames().length==1)
+	 * 			|   then return getSimpleNames()[0]
 	 * @return	If there are 2 simple names, return them in the format 'name1 mixed with name2'
-	 * 			| if (getSimpleNames().size()==2)
-	 * 			|   then return getSimpleNames().get(0) + " mixed with " + getSimpleNames().get(1)
+	 * 			| if (getSimpleNames().length==2)
+	 * 			|   then return getSimpleNames()[0] + " mixed with " + getSimpleNames()[1]
 	 * @return	If there are more than 2 simple names, return them in the format 
 	 * 			'firstName mixed with secondName, thirdName... and lastName'
-	 * 			| if (getSimpleNames().size()>=2)
-	 * 			|   then return getSimpleNames().get(0) + " mixed with " + getSimpleNames().get()
-	 * 			
-	 * @throws NullPointerException
+	 * 			| if (getSimpleNames().length>=2)
+	 * 			|   then return getSimpleNames()[0] + " mixed with " + getSimpleNames()[1]
 	 */
 	@Raw
-	public String getSimpleName() throws NullPointerException{
+	public String getSimpleName() {
 		int size = getSimpleNames().length;
-		if (size==0) throw new NullPointerException();
 		if (size==1)
 			return getSimpleNames()[0];
 		if (size==2) {
@@ -236,7 +238,7 @@ public class IngredientType {
 	 * 			is thrown.
 	 * 			| !isValidSimpleName(specialName)
 	 */
-	public void setSpecialName(String specialName) throws IllegalNameException {
+	public void ChangeSpecialName(String specialName) throws IllegalNameException {
 		if ((!isValidSimpleName(specialName))&&(specialName!=null))
 			throw new IllegalNameException(specialName);
 		this.specialName = specialName;
@@ -245,22 +247,7 @@ public class IngredientType {
 	/**
 	 * A variable for a special name for an ingredient.
 	 */
-	private String specialName;
-
-	/**
-	 * Return the full name of this ingredient type.
-	 */
-	public String getFullName() {
-		String fullName = "";
-		try {
-			fullName.concat(getSpecialName());
-		} finally {
-			fullName.concat(" (" + getSimpleName() + ")");
-		}
-		return ""; //TODO
-	}
-	
-	
+	private String specialName;	
 
 
 	
@@ -283,6 +270,8 @@ public class IngredientType {
 	 */
 	private final State state;
 	
+	
+	
 	/************************************************************************
 	 * STANDARD TEMPERATURE
 	 ************************************************************************/
@@ -297,26 +286,9 @@ public class IngredientType {
 		return this.standardTemperature.getTemperature();
 	}
 	
-//	/**
-//	 * Set the standard temperature of this ingredient type to the given temperature.
-//	 * 
-//	 * @param temperature
-//	 *        The new standard temperature
-//	 * @post  If the given temperature is valid and both the standard coldness and
-//	 *        hotness are not zero at the same time, the standard temperature
-//	 *        of this ingredient type is set to the given temperature.
-//	 *        | if (isValidTemperature(temperature)
-//	 *        |    && !(temperature[0]==0 && temperature[0]==0))
-//	 *        |   then new.getStandardTemperature() == temperature
-//	 */
-//	private void setStandardTemperature(long[] temperature) {
-//		if (Temperature.isValidTemperature(temperature)) {
-//			Temperature newTemperature = new Temperature(temperature);
-//			this.standardTemperature = newTemperature;
-//		}
-//			
-//	} ==> Niet nodig omdat standardTemperature final is. (Hergebruik evt. documentatie)
-	
+	public Temperature getStandardTemperatureObject() {
+		return this.standardTemperature;
+	}
 	/**
 	 * A variable containing the Temperature object that is the standard temperature of this type.
 	 */

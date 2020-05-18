@@ -58,5 +58,16 @@ public enum LiquidQuantity implements Quantity {
 		}
 		return NbOfDrops;
 	}
+	
+	/**
+	 * Return the quantity of this unit in drops.
+	 */
+	@Raw @Immutable @Override
+	public int getNbOfSmallestUnit() {
+		int NbOfDrops = 1;
+		LiquidQuantity[] units = LiquidQuantity.values();
+		for (int index = 1; index < units.; index++)){
+			//TODO
+	}
 
 }

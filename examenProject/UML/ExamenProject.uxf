@@ -5,9 +5,9 @@
     <id>UMLClass</id>
     <coordinates>
       <x>328</x>
-      <y>248</y>
+      <y>256</y>
       <w>264</w>
-      <h>216</h>
+      <h>208</h>
     </coordinates>
     <panel_attributes>AlchemicIngredient
 --
@@ -18,6 +18,9 @@
 heat(long)
 cool(long)
 getTemperature()
+getSpecialName()
+setSpecialName()
+getFullName()
 
 CONTSTRUCTOR
 (quantity, type, temperature=standardTemperature)
@@ -27,10 +30,10 @@ CONTSTRUCTOR
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>616</x>
-      <y>32</y>
-      <w>200</w>
-      <h>32</h>
+      <x>16</x>
+      <y>16</y>
+      <w>1160</w>
+      <h>472</h>
     </coordinates>
     <panel_attributes>alchemy
 --
@@ -41,7 +44,7 @@ CONTSTRUCTOR
     <id>UMLClass</id>
     <coordinates>
       <x>656</x>
-      <y>264</y>
+      <y>272</y>
       <w>240</w>
       <h>208</h>
     </coordinates>
@@ -57,7 +60,6 @@ _specialCharacters: String_
 getSimpleName()
 getSpecialName()
 setSpecialName()
-getFullName()
 
 CONSTRUCTOR
 (name, standardTemperature)</panel_attributes>
@@ -66,10 +68,10 @@ CONSTRUCTOR
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>616</x>
-      <y>72</y>
-      <w>120</w>
-      <h>24</h>
+      <x>16</x>
+      <y>504</y>
+      <w>1144</w>
+      <h>368</h>
     </coordinates>
     <panel_attributes>laboratory
 --
@@ -80,7 +82,7 @@ CONSTRUCTOR
     <id>UMLClass</id>
     <coordinates>
       <x>920</x>
-      <y>560</y>
+      <y>568</y>
       <w>200</w>
       <h>48</h>
     </coordinates>
@@ -94,7 +96,7 @@ process() --&gt;cool</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>920</x>
-      <y>632</y>
+      <y>640</y>
       <w>200</w>
       <h>48</h>
     </coordinates>
@@ -108,7 +110,7 @@ process() --&gt;heat</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>920</x>
-      <y>704</y>
+      <y>712</y>
       <w>200</w>
       <h>56</h>
     </coordinates>
@@ -122,7 +124,7 @@ process() --&gt;mix</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>920</x>
-      <y>776</y>
+      <y>784</y>
       <w>200</w>
       <h>56</h>
     </coordinates>
@@ -136,7 +138,7 @@ process() --&gt;changeState</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>144</x>
-      <y>520</y>
+      <y>528</y>
       <w>168</w>
       <h>200</h>
     </coordinates>
@@ -160,7 +162,7 @@ execute(Recipe,int)</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>32</x>
-      <y>216</y>
+      <y>224</y>
       <w>240</w>
       <h>128</h>
     </coordinates>
@@ -177,7 +179,7 @@ CONSTRUCTOR</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>456</x>
-      <y>560</y>
+      <y>568</y>
       <w>184</w>
       <h>120</h>
     </coordinates>
@@ -194,7 +196,7 @@ CONSTRUCTOR</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>632</x>
-      <y>560</y>
+      <y>568</y>
       <w>56</w>
       <h>168</h>
     </coordinates>
@@ -205,7 +207,7 @@ CONSTRUCTOR</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>632</x>
-      <y>560</y>
+      <y>568</y>
       <w>56</w>
       <h>24</h>
     </coordinates>
@@ -216,7 +218,7 @@ CONSTRUCTOR</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>672</x>
-      <y>560</y>
+      <y>568</y>
       <w>216</w>
       <h>120</h>
     </coordinates>
@@ -236,7 +238,7 @@ setTemperature()
     <id>Relation</id>
     <coordinates>
       <x>880</x>
-      <y>560</y>
+      <y>568</y>
       <w>56</w>
       <h>24</h>
     </coordinates>
@@ -247,7 +249,7 @@ setTemperature()
     <id>Relation</id>
     <coordinates>
       <x>880</x>
-      <y>560</y>
+      <y>568</y>
       <w>56</w>
       <h>96</h>
     </coordinates>
@@ -258,7 +260,7 @@ setTemperature()
     <id>UMLClass</id>
     <coordinates>
       <x>672</x>
-      <y>704</y>
+      <y>712</y>
       <w>216</w>
       <h>128</h>
     </coordinates>
@@ -279,7 +281,7 @@ emptyIngredient()
     <id>Relation</id>
     <coordinates>
       <x>880</x>
-      <y>704</y>
+      <y>712</y>
       <w>56</w>
       <h>24</h>
     </coordinates>
@@ -290,7 +292,7 @@ emptyIngredient()
     <id>Relation</id>
     <coordinates>
       <x>880</x>
-      <y>704</y>
+      <y>712</y>
       <w>56</w>
       <h>96</h>
     </coordinates>
@@ -301,7 +303,7 @@ emptyIngredient()
     <id>Relation</id>
     <coordinates>
       <x>584</x>
-      <y>264</y>
+      <y>272</y>
       <w>88</w>
       <h>24</h>
     </coordinates>
@@ -312,7 +314,7 @@ emptyIngredient()
     <id>Relation</id>
     <coordinates>
       <x>264</x>
-      <y>248</y>
+      <y>256</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -323,7 +325,7 @@ emptyIngredient()
     <id>UMLClass</id>
     <coordinates>
       <x>296</x>
-      <y>40</y>
+      <y>48</y>
       <w>168</w>
       <h>24</h>
     </coordinates>
@@ -334,7 +336,7 @@ emptyIngredient()
     <id>UMLClass</id>
     <coordinates>
       <x>296</x>
-      <y>104</y>
+      <y>112</y>
       <w>168</w>
       <h>24</h>
     </coordinates>
@@ -345,7 +347,7 @@ emptyIngredient()
     <id>UMLClass</id>
     <coordinates>
       <x>96</x>
-      <y>40</y>
+      <y>48</y>
       <w>144</w>
       <h>112</h>
     </coordinates>
@@ -361,7 +363,7 @@ getNbOfSmallestUnit()
     <id>Relation</id>
     <coordinates>
       <x>232</x>
-      <y>40</y>
+      <y>48</y>
       <w>80</w>
       <h>24</h>
     </coordinates>
@@ -372,7 +374,7 @@ getNbOfSmallestUnit()
     <id>Relation</id>
     <coordinates>
       <x>232</x>
-      <y>40</y>
+      <y>48</y>
       <w>80</w>
       <h>88</h>
     </coordinates>
@@ -382,32 +384,8 @@ getNbOfSmallestUnit()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>584</x>
-      <y>280</y>
-      <w>88</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>lt=.
-</panel_attributes>
-    <additional_attributes>10.0;10.0;90.0;30.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>584</x>
-      <y>312</y>
-      <w>88</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>lt=.
-</panel_attributes>
-    <additional_attributes>10.0;90.0;90.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
       <x>264</x>
-      <y>168</y>
+      <y>176</y>
       <w>80</w>
       <h>88</h>
     </coordinates>
@@ -418,7 +396,7 @@ getNbOfSmallestUnit()
     <id>Relation</id>
     <coordinates>
       <x>304</x>
-      <y>568</y>
+      <y>576</y>
       <w>168</w>
       <h>40</h>
     </coordinates>
@@ -432,7 +410,7 @@ has &gt;</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>904</x>
-      <y>144</y>
+      <y>152</y>
       <w>232</w>
       <h>72</h>
     </coordinates>
@@ -446,7 +424,7 @@ has &gt;</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>328</x>
-      <y>168</y>
+      <y>176</y>
       <w>152</w>
       <h>24</h>
     </coordinates>
@@ -457,7 +435,7 @@ has &gt;</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>456</x>
-      <y>104</y>
+      <y>112</y>
       <w>56</w>
       <h>88</h>
     </coordinates>
@@ -468,7 +446,7 @@ has &gt;</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>456</x>
-      <y>40</y>
+      <y>48</y>
       <w>72</w>
       <h>152</h>
     </coordinates>
@@ -479,7 +457,7 @@ has &gt;</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>640</x>
-      <y>128</y>
+      <y>136</y>
       <w>216</w>
       <h>56</h>
     </coordinates>
@@ -492,7 +470,7 @@ has &gt;</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>848</x>
-      <y>136</y>
+      <y>144</y>
       <w>72</w>
       <h>32</h>
     </coordinates>
@@ -504,7 +482,7 @@ has &gt;</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>584</x>
-      <y>176</y>
+      <y>184</y>
       <w>584</w>
       <h>96</h>
     </coordinates>
@@ -514,12 +492,12 @@ has &gt;</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>968</x>
-      <y>440</y>
+      <x>960</x>
+      <y>352</y>
       <w>192</w>
       <h>96</h>
     </coordinates>
-    <panel_attributes>Temperature
+    <panel_attributes>Temperature (totaal)
 --
 -temperature: {coldness,hotness}
 --
@@ -532,33 +510,33 @@ getTemperature()</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>888</x>
-      <y>312</y>
-      <w>96</w>
-      <h>152</h>
+      <y>320</y>
+      <w>88</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;100.0;170.0</additional_attributes>
+    <additional_attributes>10.0;10.0;90.0;50.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>584</x>
-      <y>296</y>
-      <w>400</w>
-      <h>216</h>
+      <y>232</y>
+      <w>392</w>
+      <h>144</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;80.0;250.0;400.0;250.0;480.0;190.0</additional_attributes>
+    <additional_attributes>10.0;100.0;100.0;10.0;380.0;10.0;470.0;160.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>880</x>
-      <y>440</y>
-      <w>104</w>
-      <h>192</h>
+      <y>352</y>
+      <w>96</w>
+      <h>288</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>10.0;220.0;110.0;10.0</additional_attributes>
+    <additional_attributes>10.0;340.0;100.0;10.0</additional_attributes>
   </element>
 </diagram>

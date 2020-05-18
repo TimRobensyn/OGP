@@ -192,10 +192,25 @@ public class Temperature {
 					&& isValidTemperatureValue(heatValue)
 					&& !(coldValue!=0 && heatValue!=0) );
 		}
-		else return false;
-		
+		else return false;		
 	}
 	
+	public static boolean isValidTemperature(Temperature temperature) {
+		return isValidTemperature(temperature.getTemperature());
+	}
+	
+	//TODO documentatie
+	public static int compareTemperature(Temperature first, Temperature second) {
+		long firstComparable = -first.getColdness()+first.getHotness();
+		long secondComparable = -second.getColdness()+second.getHotness();
+		if (firstComparable<secondComparable) return -1;
+		if (firstComparable>secondComparable) return 1;
+		else return 0;
+	}
+	
+//	public static int compareTemperature(long[] first, long[] second) {
+//		compareTemperature(new Temperature(1L,0L), new Temperature(0L,1L));
+//	}
 	
 	/**
 	 * Get the temperature of this Temperature object.
