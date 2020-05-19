@@ -69,13 +69,9 @@ public enum PowderQuantity implements Quantity{
 		return Container.CHEST;
 	}
 	
-//	//TODO doc
-//	private static int[] getNbOfSmallestUnitArray() {
-//		int[] result = new int[PowderQuantity.values().length];
-//		for (PowderQuantity quantity : PowderQuantity.values()) {
-//			result[quantity.getIndex()]	= quantity.getNbOfSmallestUnit();	
-//		}
-//		return result;
-//	}
+	//TODO doc
+	public static double getLiquidRatio() {
+		return PowderQuantity.SPOON.getQuantity()/LiquidQuantity.SPOON.getQuantity();
+	}
 
 }

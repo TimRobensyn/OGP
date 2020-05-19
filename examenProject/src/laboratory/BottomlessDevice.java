@@ -42,18 +42,25 @@ public abstract class BottomlessDevice extends Device {
 	 * Clear the startIngredients arrayList.
 	 */
 	protected void clearStartIngredients() {
-		startIngredients = new ArrayList<AlchemicIngredient>();
+		startIngredients = new ArrayList<>(0);
 	}
 
 	/**
 	 * A variable for the loaded ingredients in the device
 	 */
-	private ArrayList<AlchemicIngredient> startIngredients = new ArrayList<AlchemicIngredient>();
+	private ArrayList<AlchemicIngredient> startIngredients = new ArrayList<>(0);
+	
+	/**
+	 * A protected method for adding processed Ingredients to the processed ingredients ArrayList. 
+	 */
+	protected void addProcessedIngredient(AlchemicIngredient ingredient) {
+		processedIngredients.add(ingredient);
+	}
 	
 	/**
 	 * A variable for the processed ingredients still in the device
 	 */
-	private ArrayList<AlchemicIngredient> processedIngredients = new ArrayList<AlchemicIngredient>();
+	private ArrayList<AlchemicIngredient> processedIngredients = new ArrayList<>(0);
 
 	/**
 	 * Loads a new ingredient into this device
@@ -86,9 +93,6 @@ public abstract class BottomlessDevice extends Device {
 	}
 
 	@Override
-	public void process() {
-		// TODO Auto-generated method stub
-
-	}
+	public abstract void process();
 
 }

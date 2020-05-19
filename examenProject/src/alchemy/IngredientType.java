@@ -167,37 +167,7 @@ public class IngredientType {
 			}
 		}
 		return true;
-	}
-	
-	
-//	/**
-//	 * Add a simple name of this ingredient type to the given name.
-//	 * 
-//	 * @param	newName
-//	 * 			The new simple name for this ingredient type.
-//	 * @post	If the given simple name is not empty and valid, and it has not been added yet,
-//	 * 			the simple name of this ingredient type is equal to the given name.
-//	 *         | if (( !newName==null
-//	 *         |    && isValidSimpleName(newName) )
-//	 *         |	&& !getSimpleNames().contains(newName))
-//	 *         |  then new.getName().equals(newName)
-//	 * @throws	NullPointerException
-//	 * 			The given name is empty.
-//	 *         | newName==null
-//	 * @throws	IllegalNameException
-//	 * 			The given name is not valid.
-//	 *         | !isValidSimpleName(newName)
-//	 */
-//	public void addSimpleName(String newName) 
-//			throws NullPointerException, IllegalNameException {
-//		
-//		if (newName == null) throw new NullPointerException();
-//		
-//		if (!isValidSimpleName(newName)) throw new IllegalNameException(newName);
-//		
-//		if (!getSimpleNames().contains(newName)) simpleNames.add(newName);
-//	}
-	
+	}	
 	
 	/**
 	 * Return the name of this ingredient's type in the form of a formatted String.
@@ -212,7 +182,7 @@ public class IngredientType {
 	 * @return	If there are more than 2 simple names, return them in the format 
 	 * 			'firstName mixed with secondName, thirdName... and lastName'
 	 * 			| if (getSimpleNames().length>=2)
-	 * 			|   then return getSimpleNames()[0] + " mixed with " + getSimpleNames()[1]
+	 * 			|   then return getSimpleNames()[0] + " mixed with " + getSimpleNames()[1] //TODO Laatste klopt nog niet
 	 */
 	@Raw
 	public String getSimpleName() {
@@ -266,7 +236,7 @@ public class IngredientType {
 	 * 			is thrown.
 	 * 			| !isValidSimpleName(specialName)
 	 */
-	public void ChangeSpecialName(String specialName) throws IllegalNameException {
+	public void changeSpecialName(String specialName) throws IllegalNameException {
 		if ((!isValidSimpleName(specialName))&&(specialName!=null))
 			throw new IllegalNameException(specialName);
 		this.specialName = specialName;
