@@ -3,6 +3,7 @@ package laboratory;
 import alchemy.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import be.kuleuven.cs.som.*;
 
 //TODO DOCUMENTATIE
 
@@ -16,11 +17,16 @@ public class Kettle extends BottomlessDevice {
 
 	/**
 	 * Rip documentatie hiervoor
-	 * Naam is combinatie van alle unieke simpleNames in the ingredienten
+	 * Naam is combinatie van alle unieke simpleNames in the ingredienten, alfabetisch gerangschikt
 	 * closestToWater zijn alle ingredienten waarvan de standaardTemperatuur dichtst bij water zit (array want sommige zitten even ver)
 	 * State is liquid behalve als alle elementen in closestToWater powder zijn.
 	 * StandardTemperature is de hoogste standaardTemperatuur van alle ingredienten in closestToWater
 	 * Quantity is zoals opgave beveelt (ingewikkeld dus)
+	 * Temperature is gewogen gemiddelde van temperatures van gegeven ingredienten
+	 * 
+	 * Mix the ingredients in the device and empty the loading area.
+	 * 
+	 * Welke tags moet ik hier gebruiken help
 	 */
 	@Override
 	public void process() throws DeviceFullException{
@@ -93,12 +99,30 @@ public class Kettle extends BottomlessDevice {
 			
 			//Temperature
 			long temperature = (long) ((-cumulativeColdness+cumulativeHotness)/totalNbOfSpoons);
-			//TODO nog een klein stukje
+			Temperature newTemperature;
+			if (temperature<0) {
+				newTemperature = new Temperature(-temperature,0);
+			} else if (temperature>0) {
+				newTemperature = new Temperature(0,temperature);
+			} else {
+				newTemperature = newStandardTemperature;
+			}
+
 			//Toewijzing
 			Collections.sort(newNameList);
 			String[] newSimpleNames = (String[]) newNameList.toArray();
 			IngredientType newType = new IngredientType(newSimpleNames, newState, newStandardTemperature);
 			AlchemicIngredient newIngredient = new AlchemicIngredient(newType, newQuantity);
+			
+			//Temperature
+			long difference = Temperature.temperatureDifference(newTemperature, newStandardTemperature);
+			if (difference>0) {
+				newIngredient.heat(difference);
+			}
+			else if (difference<0) {
+				newIngredient.cool(difference);
+			}
+			
 			clearStartIngredients();
 			addProcessedIngredient(newIngredient);
 		}
