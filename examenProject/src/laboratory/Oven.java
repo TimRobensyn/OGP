@@ -20,7 +20,7 @@ public class Oven extends TemperatureDevice {
 		long difference = Temperature.temperatureDifference(getTemperatureObject(), getStartIngredient().getTemperatureObject());
 		if (difference>0) {
 			AlchemicIngredient newIngredient = getStartIngredient();
-			newIngredient.heat((long) (difference*randomness));
+			newIngredient.heat((long) (difference*randomness)); //TODO Dit klopt nog niet
 			setProcessedIngredient(newIngredient);
 			setStartIngredient(null);
 		}

@@ -48,7 +48,16 @@ public abstract class BottomlessDevice extends Device {
 	/**
 	 * A variable for the loaded ingredients in the device
 	 */
-	private ArrayList<AlchemicIngredient> startIngredients = new ArrayList<>(0);
+	private ArrayList<AlchemicIngredient> startIngredients = new ArrayList<>();
+	
+	/**
+	 * Return the arrayList with the processedIngredients.
+	 */
+	@Basic
+	protected ArrayList<AlchemicIngredient> getProcessedIngredients() {
+		return processedIngredients;
+	}
+	
 	
 	/**
 	 * A protected method for adding processed Ingredients to the processed ingredients ArrayList. 
@@ -60,7 +69,7 @@ public abstract class BottomlessDevice extends Device {
 	/**
 	 * A variable for the processed ingredients still in the device
 	 */
-	private ArrayList<AlchemicIngredient> processedIngredients = new ArrayList<>(0);
+	private ArrayList<AlchemicIngredient> processedIngredients = new ArrayList<>();
 
 	/**
 	 * Loads a new ingredient into this device
