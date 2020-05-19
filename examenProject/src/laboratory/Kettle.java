@@ -2,6 +2,8 @@ package laboratory;
 
 import alchemy.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import be.kuleuven.cs.som.*;
 
 //TODO DOCUMENTATIE
 
@@ -15,10 +17,16 @@ public class Kettle extends BottomlessDevice {
 
 	/**
 	 * Rip documentatie hiervoor
-	 * Naam is combinatie van alle unieke simpleNames in the ingredienten
+	 * Naam is combinatie van alle unieke simpleNames in the ingredienten, alfabetisch gerangschikt
 	 * closestToWater zijn alle ingredienten waarvan de standaardTemperatuur dichtst bij water zit (array want sommige zitten even ver)
 	 * State is liquid behalve als alle elementen in closestToWater powder zijn.
 	 * StandardTemperature is de hoogste standaardTemperatuur van alle ingredienten in closestToWater
+	 * Quantity is zoals opgave beveelt (ingewikkeld dus)
+	 * Temperature is gewogen gemiddelde van temperatures van gegeven ingredienten
+	 * 
+	 * Mix the ingredients in the device and empty the loading area.
+	 * 
+	 * Welke tags moet ik hier gebruiken help
 	 */
 	@Override
 	public void process() throws DeviceFullException{
@@ -29,6 +37,11 @@ public class Kettle extends BottomlessDevice {
 			ArrayList<AlchemicIngredient> closestToWater = new ArrayList<>(0);
 			Temperature waterTemperature = new Temperature(0L,20L);
 			long diffClosest = Math.abs(Temperature.temperatureDifference(getStartIngredients().get(0).getStandardTemperatureObject(),waterTemperature));
+			int quantityOfLiquids=0;
+			int quantityOfPowders=0;
+			long cumulativeColdness = 0L;
+			long cumulativeHotness = 0L;
+			double totalNbOfSpoons = 0L;
 			
 			for (AlchemicIngredient ingredient:getStartIngredients()) {
 				//Name
@@ -44,6 +57,18 @@ public class Kettle extends BottomlessDevice {
 				} else if (diffIngredient==diffClosest) {
 					closestToWater.add(ingredient);
 				}
+				
+				//Quantity & temperature
+				if (ingredient.getType().getState()==State.LIQUID) {
+					quantityOfLiquids += ingredient.getQuantity();
+					cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*LiquidQuantity.SPOON.getQuantity();
+					totalNbOfSpoons += ingredient.getQuantity()/LiquidQuantity.SPOON.getQuantity();
+				} else if (ingredient.getType().getState()==State.POWDER) {
+					quantityOfPowders += ingredient.getQuantity();
+					cumulativeHotness += ingredient.getHotness()*ingredient.getQuantity()*PowderQuantity.SPOON.getQuantity();
+					totalNbOfSpoons += ingredient.getQuantity()/PowderQuantity.SPOON.getQuantity();
+				}
+				
 			}
 			
 			//State
@@ -61,11 +86,45 @@ public class Kettle extends BottomlessDevice {
 					newStandardTemperature = ingredient.getStandardTemperatureObject();
 				}
 			}
+			
+			//Quantity
+			int newQuantity = 0;
+			if (newState==State.LIQUID) {
+				int powderToLiquid = LiquidQuantity.SPOON.getQuantity()*( (int) Math.floor(quantityOfPowders*LiquidQuantity.getPowderRatio()));
+				newQuantity = quantityOfLiquids + powderToLiquid;
+			} else if (newState==State.POWDER) {
+				int liquidToPowder = PowderQuantity.SPOON.getQuantity()*( (int) Math.floor(quantityOfPowders*PowderQuantity.getLiquidRatio()));
+				newQuantity = quantityOfPowders + liquidToPowder;
+			}
+			
+			//Temperature
+			long temperature = (long) ((-cumulativeColdness+cumulativeHotness)/totalNbOfSpoons);
+			Temperature newTemperature;
+			if (temperature<0) {
+				newTemperature = new Temperature(-temperature,0);
+			} else if (temperature>0) {
+				newTemperature = new Temperature(0,temperature);
+			} else {
+				newTemperature = newStandardTemperature;
+			}
+
 			//Toewijzing
-			String[] newSimpleNames = (String[]) newNameList.toArray(); //TODO Algemeen: zorg er ergens voor dat simpleNames altijd alfabetisch staan
+			Collections.sort(newNameList);
+			String[] newSimpleNames = (String[]) newNameList.toArray();
 			IngredientType newType = new IngredientType(newSimpleNames, newState, newStandardTemperature);
 			AlchemicIngredient newIngredient = new AlchemicIngredient(newType, newQuantity);
+			
+			//Temperature
+			long difference = Temperature.temperatureDifference(newTemperature, newStandardTemperature);
+			if (difference>0) {
+				newIngredient.heat(difference);
+			}
+			else if (difference<0) {
+				newIngredient.cool(difference);
+			}
+			
 			clearStartIngredients();
+			addProcessedIngredient(newIngredient);
 		}
 	}
 }

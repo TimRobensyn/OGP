@@ -91,7 +91,9 @@ public enum LiquidQuantity implements Quantity {
 //		return Container.valueOf(LiquidQuantity.values()[index].toString());
 	}
 	
-	//TODO
+	/**
+	 * Return the ratio between spoon of liquids (in drops) and a spoon of solids (in pinches)
+	 */
 	public static double getPowderRatio() {
 		return LiquidQuantity.SPOON.getQuantity()/PowderQuantity.SPOON.getQuantity();
 	}
