@@ -122,10 +122,10 @@ public class IngredientType {
 		for (String word : choppedUpName) {
 			
 			//Geen with, mixed, cooled of heated in de naam (ook niet met speciale characters rond)
-			if ((word.matches("^[" + specialCharacters + "]?[Ww]ith[" + specialCharacters + "]?$")
-					||(word.matches("^[" + specialCharacters + "]?[Mm]ixed[" + specialCharacters + "]?$")))
-					||(word.matches("^[" + specialCharacters + "]?[Cc]ooled[" + specialCharacters + "]?$")
-					||(word.matches("^[" + specialCharacters + "]?[Hh]eated[" + specialCharacters + "]?$")))){
+			if ((word.matches("^[" + specialCharacters + "]*[Ww]ith[" + specialCharacters + "]*$")
+					||(word.matches("^[" + specialCharacters + "]*[Mm]ixed[" + specialCharacters + "]*$")))
+					||(word.matches("^[" + specialCharacters + "]*[Cc]ooled[" + specialCharacters + "]*$")
+					||(word.matches("^[" + specialCharacters + "]*[Hh]eated[" + specialCharacters + "]*$")))){
 				valid = false;
 				break;
 			}
@@ -137,7 +137,7 @@ public class IngredientType {
 			}
 			
 			// Elk woord begint met een hoofdletter (hier kan een speciaal teken voor staan), de rest van de letters zijn klein of speciaal
-			if (!word.matches("^[" + specialCharacters + "]?[A-Z][a-z" + specialCharacters + "]*$")){
+			if (!word.matches("^[" + specialCharacters + "A-Z][a-z]*$")){
 				valid = false;
 				break;
 			}

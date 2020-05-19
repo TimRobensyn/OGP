@@ -108,7 +108,8 @@ public class Temperature {
 	 * 
 	 * @param  tempValue
 	 *         The value to decrease the temperature of this Temperature object with.
-	 * @effect If the given value is not above the current hotness, the hotness is decreased 
+	 * @effect If the given value is negative or zero, do nothing.
+	 * 		   If the given value is not above the current hotness, the hotness is decreased 
 	 *         with this value.
 	 *         | if (tempValue<=getHotness())
 	 *         |     then new.getHotness() = old.getHotness()-tempValue
@@ -207,22 +208,22 @@ public class Temperature {
 	/**
 	 * Compares two temperatures and checks whether the first is cooler or warmer than the second.
 	 * 
-	 * @param  first
+	 * @param  temp1
 	 *         The temperature to check.
-	 * @param  second
+	 * @param  temp2
 	 *         The temperature to compare with.     
 	 * @return Returns one if the first temperature is warmer than the second, minus one if it's cooler
 	 *         and 0 if both temperatures are equal.
-	 *         | if (first > second)
+	 *         | if (temp1 > temp2)
 	 *         |    return 1
-	 *         | else if (first < second)
+	 *         | else if (temp1 < temp2)
 	 *         |    return -1
 	 *         | else
 	 *         |    return 0
 	 */
-	public static int compareTemperature(Temperature first, Temperature second) {
-		long firstComparable = -first.getColdness()+first.getHotness();
-		long secondComparable = -second.getColdness()+second.getHotness();
+	public static int compareTemperature(Temperature temp1, Temperature temp2) {
+		long firstComparable = -temp1.getColdness()+temp1.getHotness();
+		long secondComparable = -temp1.getColdness()+temp2.getHotness();
 		if (firstComparable<secondComparable) return -1;
 		else if (firstComparable>secondComparable) return 1;
 		else return 0;
@@ -231,8 +232,8 @@ public class Temperature {
 	/**
 	 * Return the difference between two temperatures, positive if first temperature is bigger than the second.
 	 */
-	public static long temperatureDifference(Temperature first, Temperature second) {
-		return -first.getColdness()+first.getHotness()-(-second.getColdness()+second.getHotness());
+	public static long temperatureDifference(Temperature temp1, Temperature temp2) {
+		return -temp1.getColdness()+temp1.getHotness()-(-temp2.getColdness()+temp2.getHotness());
 	}
 //	public static int compareTemperature(long[] first, long[] second) {
 //		compareTemperature(new Temperature(1L,0L), new Temperature(0L,1L));
