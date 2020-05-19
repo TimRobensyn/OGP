@@ -69,7 +69,9 @@ public enum PowderQuantity implements Quantity{
 		return Container.CHEST;
 	}
 	
-	//TODO doc
+	/**
+	 * Return the ratio between a spoon of solids (in pinches) and spoon of liquids (in drops).
+	 */
 	public static double getLiquidRatio() {
 		return PowderQuantity.SPOON.getQuantity()/LiquidQuantity.SPOON.getQuantity();
 	}

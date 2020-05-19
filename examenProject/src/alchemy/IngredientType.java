@@ -150,9 +150,11 @@ public class IngredientType {
 	 * Check an array of strings to see if it is a valid array of simpleNames
 	 * @param 	simpleNames
 	 * 			The given array of Strings.
-	 * @return	true if the array has at least one valid name and no duplicate strings
-	 * 			| (simpleNames.length>0) && (isValidSimpleName(simpleNames[i]) for all i
+	 * @return	true if the array has at least one valid name, no duplicate strings and is alphabetically sorted.
+	 * 			| (simpleNames.length>0)
+	 * 			| && (isValidSimpleName(simpleNames[i]) for all i
 	 * 			| && for all i and k: (i!=k) ==> (simpleNames[i] != simpleNames[k]  //TODO is dit brak?
+	 * 			| && HOW TF ZET JE FORMEEL "ALFABETISCH"???
 	 */
 	public static boolean areValidSimpleNames(String[] simpleNames) {
 		//At least one name is needed
@@ -166,6 +168,18 @@ public class IngredientType {
 				if ((i!=k)&&(simpleNames[i]==simpleNames[k])) return false;
 			}
 		}
+		//Alphabetical
+		String[] sortedSimpleNames = simpleNames.clone();
+        for (int i = 0; i < sortedSimpleNames.length; i++) {
+            for (int j = i + 1; j < sortedSimpleNames.length; j++) { 
+                if (sortedSimpleNames[i].compareTo(sortedSimpleNames[j]) > 0) {
+                    String temp = sortedSimpleNames[i];
+                    sortedSimpleNames[i] = sortedSimpleNames[j];
+                    sortedSimpleNames[j] = temp;
+                }
+            }
+        }
+        if (!simpleNames.equals(sortedSimpleNames)) return false;
 		return true;
 	}	
 	
