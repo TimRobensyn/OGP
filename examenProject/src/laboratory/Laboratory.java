@@ -40,7 +40,7 @@ public class Laboratory {
 	 * 
 	 * @param container
 	 * 		  The given container
-	 * //TODO Exception voor een volle laboratory
+	 * 
 	 */
 	public void store(IngredientContainer container) throws ItemFullException {
 		if(this.getStorageQuantity() + container.getContentQuantity() > this.capacity) {
@@ -49,30 +49,57 @@ public class Laboratory {
 		AlchemicIngredient ingredient = container.getIngredient();
 		makeStandardTemp(ingredient);
 
+		AlchemicIngredient newIngredient = null;
 		for(AlchemicIngredient storedIngredient : storage) {
 			if(storedIngredient.getType() == ingredient.getType()) {
-				ingredient = new AlchemicIngredient(ingredient.getType(), ingredient.getQuantity() + storedIngredient.getQuantity()); //TODO DIT DOEN MET KETTLE WANNEER KETTLE KLAAR IS
-				storage.remove(storedIngredient);
+				IngredientContainer storedContainer = request(storedIngredient.getType().getSimpleName()); //TODO ALS DIT MEER IS DAN EEN CHEST OF BARREL KAN DIT FOUT LOPEN 
+				this.kettle.loadIngredient(storedContainer);
+				this.kettle.loadIngredient(container);
+				this.kettle.process();
+				newIngredient = this.kettle.getProcessedIngredients().get(kettle.getProcessedIngredients().size() -1);
+				//ingredient = new AlchemicIngredient(ingredient.getType(), ingredient.getQuantity() + storedIngredient.getQuantity()); //TODO DIT DOEN MET KETTLE WANNEER KETTLE KLAAR IS
+				//storage.remove(storedIngredient);
 			}
 		}
-		storage.add(ingredient);
+		storage.add(newIngredient);
 	}
 	
 	/**
 	 * Request a given amount of an alchemic ingredient by giving either the special of the simple name.
 	 * If the given amount of greater than the capacity of a barrel or chest depending on the state of the requested ingredient,
 	 * this returns a barrel or chest and the leftovers are deleted.
-	 * If the given amount cannot be greater than the quantity this laboratory contains and the laboratory has to contain the requested name
+	 * The given amount cannot be greater than the quantity this laboratory contains and the laboratory has to contain the requested name
+	 * 
+	 * Request a given amount of an alchemic ingredient by giving either the special or simple name.
 	 * 
 	 * @param name
-	 * 		  The special of simple name of the requested ingredient
+	 * 		  The special or simple name of the requested ingredient
 	 * @param amount
 	 * 		  The given amount
+	 * @effect If this laboratory contains an alchemic ingredient with the given special or simple name and
+	 * 		   if the given amount is not greater than the quantity of this alchemic ingredient and
+	 * 		   if the given amount is not greater than a barrel or chest depending on the state of the requested ingredient,
+	 * 		   the smallest possible container containing this ingredient with the given amount is created
+	 * 		   | for(storedIngredient : storage)
+	 * 		   |  if((requestedIngredientName == storedIngredientName) && (storedIngredient.getQuantity() >= amount) &&
+	 *         |     (amount <= Barrel or Chest quantity))
+	 * 		   | 		newContainer = new IngredientContainer(newIngredient, containerType);
+	 * 		   |        storage.remove(requested storedIngredient)
+	 *  	   If the given amount is greater than a barrel or chest depending on the state of the requested ingredient,
+	 *  	   A barrel or chest is created and the leftovers are deleted
+	 *  	   | if(amount > barrel or chest quantity)
+	 *  	   |  storedIngredient = new AlchemicIngredient(storedIngredient.getType(), barrel or chest quantity)
+	 *  	   |  newIngredient = new AlchemicIngredient(storedIngredient.getType(), barrel or chest quantity)
+	 *  	   |  newContainer = new IngredientContainer(newIngredient, containerType)
+	 *         |  storage.remove(requested storedIngredient)
 	 * @throws ItemEmptyException
-	 * 		   
+	 * 		   Theislaboratory does not contain enough of the requested item
+	 * 		   | storedIngredient.getQuantity() < amount
 	 * @throws IllegalArgumentException
+	 * 		   This laboratory does not contain an ingredient with the given name
+	 * 		   | !((storedIngredient.getType().getSimpleName() == name) ||
+	 * 		   |  (storedIngredient.getType().getSpecialName() == name))
 	 */
-	//TODO COMMENTAAR HIERBOVEN AFWERKEN
 	public IngredientContainer request(String name, int amount) throws ItemEmptyException, IllegalArgumentException{
 		IngredientContainer newContainer = null;
 		Container containerType = null;
@@ -114,6 +141,13 @@ public class Laboratory {
 		return newContainer;
 	}
 	
+	/**
+	 * Request the full amount of an ingredient with the given simple or special name that this laboratory contains
+	 * @param name
+	 * 		  The given special of simple name of the ingredient
+	 * @effect The full quantity of the requested ingredient gets requested
+	 * 		   | request(name, storedIngredient.getQuantity())
+	 */
 	public IngredientContainer request(String name) {
 		for(AlchemicIngredient storedIngredient : storage) {
 			if((storedIngredient.getType().getSimpleName() == name) || (storedIngredient.getType().getSpecialName() == name)){
@@ -128,6 +162,23 @@ public class Laboratory {
 		
 	}
 	
+	/**
+	 * Heat or cool the given ingredient to it's standard temperature using the oven or cooling box in this laboratory
+	 * If the ingredient is already at it's standard temperature nothing needs to happen
+	 * 
+	 * @param ingredient
+	 * 		  The given ingredient
+	 * @effect If the ingredient is hotter than it's standard temperature it gets cooled to it's standard temperature
+	 *         | if(temperatureDifference(ingredient.getStandardTemperature(), ingredient.getTemperature()) > 0)
+	 *         | 	oven.setTemperature(ingredient.getStandardTemperature())
+	 *         | 	oven.setStartIngredient(ingredient)
+	 *         | 	oven.process()
+	 *         If the ingredient is colder than it's standard temperature it gets heated to it's standard temperature
+	 *         | if(temperatureDifference(ingredient.getStandardTemperature(), ingredient.getTemperature()) < 0)
+	 *         | 	coolingbox.setTemperature(ingredient.getStandardTemperature())
+	 *         |	coolingbox.setStartIngredient(ingredient)
+	 *         |	coolingbox.process()
+	 */
 	private void makeStandardTemp(AlchemicIngredient ingredient) {
 		long tempDiff = Temperature.temperatureDifference(ingredient.getStandardTemperatureObject(), ingredient.getTemperatureObject());
 		if(tempDiff > 0) {
