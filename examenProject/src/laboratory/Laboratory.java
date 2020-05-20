@@ -7,58 +7,114 @@ import be.kuleuven.cs.som.annotate.*;
 /**
  * A class describing a laboratory for storing and handling alchemic ingredients and devices
  * 
+ * @invar	Each laboratory must have a valid capacity
+ * 			| isValidCapacity(getCapacity())
+ * @invar 	The storage of a laboratory cannot contain duplicate ingredient types
+ * 			| hasProperIngredients()
+ * 
  * @version  1.0
  * @author   Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  */
 
 public class Laboratory {
 	
-	public Laboratory(int capacity, ArrayList<AlchemicIngredient> storage, CoolingBox coolingbox, Oven oven, Kettle kettle, Transmogrifier transmogrifier) {
+	/**************************************************
+	 * CONSTRUCTORS
+	 **************************************************/
+	/**
+	 * Initialize a new laboratory with the given capacity, storage and devices
+	 * 
+	 * @param capacity
+	 * 	      The given capacity in storerooms
+	 * @param storage
+	 * 		  The given ArrayList with the storage in this laboratory
+	 * @param coolingbox
+	 * 	      The cooling box in this laboratory
+	 * @param oven
+	 * 		  The oven in this laboratory
+	 * @param kettle
+	 * 		  The kettle in this laboratory
+	 * @param transmogrifier
+	 * 		  The transmogrifier in this laboratory
+	 * @post  The capacity of this laboratory is set to the given capacity in storerooms
+	 * 		  | getCapacity() == capacity
+	 * @post  The storage of this laboratory is set to the given capacity
+	 *        | getCoolingbox == coolingbox
+	 *        | getOven == oven
+	 *        | getKettle == kettle
+	 *        | getTransmogrifier == transmogrifier
+	 */
+	@Raw
+	public Laboratory(int capacity, ArrayList<AlchemicIngredient> storage, CoolingBox coolingbox, Oven oven, Kettle kettle, Transmogrifier transmogrifier) throws CapacityException {
 		this.capacity = capacity;
-		this.storage = storage;
+		setStorage(storage);
 		
-		devices.add(coolingbox);
-		devices.add(oven);
-		devices.add(kettle);
-		devices.add(transmogrifier);
+		addAsDevice(coolingbox);
+		addAsDevice(oven);
+		addAsDevice(kettle);
+		addAsDevice(transmogrifier);
 	}
 	
+	/**
+	 * Initialize a new laboratory with the given capacity, an empty storage and no devices
+	 * 
+	 * @param capacity
+	 * 	      The given capacity
+	 * 		  | getCapacity() == capacity
+	 * @effect The new laboratory is initialized with the given capacity
+	 * 		   it's storage is empty and the devices are set to null
+	 * 		   | this(capacity, new ArrayList<AlchemicIngredient>(), null, null, null, null)
+	 */
+	@Raw
 	public Laboratory(int capacity) {
 		this(capacity, new ArrayList<AlchemicIngredient>(), null, null, null, null);
 	}
 	
-	@Basic
-	public CoolingBox getCoolingbox() throws CapacityException {
-		if(devices.get(0) == null) {
-			throw new CapacityException(devices.get(0));
-		}
-		return (CoolingBox) devices.get(0);
-	}
+	/**************************************************
+	 * CAPACITY
+	 **************************************************/
 	
+	/**
+	 * Return the capacity of this laboratory in storerooms
+	 */
 	@Basic
-	public Oven getOven() {
-		if(devices.get(1) == null) {
-			throw new CapacityException(devices.get(1));
-		}
-		return (Oven) this.devices.get(1);
-	}
-	
-	@Basic
-	public Kettle getKettle() {
-		if(devices.get(2) == null) {
-			throw new CapacityException(devices.get(2));
-		}
-		return (Kettle) this.devices.get(2);
-	}
-	
-	@Basic
-	public Transmogrifier transmogrifier() {
-		if(devices.get(3) == null) {
-			throw new CapacityException(devices.get(3));
-		}
-		return (Transmogrifier) this.devices.get(3);
+	public int getCapacity() {
+		return this.capacity;
 	}
 
+	/**
+	 * Check whether the given capacity is a valid capacity for a laboratory
+	 * 
+	 * @param capacity
+	 * 		  The given capacity
+	 * @return True if and only if the given capacity is not less than 0 or greater than the maximum interger value
+	 *         | result == ((capacity >= 0) && (capacity <= Integer.MAX_VALUE))
+	 */
+	public static boolean isValidCapacity(int capacity) {
+		return((capacity >= 0) && (capacity <= Integer.MAX_VALUE));
+	}
+	
+	/**
+	 * Variable storing the capacity of this laboratory in storerooms
+	 */
+	private final int capacity;
+	
+	/**************************************************
+	 * STORAGE
+	 **************************************************/
+
+	/**
+	 * Return the storage of this laboratory
+	 */
+	@Basic
+	public ArrayList<AlchemicIngredient> getStorage(){
+		return this.storage;
+	}
+	
+	private void setStorage(ArrayList<AlchemicIngredient> storage) {
+		this.storage = storage;
+	}
+	
 	/**
 	 * Return the quantity that is contained in this laboratory
 	 */
@@ -70,6 +126,39 @@ public class Laboratory {
 		return quantity;
 	}
 	
+	/**
+	 * Return the number of ingredients in this laboratory
+	 */
+	@Basic
+	public int getNbIngredients() {
+		return getStorage().size();
+	}
+	
+	@Basic
+	public AlchemicIngredient getIngredientAt(int index) {
+		return getStorage().get(index);
+	}
+	
+	public void addAsIngredient(AlchemicIngredient ingredient) {
+		getStorage().add(ingredient);
+	}
+	
+	public void removeAsIngredient(AlchemicIngredient ingredient) {
+		getStorage().remove(ingredient);
+	}
+	
+	public boolean hasProperIngredients() {
+		boolean bool = true;
+		for(int i=0; i <= getNbIngredients()-2; i++) {
+			for(int j = i+1; j < getNbIngredients(); j++) {
+				if(getIngredientAt(i).getType().equals(getIngredientAt(j).getType())) {
+					bool = false;
+				}
+			}
+		}
+		return bool;
+	}
+
 	/**
 	 * Store the ingredient contained by the given container in this laboratory. The ingredient gets heated or cooled to it's standard temperature
 	 * using the oven or cooling box in this laboratory. If this laboratory already contains an ingredient with the same type, the ingredients get
@@ -91,11 +180,11 @@ public class Laboratory {
 			if(storedIngredient.getType().equals(ingredient.getType())) {
 				getKettle();
 				ingredient = new AlchemicIngredient(ingredient.getType(), ingredient.getQuantity() + storedIngredient.getQuantity()); 
-				storage.remove(storedIngredient);
+				removeAsIngredient(storedIngredient);
 				break;
 			}
 		}
-		storage.add(ingredient);
+		addAsIngredient(ingredient);
 		container = null;
 	}
 	
@@ -157,9 +246,9 @@ public class Laboratory {
 				AlchemicIngredient newIngredient = new AlchemicIngredient(storedIngredient.getType(), amount);
 				if(storedIngredient.getQuantity()-amount > 0) {
 					AlchemicIngredient newStoredIngredient = new AlchemicIngredient(storedIngredient.getType(), storedIngredient.getQuantity()-amount);
-					storage.add(newStoredIngredient);
+					addAsIngredient(newStoredIngredient);
 				}
-				storage.remove(storedIngredient);
+				removeAsIngredient(storedIngredient);
 				newContainer = new IngredientContainer(newIngredient, containerType);
 				
 				break;
@@ -180,7 +269,7 @@ public class Laboratory {
 	 */
 	public IngredientContainer request(String name) {
 		IngredientContainer newContainer = null;
-		for(AlchemicIngredient storedIngredient : storage) {
+		for(AlchemicIngredient storedIngredient : getStorage()) {
 			if((storedIngredient.getType().getSimpleName() == name) || (storedIngredient.getType().getSpecialName() == name)){
 				if(storedIngredient.getType().getState() == State.LIQUID) {
 					if(storedIngredient.getQuantity() > LiquidQuantity.BARREL.getNbOfSmallestUnit()) {
@@ -204,13 +293,128 @@ public class Laboratory {
 	}
 	
 	public Object[][] getInventory() {
-		Object[][] inventory = new Object[2][storage.size()];
+		Object[][] inventory = new Object[2][getNbIngredients()];
 		int index = 0;
-		while(index < storage.size()) {
-			inventory[0][index] = storage.get(index).getFullName();
-			inventory[1][index] = storage.get(index).getQuantity();
+		while(index < getNbIngredients()) {
+			inventory[0][index] = getIngredientAt(index).getFullName();
+			inventory[1][index] = getIngredientAt(index).getQuantity();
 		}
 		return inventory;
+	}
+	
+	
+	/**
+	 * Variable storing the contents of this laboratory in drops or pinches
+	 */
+	private ArrayList<AlchemicIngredient> storage = new ArrayList<AlchemicIngredient>();
+	
+	/**************************************************
+	 * DEVICES
+	 **************************************************/
+	
+	/**
+	 * Return the list of devices in this laboratory
+	 */
+	@Basic
+	public ArrayList<Device> getDevices(){
+		return this.devices;
+	}
+	
+	@Basic
+	public int getNbDevices() {
+		return getDevices().size();
+	}
+	
+	@Basic
+	public Device getDeviceAt(int index) {
+		return getDevices().get(index);
+	}
+	
+	public static boolean isValidDeviceAt(Device device, int index) {
+		if(device.getClass() == CoolingBox.class) {
+			return(index == 0);
+		} else if(device.getClass() == Oven.class) {
+			return(index == 1);
+		} else if(device.getClass() == Kettle.class) {
+			return(index == 2);
+		} else if(device.getClass() == Transmogrifier.class) {
+			return(index == 3);
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean hasProperDevices() {
+		boolean bool = true;
+		if((getDeviceAt(0).getClass() != CoolingBox.class) && (getDeviceAt(0) != null)) {
+			bool = false;
+		}
+		if((getDeviceAt(1).getClass() != Oven.class) && (getDeviceAt(1) != null)) {
+			bool = false;
+		}
+		if((getDeviceAt(2).getClass() != Kettle.class) && (getDeviceAt(2) != null)) {
+			bool = false;
+		}
+		if((getDeviceAt(3).getClass() != Transmogrifier.class) && (getDeviceAt(3) != null)) {
+			bool = false;
+		}
+		return bool;
+	}
+	
+	public void addAsDevice(Device device) throws CapacityException {
+		if((device.getClass() == CoolingBox.class) && (getDeviceAt(0) == null)) {
+			getDevices().add(0, device);
+		}
+		else if((device.getClass() == Oven.class) && (getDeviceAt(1) == null)) {
+			getDevices().add(1, device);
+		}
+		else if((device.getClass() == Kettle.class) && (getDeviceAt(2) == null)) {
+			getDevices().add(2, device);
+		}
+		else if((device.getClass() == Transmogrifier.class) && (getDeviceAt(3) == null)) {
+			getDevices().add(3, device);
+		} else {
+			throw new CapacityException(this);
+		}
+	}
+	
+	public void removeAsDevice(Device device) {
+			getDevices().remove(device);
+	}
+	
+	/**
+	 * Return the coolingbox in this laboratory
+	 * 
+	 * @throws CapacityException
+	 * 		   This laboratory does not contain a coolingbox
+	 *         | if(devices.get(0) ==
+	 */
+	public CoolingBox getCoolingbox() throws CapacityException {
+		if(getDeviceAt(0) == null) {
+			throw new CapacityException(getDeviceAt(0));
+		}
+		return (CoolingBox) getDeviceAt(0);
+	}
+	
+	public Oven getOven() {
+		if(getDeviceAt(1) == null) {
+			throw new CapacityException(getDeviceAt(1));
+		}
+		return (Oven) getDeviceAt(1);
+	}
+	
+	public Kettle getKettle() {
+		if(getDeviceAt(2) == null) {
+			throw new CapacityException(getDeviceAt(2));
+		}
+		return (Kettle) getDeviceAt(2);
+	}
+	
+	public Transmogrifier getTransmogrifier() {
+		if(getDeviceAt(3) == null) {
+			throw new CapacityException(getDeviceAt(3));
+		}
+		return (Transmogrifier) getDeviceAt(3);
 	}
 	
 	/**
@@ -246,16 +450,6 @@ public class Laboratory {
 			container = getCoolingbox().emptyDevice();
 		}
 	}
-	
-	/**
-	 * Variable storing the contents of this laboratory in drops or pinches
-	 */
-	private ArrayList<AlchemicIngredient> storage = new ArrayList<AlchemicIngredient>();
-	
-	/**
-	 * Variable storing the capacity of this laboratory in storerooms
-	 */
-	private final int capacity;
-	
+
 	private ArrayList<Device> devices = new ArrayList<Device>();
 }
