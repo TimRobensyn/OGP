@@ -39,8 +39,8 @@ public class Recipe {
 	@Raw
 	public Recipe(String[] processes, AlchemicIngredient[] ingredients) throws IllegalArgumentException{
 		Process[] newProcesses = new Process[processes.length];
-		for (String process:processes) {
-			newProcesses[process.indexOf(process)] = Process.valueOf(process);
+		for (int i = 0; i<processes.length; i++) {
+			newProcesses[i] = Process.valueOf(processes[i]);
 		}
 		if (!isValidProcessList(newProcesses))
 			throw new IllegalArgumentException("Invalid processes");
@@ -50,15 +50,6 @@ public class Recipe {
 		this.ingredients = ingredients;
 	}
 	
-	/**
-	 * Check if this process is a valid process.
-	 */
-	public static boolean isValidProcess(Process process) {
-		if (process.)
-	}
-	/**
-	 * Check if the given 
-	 */
 	/**
 	 * A local enumeration containing the possible processes in a recipe.
 	 */
@@ -120,11 +111,11 @@ public class Recipe {
 	 * 			The array of ingredients to check.
 	 * @return	If the amount of ingredients is not equal to the amount of add in processes,
 	 * 			return false.
-	 * 			| result == (this.getNbOfIngredients()==this.getNbOfAdd)
+	 * 			| result == (ingredients.length==this.getNbOfAdd)
 	 */
 	@Raw
 	public boolean canHaveAsIngredients(AlchemicIngredient[] ingredients) {
-		return (getNbOfIngredients()==getNbOfAdd());
+		return (ingredients.length == getNbOfAdd());
 	}
 	
 	/**
