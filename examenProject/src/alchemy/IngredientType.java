@@ -5,6 +5,15 @@ import be.kuleuven.cs.som.annotate.*;
 /**
  * A class defining the type of an alchemic ingredient with a name, a standard temperature and a state (liquid or powder).
  * 
+ * @invar   The simple names of each ingredient type must be valid.
+ *          | areValidSimpleNames(getSimpleNames())
+ * @invar   The special name of each ingredient type must be valid.
+ *          | isValidSpecialName(getSpecialName())
+ * @invar   The state of each ingredient type must be valid.
+ *          | State.isValidState(getState())
+ * @invar   The standard temperature of each ingredient type must be valid.
+ *          | Temperature.isValidTemperature(getStandardTemperature())
+ * 
  * @version 1.0
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  *
@@ -16,7 +25,8 @@ public class IngredientType {
 	 ********************************************************/
 	
 	/**
-	 * Initialize an ingredient type object with an array of simpleNames, a special name,
+	 * TODO: Water? Doc
+	 * Initialize an ingredient type object with an array of simple names, a special name,
 	 * a state and a standard temperature.
 	 * 
 	 * @param simpleNames
@@ -26,7 +36,7 @@ public class IngredientType {
 	 * @param state
 	 *        The state of the new ingredient type.
 	 * @param standardTemperature
-	 *        The standard temperature of the new ingredient type.
+	 *        The standard temperature object of the new ingredient type.
 	 * @post  If the given simple names, special name, state and temperature are all valid, 
 	 *        the simple names of this ingredient type are equal to the given array. Else, it is 
 	 *        equal to the array consisting of the single element 'Water'.
@@ -43,7 +53,7 @@ public class IngredientType {
 	 *        values.
 	 *        | getStandardTemperature() == standardTemperature
 	 */
-	public IngredientType(String[] simpleNames, String specialName, State state, long[] standardTemperature) {
+	public IngredientType(String[] simpleNames, String specialName, State state, Temperature standardTemperature) {
 		
 		if (( (!areValidSimpleNames(simpleNames))
 			 ||!isValidSimpleName(specialName)
@@ -58,33 +68,61 @@ public class IngredientType {
 			this.simpleNames = simpleNames;
 			this.specialName = specialName;
 			this.state = state;
-			this.standardTemperature = new Temperature(standardTemperature);
+			this.standardTemperature = standardTemperature;
 		}
 
 	}
 	
 	/**
-	 * Initialize an ingredient type object without a special name with simple names, a state and a Temperature object.
-	 * @param simpleNames
-	 * @param state
-	 * @param standardTemperature
+	 * Initialize an ingredient type without a special name with given array of simple names, 
+	 * state and temperature object.
+	 * 
+	 * @param  simpleNames
+	 *         The array of simple names of the new ingredient type.
+	 * @param  state
+	 *         The state of the new ingredient type.
+	 * @param  standardTemperature
+	 *         The standard temperature object of the new ingredient type.
+	 * @effect This new ingredient type is initialized with the given simple names, state and
+	 *         temperature object, the new ingredient type has no special name.
+	 *         | this(simpleNames,null,state,standardTemperature.getTemperature())
 	 */
 	public IngredientType(String[] simpleNames, State state, Temperature standardTemperature) {
-		this(simpleNames, null, state, standardTemperature.getTemperature());
-	}
-	
-	
-	public IngredientType(String name, State state, Temperature standardTemperature) {
-		this(new String[] {name}, null, state, standardTemperature.getTemperature());
+		this(simpleNames, null, state, standardTemperature);
 	}
 	
 	/**
+	 * Initialize an ingredient type without a special name with a given single simple name, 
+	 * state and temperature object.
 	 * 
-	 * @param name
-	 * @param standardTemperature
+	 * @param  name
+	 *         The (simple) name of the new ingredient type.
+	 * @param  state
+	 *         The state of the new ingredient type.
+	 * @param  standardTemperature
+	 *         The standard temperature object of the new ingredient type.
+	 * @effect This new ingredient type is initialized with an array consisting a single element,
+	 *         namely the given name, state and temperature object, the new ingredient type has no special name.
+	 *         | this(new String[] {name},state,standardTemperature)
+	 */
+	public IngredientType(String name, State state, Temperature standardTemperature) {
+		this(new String[] {name}, state, standardTemperature);
+	}
+	
+	/**
+	 * Initialize an ingredient type with no special name, state liquid and a given single name 
+	 * and temperature object.
+	 * 
+	 * @param  name
+	 *         The (simple) name of the new ingredient type.
+	 * @param  standardTemperature
+	 *         The standard temperature object of the new ingredient type.
+	 * @effect This new ingredient type is initialized with the given name and standard temperature.
+	 *         It has liquid as its state.
+	 *         | this(name, State.LIQUID, standardTemperature)       
 	 */
 	public IngredientType(String name, Temperature standardTemperature) {
-		this(new String[] {name}, State.LIQUID, standardTemperature);
+		this(name, State.LIQUID, standardTemperature);
 	}
 	
 	/********************************************************
@@ -100,9 +138,38 @@ public class IngredientType {
 	}
 	
 	/**
-	 * Check whether a string is a valid name.
+	 * Check whether a given name is valid.
 	 * 
-	 *  //TODO documentatie
+	 * @param  name
+	 *         The name to check.
+	 * @return True if and only if the following conditions don't determine it to be otherwise.
+	 *         If the name is not effective or empty, return false.
+	 *         | if (name==null || name=="")
+	 *         |   then result == false
+	 *         If the name consists only of one word and that word has less than three characters, return false.
+	 *         A new word starts when there is a space.
+	 *         | words = name.split(" ")
+	 *         | if (words.length<1 && name.length()<3)
+	 *         |   then result == false
+	 *         Else if the name consists of more than one word, each word must have more than two characters.
+	 *         | for word in words
+	 *         |   if (word.length()<2)
+	 *         |      then result == false
+	 *         Still, if the name consists of more than one word, each word must have a special character
+	 *         (to date: (, ) or ') or an uppercase letter as its first letter. The other character must be 
+	 *         special or lowercase.
+	 *         | for word in words
+	 *         |   if (!word.matches("^[" + specialCharacters + "A-Z][a-z]*$"))
+	 *         |      then result == false
+	 *         Again, if the name consists of more than one word, that word cannot contain "mixed", "with", "cooled"
+	 *         or "heated" or these words with the first letter uppercase.
+	 *         | for word in words
+	 *         |   if (word contains "with" or "With"
+	 *         |      || word contains "mixed" or "Mixed"
+	 *         |      || word contains "cooled" or "Cooled"
+	 *         |      || word contains "heated" or "Heated")
+	 *         |     then result == false
+	 *         
 	 */
 	public static boolean isValidSimpleName(String name){
 		
@@ -116,16 +183,16 @@ public class IngredientType {
 		
 		//Naam van 1 woord is minstens 3 tekens lang.
 		if ( choppedUpName.length<2
-		   && choppedUpName[0].length()<3 )
+		   && name.length()<3 )
 			valid = false;
 		
-		for (String word : choppedUpName) {
+		for (String word: choppedUpName) {
 			
 			//Geen with, mixed, cooled of heated in de naam (ook niet met speciale characters rond)
 			if ((word.matches("^[" + specialCharacters + "]*[Ww]ith[" + specialCharacters + "]*$")
-					||(word.matches("^[" + specialCharacters + "]*[Mm]ixed[" + specialCharacters + "]*$")))
-					||(word.matches("^[" + specialCharacters + "]*[Cc]ooled[" + specialCharacters + "]*$")
-					||(word.matches("^[" + specialCharacters + "]*[Hh]eated[" + specialCharacters + "]*$")))){
+			  ||(word.matches("^[" + specialCharacters + "]*[Mm]ixed[" + specialCharacters + "]*$")))
+			  ||(word.matches("^[" + specialCharacters + "]*[Cc]ooled[" + specialCharacters + "]*$")
+			  ||(word.matches("^[" + specialCharacters + "]*[Hh]eated[" + specialCharacters + "]*$")))){
 				valid = false;
 				break;
 			}
@@ -136,7 +203,8 @@ public class IngredientType {
 				break;
 			}
 			
-			// Elk woord begint met een hoofdletter (hier kan een speciaal teken voor staan), de rest van de letters zijn klein of speciaal
+			// Elk woord begint met een hoofdletter (hier kan een speciaal teken voor staan), 
+			// de rest van de letters zijn klein of speciaal
 			if (!word.matches("^[" + specialCharacters + "A-Z][a-z]*$")){
 				valid = false;
 				break;
@@ -147,14 +215,23 @@ public class IngredientType {
 	
 	
 	/**
-	 * Check an array of strings to see if it is a valid array of simpleNames
+	 * Check whether a given array with names is a valid simpleNames array.
+	 * 
 	 * @param 	simpleNames
-	 * 			The given array of Strings.
-	 * @return	true if the array has at least one valid name, no duplicate strings and is alphabetically sorted.
-	 * 			| (simpleNames.length>0)
-	 * 			| && (isValidSimpleName(simpleNames[i]) for all i
-	 * 			| && for all i and k: (i!=k) ==> (simpleNames[i] != simpleNames[k]  //TODO is dit brak?
-	 * 			| && HOW TF ZET JE FORMEEL "ALFABETISCH"???
+	 * 			The given array of names.
+	 * @return	True if and only if the following conditions do not determine it to be otherwise.
+	 *          If the given array is empty, return false.
+	 *          | if (simpleNames.length<1) 
+	 *          |   then result == false
+	 *          Each name in simpleNames must be valid and not be equal to or alphabetically after the name
+	 *          following this name in the array, thus ensuring the simpleNames array is alphabetically sorted
+	 *          with no duplicates.
+	 *          | for each I in 0..simpleNames.length-1:
+	 *          |   if (! isValidSimpleName(simpleNames[I]))
+	 *          |      then result == false
+	 *          |   if (I != simpleNames.length-1
+	 *          |      && simpleNames[i].compareTo(simpleNames[i+1]) < 1)
+	 *          |      then result == false	
 	 */
 	public static boolean areValidSimpleNames(String[] simpleNames) {
 		//At least one name is needed
@@ -162,41 +239,50 @@ public class IngredientType {
 		
 		for (int i = 0; i<simpleNames.length; i++) {
 			//Each name is valid
-			if (!isValidSimpleName(simpleNames[i])) return false;
-			for (int k = i+1; k<simpleNames.length; k++) {
-				//No duplicates
-				if ((i!=k)&&(simpleNames[i]==simpleNames[k])) return false;
-			}
+			if (!isValidSimpleName(simpleNames[i])) 
+				return false;
+			//The array is alphabetically ordered with no duplicates.
+			if (i!=simpleNames.length-1
+			 && simpleNames[i].compareTo(simpleNames[i+1]) < 1)
+				return false;
 		}
-		//Alphabetical
-		String[] sortedSimpleNames = simpleNames.clone();
-        for (int i = 0; i < sortedSimpleNames.length; i++) {
-            for (int j = i + 1; j < sortedSimpleNames.length; j++) { 
-                if (sortedSimpleNames[i].compareTo(sortedSimpleNames[j]) > 0) {
-                    String temp = sortedSimpleNames[i];
-                    sortedSimpleNames[i] = sortedSimpleNames[j];
-                    sortedSimpleNames[j] = temp;
-                }
-            }
-        }
-        if (!simpleNames.equals(sortedSimpleNames)) return false;
+		
 		return true;
+		
+//		//Alphabetical
+//		String[] sortedSimpleNames = simpleNames.clone();
+//        for (int i = 0; i < sortedSimpleNames.length; i++) {
+//            for (int j = i + 1; j < sortedSimpleNames.length; j++) { 
+//                if (sortedSimpleNames[i].compareTo(sortedSimpleNames[j]) > 0) {
+//                    String temp = sortedSimpleNames[i];
+//                    sortedSimpleNames[i] = sortedSimpleNames[j];
+//                    sortedSimpleNames[j] = temp;
+//                }
+//            }
+//        }
+//        
+//        if (!simpleNames.equals(sortedSimpleNames)) return false;
+//		
 	}	
 	
 	/**
-	 * Return the name of this ingredient's type in the form of a formatted String.
+	 * Return the simple name of this ingredient type.
 	 * 
-	 * @return	A string containing all the simple names of this name object formatted according to size
-	 * @return	If there's only one simple name, return that name.
+	 * @return	A string containing the simple name of this ingredient type, formatted according to the 
+	 *          size of the simple names array.
+	 * 		    If there's only one simple name, return that name.
 	 * 			| if (getSimpleNames().length==1)
 	 * 			|   then return getSimpleNames()[0]
-	 * @return	If there are 2 simple names, return them in the format 'name1 mixed with name2'
+	 *			If there are 2 simple names, return them in the format 'name1 mixed with name2'.
 	 * 			| if (getSimpleNames().length==2)
 	 * 			|   then return getSimpleNames()[0] + " mixed with " + getSimpleNames()[1]
-	 * @return	If there are more than 2 simple names, return them in the format 
+	 *	        If there are more than 2 simple names, return them in the format 
 	 * 			'firstName mixed with secondName, thirdName... and lastName'
 	 * 			| if (getSimpleNames().length>=2)
-	 * 			|   then return getSimpleNames()[0] + " mixed with " + getSimpleNames()[1] //TODO Laatste klopt nog niet
+	 * 			|   then return getSimpleNames()[0] + " mixed with " + 
+	 * 			|          for each I in 1..(size-3)
+	 * 			|              getSimpleNames()[I] + ", " +
+	 * 			|          getSimpleNames()[size-2] + " and " + getSimpleNames()[size-1]
 	 */
 	@Raw
 	public String getSimpleName() {
@@ -257,9 +343,22 @@ public class IngredientType {
 	}
 	
 	/**
+	 * Check whether a given special name is valid.
+	 * @param  specialName
+	 *         The name to check.
+	 * @return True if and only if the name is a valid simple name or is not effective.
+	 *         | result ==
+	 *         |   (isValidSimpleName(specialName) || specialName==null)
+	 */
+	public static boolean isValidSpecialName(String specialName) {
+		return (isValidSimpleName(specialName) || specialName==null);
+	}
+	
+	
+	/**
 	 * A variable for a special name for an ingredient.
 	 */
-	private String specialName;	
+	private String specialName = null;	
 
 
 	
