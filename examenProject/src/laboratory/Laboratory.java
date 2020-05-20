@@ -94,7 +94,7 @@ public class Laboratory {
 	/**
 	 * Variable storing the capacity of this laboratory in storerooms
 	 */
-	private final Container capacity;
+	private final int capacity = 5;
 	
 	private CoolingBox coolingbox = new CoolingBox(new Temperature(0,0));
 	

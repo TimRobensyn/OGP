@@ -1,4 +1,5 @@
 package alchemy;
+import laboratory.*;
 
 import static org.junit.Assert.*;
 import org.junit.*;
@@ -27,6 +28,11 @@ public class CapacityTest {
 		int jugAmount = LiquidQuantity.JUG.getNbOfSmallestUnit();
 		System.out.println(jugAmount);
 		assertEquals(jugAmount,840);
+	}
+	
+	@Test
+	public void recipeTest() {
+		
 	}
 
 }
