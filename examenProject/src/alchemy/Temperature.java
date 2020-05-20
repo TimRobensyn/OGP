@@ -2,29 +2,74 @@ package alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
 
+/**
+ * A class of temperatures as used for alchemic purposes.
+ * 
+ * @invar   Each temperature must be valid as to be able to be used correctly.
+ *          | isValidTemperature(this)
+ * 
+ * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
+ * @version 1.0
+ *
+ */
+
 public class Temperature {
+	
+	// Opmerking: temperature moet totaal geïmplementeerd zijn
 	
 	/************************************************************************
 	 * CONSTRUCTOR
 	 ************************************************************************/
+
 	
 	/**
-	 * //TODO
+	 * Initialize a new temperature, as used in alchemy, with a given array of two values, the first 
+	 * the coldness and the second the hotness.
+	 * 
+	 * @param temperature
+	 *        The array that contains the temperature values of this new temperature.
+	 * @post  If the given temperature array contains exactly two elements and the first element of 
+	 *        the array is a valid temperature value, the coldness of this new
+	 *        temperature is equal to that element. Otherwise, it is equal to zero.
+	 *        | if ( temperature.length==2
+	 *        |   && isValidTemperature(temperature[0]) )
+	 *        |   then new.getColdness() == temperature[0]
+	 *        | else
+	 *        |   then new.getColdness() == 0
+	 * @post  If the given temperature array contains exactly two elements and the second element of 
+	 *        the array is a valid temperature value, the hotness of this new
+	 *        temperature is equal to that element. Otherwise, it is equal to zero.
+	 *        | if ( temperature.length==2
+	 *        |   && isValidTemperature(temperature[1]) )
+	 *        |   then new.getHotness() == temperature[1]
+	 *        | else
+	 *        |   then new.getHotness() == 0
 	 */
-	public Temperature(long coldness, long hotness) {
-		if ((isValidTemperatureValue(coldness))&&(isValidTemperatureValue(hotness))) {
-			this.coldness = coldness;
-			this.hotness = hotness;
-		}
-	}
-	
-	/**
-	 * //TODO
-	 */
+	@Raw
 	public Temperature(long[] temperature) {
-		this(temperature[0],temperature[1]);
+		if (temperature.length == 2)
+			if (isValidTemperatureValue(temperature[0]))
+				this.coldness = temperature[0];
+			if (isValidTemperatureValue(temperature[1]))
+				this.hotness = temperature[1];
 	}
-		
+	
+	/**
+	 * Initialize a new temperature, as used in alchemy, with given coldness and hotness.
+	 * 
+	 * @param  coldness
+	 *         The coldness of the new temperature.
+	 * @param  hotness
+	 *         The hotness of the new temperature.
+	 * @effect This new temperature is initialized with {coldness, hotness} of its 
+	 *         temperature array.
+	 *         | this(new long[] {coldness, hotness})
+	 */
+	@Raw
+	public Temperature(long coldness, long hotness) {
+		this(new long[] {coldness, hotness});
+	}	
+	
 	/************************************************************************
 	 * Coldness/Hotness
 	 ************************************************************************/
@@ -41,6 +86,7 @@ public class Temperature {
 	 *         |           && temp<=getTemperatureUpperLimit())
 	 *         
 	 */
+	@Raw
 	private static boolean isValidTemperatureValue(long temp) {
 		return (temp>=0 && temp<=getTemperatureUpperLimit());
 	}
@@ -111,16 +157,18 @@ public class Temperature {
 	 * @effect If the given value is negative or zero, do nothing.
 	 * 		   If the given value is not above the current hotness, the hotness is decreased 
 	 *         with this value.
-	 *         | if (tempValue<=getHotness())
-	 *         |     then new.getHotness() = old.getHotness()-tempValue
+	 *         | if (tempValue<=getHotness()
+	 *         |    && tempValue>0)
+	 *         |     then new.getHotness() == old.getHotness()-tempValue
 	 *         If the given value is above the current hotness and it is lesser than or equal to the 
 	 *         current hotness summed up with the temperature upper limit value and decreased with the 
 	 *         current coldness, the hotness is set to zero and the coldness is increased with the 
 	 *         difference between the given value and the previous hotness.
 	 *         | if (tempValue>getHotness()
-	 *		   |  && tempValue<=getHotness()+IngredientType.getTemperatureUpperLimit()-getColdness())
-	 *		   |     then new.getHotness() = 0
-	 *		   |          && new.getColdness() = old.getColdness()+tempValue-old.getHotness()
+	 *         |    && tempValue>0
+	 *		   |    && tempValue<=getHotness()+IngredientType.getTemperatureUpperLimit()-getColdness())
+	 *		   |     then new.getHotness() == 0
+	 *		   |          && new.getColdness() == old.getColdness()+tempValue-old.getHotness()
 	 */
 	public void cool(long tempValue) {
 		if (tempValue>0) {
@@ -144,15 +192,16 @@ public class Temperature {
 	 * @effect If the given value is negative or zero, do nothing.
 	 * 		   If the given value is not above the current coldness, the coldness is decreased 
 	 *         with this value.
-	 *         | if (tempValue<=getColdness()&&(!tempValue>0))
+	 *         | if (tempValue<=getColdness()
+	 *         |    &&(tempValue>0))
 	 *         |     then new.getColdness() = old.getColdness()-tempValue
 	 *         If the given value is above the current coldness and it is lesser than or equal to the 
 	 *         current coldness summed up with the temperature upper limit value and decreased with the 
 	 *         current hotness, the coldness is set to zero and the hotness is increased with the 
 	 *         difference between the given value and the previous coldness.
 	 *         | if (tempValue>getColdness()
-	 *         |  && (!tempValue>0)
-	 *		   |  && tempValue<=getColdness()+IngredientType.getTemperatureUpperLimit()-getHotness())
+	 *         |    && tempValue>0
+	 *		   |    && tempValue<=getColdness()+IngredientType.getTemperatureUpperLimit()-getHotness())
 	 *		   |     then new.getColdness() = 0
 	 *		   |          && new.getHotness() = old.getHotness()+tempValue-old.getColdness()
 	 */
@@ -177,7 +226,7 @@ public class Temperature {
 	 ************************************************************************/
 	
 	/**
-	 * Check whether the given temperature is a valid temperature for all
+	 * Check whether the given temperature array is valid for all
 	 * Temperature objects.
 	 * 
 	 * @param  temperature
@@ -201,6 +250,14 @@ public class Temperature {
 		else return false;		
 	}
 	
+	/**
+	 * Check whether the given temperature object is valid.
+	 * 
+	 * @param  temperature
+	 * 		   The temperature object to check.
+	 * @return True if the temperature array consisting of coldness and hotness is valid.
+	 *         | result == isValidTemperature(temperature.getTemperature())
+	 */
 	public static boolean isValidTemperature(Temperature temperature) {
 		return isValidTemperature(temperature.getTemperature());
 	}
@@ -235,16 +292,12 @@ public class Temperature {
 	public static long temperatureDifference(Temperature temp1, Temperature temp2) {
 		return -temp1.getColdness()+temp1.getHotness()-(-temp2.getColdness()+temp2.getHotness());
 	}
-//	public static int compareTemperature(long[] first, long[] second) {
-//		compareTemperature(new Temperature(1L,0L), new Temperature(0L,1L));
-//	}
+
 	
 	/**
-	 * Get the temperature of this Temperature object.
-	 * 
-	 * @return The temperature of this Temperature object.
+	 * Return the temperature of this Temperature object.
 	 */
-	@Basic @Immutable
+	@Basic 
 	public long[] getTemperature() {
 		return new long[] {this.getColdness(), this.getHotness()};
 	}
@@ -254,9 +307,7 @@ public class Temperature {
 	 ************************************************************************/
 	
 	/**
-	 * Get the temperature upper limit of all ingredient types.
-	 * 
-	 * @return The temperature upper limit of all ingredient types.
+	 * Get the temperature upper limit value of all temperatures.
 	 */
 	@Basic @Immutable
 	public static long getTemperatureUpperLimit() {
@@ -264,23 +315,23 @@ public class Temperature {
 	}
 	
 	/**
-	 * Set the temperature upper limit of all ingredient types to the given temperature.
+	 * Set the temperature upper limit value of all temperatures to the given value.
 	 * 
-	 * @param temperature
+	 * @param upperLimit
 	 *        The new temperature upper limit of all ingredient types.
 	 * @post  If the given temperature does not exceed the maximal possible 
-	 *        value for a long type of number, the temperature upper limit for all 
-	 *        ingredient types is set to the given temperature.
+	 *        value for a long type of number, the temperature upper limit value for all 
+	 *        temperatures is set to the given temperature.
 	 *        | if (temperature <= Long.MAX_VALUE)
 	 *        |   then IngredientType.getTemperatureUpperLimit() == temperature
 	 */
-	public static void setTemperatureUpperLimit(long temperature) {
-		if (temperature <= Long.MAX_VALUE)
-			tempUpperLimit = temperature;
+	public static void setTemperatureUpperLimit(long upperLimit) {
+		if (upperLimit <= Long.MAX_VALUE)
+			tempUpperLimit = upperLimit;
 	}
 	
 	/**
-	 * A variable containing the temperature upper limit of all ingredient types.
+	 * A variable containing the temperature upper limit value of all temperatures.
 	 */
 	private static long tempUpperLimit = 10000;
 

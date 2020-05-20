@@ -12,7 +12,7 @@ import be.kuleuven.cs.som.annotate.*;
  * @invar   The state of each ingredient type must be valid.
  *          | State.isValidState(getState())
  * @invar   The standard temperature of each ingredient type must be valid.
- *          | Temperature.isValidTemperature(getStandardTemperature())
+ *          | Temperature.isValidStandardTemperature(getStandardTemperature())
  * 
  * @version 1.0
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
@@ -247,22 +247,7 @@ public class IngredientType {
 				return false;
 		}
 		
-		return true;
-		
-//		//Alphabetical
-//		String[] sortedSimpleNames = simpleNames.clone();
-//        for (int i = 0; i < sortedSimpleNames.length; i++) {
-//            for (int j = i + 1; j < sortedSimpleNames.length; j++) { 
-//                if (sortedSimpleNames[i].compareTo(sortedSimpleNames[j]) > 0) {
-//                    String temp = sortedSimpleNames[i];
-//                    sortedSimpleNames[i] = sortedSimpleNames[j];
-//                    sortedSimpleNames[j] = temp;
-//                }
-//            }
-//        }
-//        
-//        if (!simpleNames.equals(sortedSimpleNames)) return false;
-//		
+		return true;	
 	}	
 	
 	/**
@@ -344,6 +329,7 @@ public class IngredientType {
 	
 	/**
 	 * Check whether a given special name is valid.
+	 * 
 	 * @param  specialName
 	 *         The name to check.
 	 * @return True if and only if the name is a valid simple name or is not effective.
@@ -402,6 +388,21 @@ public class IngredientType {
 	 */
 	public Temperature getStandardTemperatureObject() {
 		return this.standardTemperature;
+	}
+	
+	/**
+	 * Check whether the given temperature array is valid for all ingredient types.
+	 * 
+	 * @param  temp
+	 * 		   The temperature array to check.
+	 * @return True if and only if the array is valid for all temperatures and if it is valid, the second element
+	 *         is the hotness and this value must be higher than zero.
+	 *         | result == (Temperature.isValidTemperature(temp)
+	 *		   |           && temp[1]>0)
+	 */
+	public static boolean isValidStandardTemperature(long[] temp) {
+		return (Temperature.isValidTemperature(temp)
+			 && temp[1]>0);
 	}
 	
 	
