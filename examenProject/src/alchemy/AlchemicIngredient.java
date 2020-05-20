@@ -20,7 +20,7 @@ public class AlchemicIngredient {
 	 * @param type
 	 *        The ingredient type of the new alchemic ingredient.
 	 * @param quantity
-	 *        The quantity (in spoons/drops/pinches??) of the new alchemic ingredient.
+	 *        The quantity (in drops or pinches according to state) of the new alchemic ingredient.
 	 * @post  The type of this alchemic ingredient is equal to the given type.
 	 *        | getType() == type
 	 * @post  The quantity of this alchemic ingredient is equal to the given quantity.
@@ -55,7 +55,7 @@ public class AlchemicIngredient {
 	 */
 	@Raw
 	public AlchemicIngredient(int quantity) {
-		this(new IngredientType("Water",State.LIQUID,new Temperature(0L,20L)),quantity);
+		this(new IngredientType("Water",new Temperature(0L,20L)),quantity);
 	}
 
 
