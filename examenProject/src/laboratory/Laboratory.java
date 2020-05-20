@@ -174,16 +174,18 @@ public class Laboratory {
 	 *         |	coolingbox.setStartIngredient(ingredient)
 	 *         |	coolingbox.process()
 	 */
-	private void makeStandardTemp(AlchemicIngredient ingredient) {
-		long tempDiff = Temperature.temperatureDifference(ingredient.getStandardTemperatureObject(), ingredient.getTemperatureObject());
+	private void makeStandardTemp(IngredientContainer container) {
+		long tempDiff = Temperature.temperatureDifference(container.getIngredient().getStandardTemperatureObject(), container.getIngredient().getTemperatureObject());
 		if(tempDiff > 0) {
-			oven.setTemperature(ingredient.getStandardTemperature());
-			oven.setStartIngredient(ingredient);
+			oven.setTemperature(container.getIngredient().getStandardTemperature());
+			oven.loadIngredient(container);
 			oven.process();
+			container = oven.emptyDevice();
 		} else if(tempDiff < 0) {
-			coolingbox.setTemperature(ingredient.getStandardTemperature());
-			coolingbox.setStartIngredient(ingredient);
+			coolingbox.setTemperature(container.getIngredient().getStandardTemperature());
+			coolingbox.loadIngredient(container);
 			coolingbox.process();
+			container = coolingbox.emptyDevice();
 		}
 	}
 	
