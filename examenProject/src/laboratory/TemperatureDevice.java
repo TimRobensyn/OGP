@@ -67,14 +67,14 @@ public abstract class TemperatureDevice extends Device {
 	 * 
 	 * @param container
 	 * 		  The given container
-	 * @throws DeviceFullException
+	 * @throws ItemFullException
 	 * 		   This device is full
 	 * 		   | startIngredient != null
 	 */
 	@Override @Raw
-	public final void loadIngredient(IngredientContainer container) throws DeviceFullException{
+	public final void loadIngredient(IngredientContainer container) throws ItemFullException{
 		if(startIngredient != null) {
-			throw new DeviceFullException(this, container);
+			throw new ItemFullException(this, container);
 		}
 		setStartIngredient(container.getIngredient());
 		container = null;
