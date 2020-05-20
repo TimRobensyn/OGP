@@ -33,17 +33,29 @@ public class Recipe {
 	 * 			to the given array of ingredients.
 	 * 			| new.getIngredients() == ingredients.
 	 * @throws 	IllegalArgumentException
-	 * 			The given array of ingredients is not valid.
-	 * 			| ! canHaveAsIngredients(ingredients)
+	 * 			The given array of processes or the given array of ingredients is not valid.
+	 * 			| (!isValidProcessList)||(!canHaveAsIngredients(ingredients))
 	 */
 	@Raw
-	public Recipe(Process[] processes, AlchemicIngredient[] ingredients) throws IllegalArgumentException{
-		this.processes = processes;
+	public Recipe(String[] processes, AlchemicIngredient[] ingredients) throws IllegalArgumentException{
+		Process[] newProcesses = new Process[processes.length];
+		for (String process:processes) {
+			newProcesses[process.indexOf(process)] = Process.valueOf(process);
+		}
+		if (!isValidProcessList(newProcesses))
+			throw new IllegalArgumentException("Invalid processes");
+		this.processes = newProcesses;
 		if (!canHaveAsIngredients(ingredients))
 			throw new IllegalArgumentException("Not the right amount of ingredients");
 		this.ingredients = ingredients;
 	}
 	
+	/**
+	 * Check if this process is a valid process.
+	 */
+	public static boolean isValidProcess(Process process) {
+		if (process.)
+	}
 	/**
 	 * Check if the given 
 	 */
@@ -58,7 +70,7 @@ public class Recipe {
 	 * Get the array containing the processes of this recipe.
 	 */
 	public Process[] getProcesses(){
-		return processes;
+		return this.processes;
 	}
 	
 	/**
@@ -77,9 +89,6 @@ public class Recipe {
 	 * Check if the given list is a valid list of processes.
 	 */
 	public static boolean isValidProcessList(Process[] processList) {
-//		for (Process process:processList) {
-//			if ()
-//		}
 		if (processList[processList.length-1]==Process.mix) return true;
 		return false;
 	}
@@ -89,11 +98,12 @@ public class Recipe {
 	 */
 	private final Process[] processes;
 	
+	
 	/**
 	 * Get the (ordered) array of ingredients of this recipe. 
 	 */
 	public AlchemicIngredient[] getIngredients() {
-		return ingredients;
+		return this.ingredients;
 	}
 	
 	/**
@@ -101,7 +111,7 @@ public class Recipe {
 	 */
 	@Raw
 	public int getNbOfIngredients() {
-		return ingredients.length;
+		return getIngredients().length;
 	}
 	
 	/**

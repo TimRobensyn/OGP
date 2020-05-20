@@ -32,7 +32,8 @@ public class CapacityTest {
 	
 	@Test
 	public void recipeTest() {
-		
+		Recipe newRecipe = new Recipe(new String[] {"add","mix"}, new AlchemicIngredient[] {new AlchemicIngredient(25)});
+		System.out.println(newRecipe);
 	}
 
 }
