@@ -65,11 +65,6 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Request a given amount of an alchemic ingredient by giving either the special of the simple name.
-	 * If the given amount of greater than the capacity of a barrel or chest depending on the state of the requested ingredient,
-	 * this returns a barrel or chest and the leftovers are deleted.
-	 * The given amount cannot be greater than the quantity this laboratory contains and the laboratory has to contain the requested name
-	 * 
 	 * Request a given amount of an alchemic ingredient by giving either the special or simple name.
 	 * 
 	 * @param name
@@ -93,7 +88,7 @@ public class Laboratory {
 	 *  	   |  newContainer = new IngredientContainer(newIngredient, containerType)
 	 *         |  storage.remove(requested storedIngredient)
 	 * @throws ItemEmptyException
-	 * 		   Theislaboratory does not contain enough of the requested item
+	 * 		   This laboratory does not contain enough of the requested item
 	 * 		   | storedIngredient.getQuantity() < amount
 	 * @throws IllegalArgumentException
 	 * 		   This laboratory does not contain an ingredient with the given name
