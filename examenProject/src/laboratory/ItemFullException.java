@@ -15,21 +15,6 @@ public class ItemFullException extends RuntimeException{
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * A variable indicating the device.
-	 */
-	private final Device fullDevice;
-	
-	/**
-	 * A variable indicating the ingredientContainer that couldn't be loaded.
-	 */
-	private final IngredientContainer container;
-	
-	/**
-	 * A variable indicating the laboratory.
-	 */
-	private final Laboratory laboratory;
-	
-	/**
 	 * Initialize a new item full exception with the given device container and laboratory.
 	 * 
 	 * @param	fullDevice
@@ -118,6 +103,11 @@ public class ItemFullException extends RuntimeException{
 	}
 	
 	/**
+	 * A variable indicating the device.
+	 */
+	private final Device fullDevice;
+	
+	/**
 	 * Return the container that could not be loaded into the device.
 	 */
 	@Raw @Immutable @Basic
@@ -126,6 +116,11 @@ public class ItemFullException extends RuntimeException{
 	}
 	
 	/**
+	 * A variable indicating the ingredientContainer that couldn't be loaded.
+	 */
+	private final IngredientContainer container;
+
+	/**
 	 * Return the laboratory which caused this exception.
 	 * @return
 	 */
@@ -133,5 +128,10 @@ public class ItemFullException extends RuntimeException{
 	public Laboratory getFullLaboratory() {
 		return laboratory;
 	}
+	
+	/**
+	 * A variable indicating the laboratory.
+	 */
+	private final Laboratory laboratory;
 
 }
