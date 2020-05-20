@@ -42,9 +42,9 @@ public class Laboratory {
 	 * 		  The given container
 	 * 
 	 */
-	public void store(IngredientContainer container) throws ItemFullException {
+	public void store(IngredientContainer container) throws CapacityException {
 		if(this.getStorageQuantity() + container.getContentQuantity() > this.capacity) {
-			throw new ItemFullException(container, this);
+			throw new CapacityException(container, this);
 		}
 		AlchemicIngredient ingredient = container.getIngredient();
 		makeStandardTemp(ingredient);
@@ -95,13 +95,13 @@ public class Laboratory {
 	 * 		   | !((storedIngredient.getType().getSimpleName() == name) ||
 	 * 		   |  (storedIngredient.getType().getSpecialName() == name))
 	 */
-	public IngredientContainer request(String name, int amount) throws ItemEmptyException, IllegalArgumentException{
+	public IngredientContainer request(String name, int amount) throws CapacityException, IllegalArgumentException{
 		IngredientContainer newContainer = null;
 		Container containerType = null;
 		for(AlchemicIngredient storedIngredient : storage) {
 			if((storedIngredient.getType().getSimpleName() == name) || (storedIngredient.getType().getSpecialName() == name)){
 				if(storedIngredient.getQuantity() < amount) {
-					throw new ItemEmptyException(this);
+					throw new CapacityException(this);
 				}
 				
 				if(storedIngredient.getType().getState() == State.LIQUID) {

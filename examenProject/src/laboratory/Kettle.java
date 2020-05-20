@@ -29,11 +29,9 @@ public class Kettle extends BottomlessDevice {
 	 * Welke tags moet ik hier gebruiken help
 	 */
 	@Override
-	public void process() throws ItemFullException{
-		if (!getProcessedIngredients().isEmpty())
-			throw new ItemFullException(this);
-		if (!getStartIngredients().isEmpty()) 
-			throw new ItemEmptyException(this);
+	public void process() throws CapacityException {
+		if ((!getProcessedIngredients().isEmpty()||!getStartIngredients().isEmpty()))
+			throw new CapacityException(this);
 		ArrayList<String> newNameList = new ArrayList<>(0);
 		ArrayList<AlchemicIngredient> closestToWater = new ArrayList<>(0);
 		Temperature waterTemperature = new Temperature(0L,20L);

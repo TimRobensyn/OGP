@@ -7,7 +7,7 @@ import alchemy.*;
  * A class indicating the item cannot load more ingredients.
  */
 
-public class ItemFullException extends RuntimeException{
+public class CapacityException extends RuntimeException{
 	
 	/**
 	 * Required because this class inherits from Exception
@@ -15,7 +15,7 @@ public class ItemFullException extends RuntimeException{
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * Initialize a new item full exception with the given device container and laboratory.
+	 * Initialize a new capacity exception with the given device container and laboratory.
 	 * 
 	 * @param	fullDevice
 	 * 			The device that caused the exception because it was full.
@@ -30,14 +30,14 @@ public class ItemFullException extends RuntimeException{
 	 * 			| new.getFullLaboratory == laboratory
 	 */
 	@Raw
-	public ItemFullException(Device device, IngredientContainer container, Laboratory laboratory) {
+	public CapacityException(Device device, IngredientContainer container, Laboratory laboratory) {
 		this.fullDevice = device;
 		this.container = container;
 		this.laboratory = laboratory;
 	}
 	
 	/**
-	 * Initialize a new item full exception with the given device (but no container or laboratory).
+	 * Initialize a new capacity exception with the given device (but no container or laboratory).
 	 * 
 	 * @param	device
 	 * 			The device that caused the exception because it was full.
@@ -45,12 +45,12 @@ public class ItemFullException extends RuntimeException{
 	 * 			| new.getFullDevice == device
 	 */
 	@Raw
-	public ItemFullException(Device device) {
+	public CapacityException(Device device) {
 		this(device, null, null);
 	}
 	
 	/**
-	 * Initialize a new item full exception with the given laboratory (but no device or laboratory)
+	 * Initialize a new capacity exception with the given laboratory (but no device or laboratory)
 	 * 
 	 * @param laboratory
 	 * 		  The laboratory that caused the exception because it was full.
@@ -58,12 +58,12 @@ public class ItemFullException extends RuntimeException{
 	 * 		  | new.getFullLaboratory == laboratory
 	 */
 	@Raw
-	public ItemFullException(Laboratory laboratory) {
+	public CapacityException(Laboratory laboratory) {
 		this(null, null, laboratory);
 	}
 	
 	/**
-	 * Initialize a new item full exception with the given device and container
+	 * Initialize a new capacity exception with the given device and container
 	 * 
 	 * @param device
 	 * 		  The device that caused the exception because it was full.
@@ -74,12 +74,12 @@ public class ItemFullException extends RuntimeException{
 	 * @post  The container variable of this item full exception instance is set to the given container.
 	 */
 	@Raw
-	public ItemFullException(Device device, IngredientContainer container) {
+	public CapacityException(Device device, IngredientContainer container) {
 		this(device, container, null);
 	}
 	
 	/**
-	 * Initialize a new item full exception with the given laboratory and container
+	 * Initialize a new capacity exception with the given laboratory and container
 	 * 
 	 * @param laboratory
 	 * 		  The laboratory that caused the exception because it was full.
@@ -90,7 +90,7 @@ public class ItemFullException extends RuntimeException{
 	 * @post  The container variable of this item full exception instance is set to the given container.
 	 */
 	@Raw
-	public ItemFullException(IngredientContainer container, Laboratory laboratory) {
+	public CapacityException(IngredientContainer container, Laboratory laboratory) {
 		this(null, container, laboratory);
 	}
 	
