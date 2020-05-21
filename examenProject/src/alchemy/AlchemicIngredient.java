@@ -35,8 +35,6 @@ public class AlchemicIngredient {
 			"Quantity is not valid";
 		assert(type!=null):
 			"IngredientType is not valid";
-		assert(Temperature.isValidTemperature(temperature)):
-			"Temperature is not valid";
 		this.type = type;
 		this.quantity = quantity;
 		this.temperature = type.getStandardTemperatureObject();

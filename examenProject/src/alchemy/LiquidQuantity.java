@@ -2,17 +2,27 @@ package alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
 
+/**
+ * An enumeration of liquid quantities.
+ * 
+ * @invar   Each liquid quantity must have a valid quantity value.
+ * 			| Quantity.isValidQuantity(getQuantity())
+ * 
+ * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
+ * @version 1.0
+ */
 
 public enum LiquidQuantity implements Quantity {
 	
 	DROP(1,1), SPOON(8,2), VIAL(5,3), BOTTLE(3,4), JUG(7,5), BARREL(12,6), STOREROOM(5,7);
 	
 	/**
-	 * Initialize this LiquidQuantity with the given amount and an index
-	 * @param	amount
-	 * 			The amount of this quantity
-	 * @param	index
-	 * 			The index of this quantity
+	 * Initialize this LiquidQuantity with the given amount and an index.
+	 * 
+	 * @param amount
+	 * 		  The amount of this quantity
+	 * @param index
+	 * 		  The index of this quantity
 	 */
 	@Raw
 	private LiquidQuantity(int amount, int index) {
@@ -23,20 +33,20 @@ public enum LiquidQuantity implements Quantity {
 	/**
 	 * Returns the amount of this quantity relative to the unit smaller than it.
 	 */
-	@Basic @Raw @Immutable @Override
+	@Basic @Immutable
 	public int getQuantity() {
 		return this.quantity;
 	}
 	
 	/**
-	 * Variable storing the amount of capacity
+	 * Variable storing the amount of capacity.
 	 */
 	private final int quantity;
 	
 	/**
 	 * Returns the index of this unit.
 	 */
-	@Basic @Raw @Immutable @Override
+	@Basic @Immutable
 	public int getIndex() {
 		return this.index;
 	}
@@ -49,7 +59,7 @@ public enum LiquidQuantity implements Quantity {
 	/**
 	 * Return the quantity of this unit in drops.
 	 */
-	@Raw @Immutable @Override
+	@Immutable
 	public int getNbOfSmallestUnit() {
 		int NbOfDrops = 1;
 		for (LiquidQuantity quantity : LiquidQuantity.values()) {
@@ -59,16 +69,6 @@ public enum LiquidQuantity implements Quantity {
 		return NbOfDrops;
 	}
 	
-//	/**
-//	 * Return the quantity of this unit in drops.
-//	 */
-//	@Raw @Immutable @Override
-//	public int getNbOfSmallestUnit() {
-//		int NbOfDrops = 1;
-//		LiquidQuantity[] units = LiquidQuantity.values();
-//		for (int index = 1; index < units.; index++)){
-//			//TODO
-//	}
 	
 	//TODO doc
 	public static Container getContainer(int drops) {
@@ -92,7 +92,7 @@ public enum LiquidQuantity implements Quantity {
 	}
 	
 	/**
-	 * Return the ratio between spoon of liquids (in drops) and a spoon of solids (in pinches)
+	 * Return the ratio between spoon of liquids (in drops) and a spoon of solids (in pinches).
 	 */
 	public static double getPowderRatio() {
 		return LiquidQuantity.SPOON.getQuantity()/PowderQuantity.SPOON.getQuantity();
