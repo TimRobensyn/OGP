@@ -43,7 +43,8 @@ public interface Quantity {
 	 * 		   | 	((quantity >= 0) && (quantity <= Long.MAX_VALUE))
 	 */
 	public static boolean isValidQuantity(int quantity) {
-		return((quantity >= 0) && (quantity <= Long.MAX_VALUE));
+		return ((quantity >= 0) && (quantity <= Long.MAX_VALUE));
 	}
+	
 
 }
