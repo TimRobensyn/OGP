@@ -125,7 +125,7 @@ public enum Unit {
 	 ********************************************************************************/
 	
 	/**
-	 * Return the capacity of this unit measured in the smallest unit of the same state.
+	 * Return the capacity of this unit measured in the smallest unit of the same state. //TODO
 	 */
 	@Immutable
 	public int getAbsoluteCapacity() {
@@ -139,7 +139,7 @@ public enum Unit {
 		return result;
 	}
 	/**
-	 * Return the smallest container of the given state that can hold the given quantity.
+	 * Return the smallest container of the given state that can hold the given quantity.//TODO
 	 */
 	public static Unit getContainer(State state, int quantity) {
 		Unit result = getBiggestContainer(state);		
@@ -155,9 +155,9 @@ public enum Unit {
 	}
 	
 	/**
-	 * Return the biggest container of the given state.
+	 * Return the biggest container of the given state.//TODO
 	 */
-	private static Unit getBiggestContainer(State state) {
+	public static Unit getBiggestContainer(State state) {
 		Unit result = null; //TODO Deze initialisatie bespreken.
 		for (Unit unit: Unit.values()) {
 			if (((unit.getState()==state)
@@ -170,7 +170,7 @@ public enum Unit {
 	}
 	
 	/**
-	 * Return the ratio between two given states, assuming their second unit as base.
+	 * Return the ratio between two given states, assuming their second unit as base.//TODO
 	 * 
 	 * @return	spoonCapacityFirstState/spoonCapacitySecondState
 	 */

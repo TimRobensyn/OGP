@@ -5,13 +5,13 @@ import alchemy.*;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * A class describing a laboratory for storing and handling alchemic ingredients and devices
+ * A class describing a laboratory for storing and handling alchemic ingredients and devices.
  * 
- * @invar	Each laboratory must have a valid capacity
+ * @invar	Each laboratory must have a valid capacity.
  * 			| isValidCapacity(getCapacity())
- * @invar 	The storage of a laboratory cannot contain duplicate ingredient types
+ * @invar 	The storage of a laboratory cannot contain duplicate ingredient types.
  * 			| hasProperIngredients()
- * @invar   The device list of this laboratory cannot contain devices of the wrong type at the wrong index
+ * @invar   The device list of this laboratory cannot contain devices of the wrong type at the wrong index.
  * 			| hasProperDevices()
  * 
  * @version  1.0
@@ -24,35 +24,36 @@ public class Laboratory {
 	 * CONSTRUCTORS
 	 **************************************************/
 	/**
-	 * Initialize a new laboratory with the given capacity, storage and devices
+	 * Initialize a new laboratory with the given capacity, storage and devices.
 	 * 
 	 * @param capacity
-	 * 	      The given capacity in storerooms
+	 * 	      The given capacity in storerooms.
 	 * @param storage
-	 * 		  The given ArrayList with the storage in this laboratory
+	 * 		  The given ArrayList with the storage in this laboratory.
 	 * @param coolingbox
-	 * 	      The cooling box in this laboratory
+	 * 	      The cooling box in this laboratory.
 	 * @param oven
-	 * 		  The oven in this laboratory
+	 * 		  The oven in this laboratory.
 	 * @param kettle
-	 * 		  The kettle in this laboratory
+	 * 		  The kettle in this laboratory.
 	 * @param transmogrifier
-	 * 		  The transmogrifier in this laboratory
-	 * @post  The capacity of this laboratory is set to the given capacity in storerooms
+	 * 		  The transmogrifier in this laboratory.
+	 * @post  The capacity of this laboratory is set to the given capacity in storerooms.
 	 * 		  | getCapacity() == capacity
-	 * @post  The storage of this laboratory is set to the given capacity
-	 *        | getCoolingbox == coolingbox
+	 * @post  The storage of this laboratory is set to the given capacity.
+	 *        | getCoolingbox == cooling box
 	 *        | getOven == oven
 	 *        | getKettle == kettle
 	 *        | getTransmogrifier == transmogrifier
-	 * @throws CapacityException
-	 * 		   The given capacity is invalid
+	 * @throws IllegalArgumentException
+	 * 		   The given capacity is invalid.
 	 * 		   | !isValidCapacity(capacity)
 	 */
 	@Raw
-	public Laboratory(int capacity, ArrayList<AlchemicIngredient> storage, CoolingBox coolingbox, Oven oven, Kettle kettle, Transmogrifier transmogrifier) throws CapacityException {
+	public Laboratory(int capacity, ArrayList<AlchemicIngredient> storage, CoolingBox coolingbox,
+			Oven oven, Kettle kettle, Transmogrifier transmogrifier) throws IllegalArgumentException {
 		if(!isValidCapacity(capacity)) {
-			throw new CapacityException(this);
+			throw new IllegalArgumentException();
 		}
 		this.capacity = capacity;
 		setStorage(storage);
@@ -64,13 +65,13 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Initialize a new laboratory with the given capacity, an empty storage and no devices
+	 * Initialize a new laboratory with the given capacity, an empty storage and no devices.
 	 * 
 	 * @param capacity
-	 * 	      The given capacity
+	 * 	      The given capacity.
 	 * 		  | getCapacity() == capacity
-	 * @effect The new laboratory is initialized with the given capacity
-	 * 		   it's storage is empty and the devices are set to null
+	 * @effect The new laboratory is initialized with the given capacity.
+	 * 		   It's storage is empty and the devices are set to null.
 	 * 		   | this(capacity, new ArrayList<AlchemicIngredient>(), null, null, null, null)
 	 */
 	@Raw
@@ -83,7 +84,7 @@ public class Laboratory {
 	 **************************************************/
 	
 	/**
-	 * Return the capacity of this laboratory in storerooms
+	 * Return the capacity of this laboratory in storerooms.
 	 */
 	@Basic
 	public int getCapacity() {
@@ -91,19 +92,19 @@ public class Laboratory {
 	}
 
 	/**
-	 * Check whether the given capacity is a valid capacity for a laboratory
+	 * Check whether the given capacity is a valid capacity for a laboratory.
 	 * 
-	 * @param capacity
-	 * 		  The given capacity
-	 * @return True if and only if the given capacity is not less than 0 or greater than the maximum interger value
-	 *         | result == ((capacity >= 0) && (capacity <= Integer.MAX_VALUE))
+	 * @param	capacity
+	 * 			The given capacity.
+	 * @return	True if and only if the given capacity is not less than 0 or greater than the maximum integer value.
+	 *			| result == ((capacity >= 0) && (capacity <= Integer.MAX_VALUE))
 	 */
 	public static boolean isValidCapacity(int capacity) {
 		return((capacity >= 0) && (capacity <= Integer.MAX_VALUE));
 	}
 	
 	/**
-	 * Variable storing the capacity of this laboratory in storerooms
+	 * Variable storing the capacity of this laboratory in storerooms.
 	 */
 	private final int capacity;
 	
@@ -112,7 +113,7 @@ public class Laboratory {
 	 **************************************************/
 
 	/**
-	 * Return the storage of this laboratory
+	 * Return the storage of this laboratory.
 	 */
 	@Basic
 	public ArrayList<AlchemicIngredient> getStorage(){
@@ -120,10 +121,10 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Set the storage list of this laboratory to the given storage list
+	 * Set the storage list of this laboratory to the given storage list.
 	 * 
 	 * @param storage
-	 * 		  The given storage list
+	 * 		  The given storage list.
 	 */
 	@Raw
 	private void setStorage(ArrayList<AlchemicIngredient> storage) {
@@ -131,7 +132,7 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Return the quantity that is contained in this laboratory
+	 * Return the quantity that is contained in this laboratory.
 	 */
 	public int getStorageQuantity() {
 		int quantity = 0;
@@ -142,7 +143,7 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Return the number of ingredients in this laboratory
+	 * Return the number of ingredients in this laboratory.
 	 */
 	@Basic
 	public int getNbIngredients() {
@@ -150,10 +151,10 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Get the ingredient in this laboratory's storage at the given index
+	 * Get the ingredient in this laboratory's storage at the given index.
 	 * 
 	 * @param index
-	 * 		  The given index
+	 * 		  The given index.
 	 */
 	@Basic
 	public AlchemicIngredient getIngredientAt(int index) {
@@ -161,17 +162,17 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Add an ingredient to this laboratory's storage
+	 * Add an ingredient to this laboratory's storage.
 	 * 
 	 * @param ingredient
-	 * 		  The given ingredient
+	 * 		  The given ingredient.
 	 */
 	public void addAsIngredient(AlchemicIngredient ingredient) {
 		getStorage().add(ingredient);
 	}
 	
 	/**
-	 * Remove an ingredient from this laboratory's storage
+	 * Remove an ingredient from this laboratory's storage.
 	 * @param ingredient
 	 */
 	public void removeAsIngredient(AlchemicIngredient ingredient) {
@@ -179,9 +180,9 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Check if this laboratory has proper ingredients
+	 * Check if this laboratory has proper ingredients.
 	 * 
-	 * @return True if and only if this laboratory's storage does not contain two of the same ingredient types
+	 * @return True if and only if this laboratory's storage does not contain two of the same ingredient types.
 	 * 		   | for each I in 0..getNbIngredient()-2:
 	 * 		   |   for each J in I..getNbIngredient()-1:
 	 * 		   |     if(getIngredientAt(I).getType().equals(getIngredientAt(J).getType()))
@@ -203,30 +204,30 @@ public class Laboratory {
 	/**
 	 * Store the ingredient contained by the given container in this laboratory. The old container gets deleted.
 	 * 
-	 * @param container
-	 * 		  The given container
-	 * @effect The ingredient in the given container gets heated or cooled to it's standard temperature
-	 *         | makeStandardTemp(container)
-	 * @effect The ingredient in the given container gets added to this laboratory's storage
-	 *         | addAsIngredient(ingredient)
-	 *         If this laboratory already contains an ingredient of the same type a new ingredient is created with the same type
-	 * 		   and the quantity of the given ingredient counted up with the quantity of the stored ingredient
-	 *         | if(storedIngredient.getType().equals(ingredient.getType()))
-	 *         |   ingredient = new AlchemicIngredient(ingredient.getType(), ingredient.getQuantity() + storedIngredient.getQuantity())
-	 * 		   |   removeAsIngredient(storedIngredient)
-	 * 		   The old container gets deleted
-	 * 		   | container = null
-	 * @throws CapacityException
-	 * 		   The quantity in the given container exceeds this laboratory's capacity
-	 * 		   | if(getStorageQuantity() + container.getContentQuantity() > this.capacity)
-	 * @throws CapacityException
-	 * 	 	   This laboratory already contains an ingredient of the same type and there is no kettle present
-	 * 		   | if(storedIngredient.getType().equals(ingredient.getType()))
-	 *   	   |   getKettle()
+	 * @param	container
+	 * 			The given container.
+	 * @effect	The ingredient in the given container is heated or cooled to its standard temperature.
+	 * 			| makeStandardTemp(container)
+	 * @effect	The ingredient in the given container is added to this laboratory's storage.
+	 * 			| addAsIngredient(ingredient)
+	 * 			If this laboratory already contains an ingredient of the same type a new ingredient is created with the same type
+	 * 			and the quantity of the given ingredient counted up with the quantity of the stored ingredient.
+	 * 			| if(storedIngredient.getType().equals(ingredient.getType()))
+	 *			|   ingredient = new AlchemicIngredient(ingredient.getType(), ingredient.getQuantity() + storedIngredient.getQuantity())
+	 *			|   removeAsIngredient(storedIngredient)
+	 *			The old container is deleted.
+	 *			| container = null
+	 * @throws	CapacityException
+	 * 			The quantity in the given container exceeds this laboratory's capacity.
+	 *			| if(getStorageQuantity() + container.getContentQuantity() > this.capacity)
+	 * @throws	CapacityException
+	 *			This laboratory already contains an ingredient of the same type and there is no kettle present.
+	 *			| if(storedIngredient.getType().equals(ingredient.getType()))
+	 *			|   getKettle()
 	 */
 	public void store(IngredientContainer container) throws CapacityException {
 		if(getStorageQuantity() + container.getContentQuantity() > this.capacity) {
-			throw new CapacityException(container, this);
+			throw new CapacityException(container, this, "Not enough storage left");
 		}
 
 		makeStandardTemp(container);
@@ -247,73 +248,54 @@ public class Laboratory {
 	/**
 	 * Request a given amount of an alchemic ingredient by giving either the special or simple name.
 	 * 
-	 * @param name
-	 * 		  The special or simple name of the requested ingredient
-	 * @param amount
-	 * 		  The given amount
-	 * @effect If this laboratory contains an alchemic ingredient with the given special or simple name and
-	 * 		   if the given amount is not greater than the quantity of this alchemic ingredient and
-	 * 		   if the given amount is not greater than a barrel or chest depending on the state of the requested ingredient,
-	 * 		   the smallest possible container containing this ingredient with the given amount is created
-	 * 		   | for(storedIngredient : storage)
-	 * 		   |  if((requestedIngredientName == storedIngredientName) && (storedIngredient.getQuantity() >= amount) &&
-	 *         |     (amount <= Barrel or Chest quantity))
-	 * 		   | 		newContainer = new IngredientContainer(newIngredient, containerType);
-	 * 		   |        removeAsIngredient(requested storedIngredient)
-	 *  	   If the given amount is greater than a barrel or chest depending on the state of the requested ingredient,
-	 *  	   A barrel or chest is created and the leftovers are deleted
-	 *  	   | if(amount > barrel or chest quantity)
-	 *  	   |  storedIngredient = new AlchemicIngredient(storedIngredient.getType(), barrel or chest quantity)
-	 *  	   |  newIngredient = new AlchemicIngredient(storedIngredient.getType(), barrel or chest quantity)
-	 *  	   |  newContainer = new IngredientContainer(newIngredient, containerType)
-	 *         |  removeAsIngredient(requested storedIngredient)
-	 * @throws ItemEmptyException
-	 * 		   This laboratory does not contain enough of the requested item
-	 * 		   | storedIngredient.getQuantity() < amount
-	 * @throws IllegalArgumentException
-	 * 		   This laboratory does not contain an ingredient with the given name
-	 * 		   | !((storedIngredient.getType().getSimpleName() == name) ||
-	 * 		   |  (storedIngredient.getType().getSpecialName() == name))
+	 * @param	name
+	 * 			The special or simple name of the requested ingredient.
+	 * @param	amount
+	 * 			The given amount.
+	 * @effect	If this laboratory contains an alchemic ingredient with the given special or simple name and
+	 * 			if the given amount is not greater than the quantity of this alchemic ingredient and
+	 * 			if the given amount is not greater than a barrel or chest depending on the state of the requested ingredient,
+	 * 			the smallest possible container containing this ingredient with the given amount is created.
+	 * 			| for each storedIngredient in storage
+	 * 			|  if((requestedIngredientName == storedIngredientName) && (storedIngredient.getQuantity() >= amount) &&
+	 * 			|     (amount <= Barrel or Chest quantity))
+	 * 			| 		newContainer = new IngredientContainer(newIngredient, containerType);
+	 * 			|        removeAsIngredient(requested storedIngredient)
+	 * @throws	CapacityException
+	 * 			This laboratory does not contain enough of the requested item or no container is big enough to hold
+	 * 			the requested amount.
+	 * 			| storedIngredient.getQuantity() < amount
+	 * @throws	IllegalArgumentException
+	 * 			This laboratory does not contain an ingredient with the given name.
+	 * 			| !((storedIngredient.getType().getSimpleName() == name) ||
+	 * 			|  (storedIngredient.getType().getSpecialName() == name))
 	 */
-	public IngredientContainer request(String name, int amount) throws CapacityException{
-		IngredientContainer newContainer = null;
-		Container containerType = null;
+	public IngredientContainer request(String name, int amount) throws CapacityException, IllegalArgumentException{
 		for(AlchemicIngredient storedIngredient : storage) {
 			if((storedIngredient.getType().getSimpleName() == name) || (storedIngredient.getType().getSpecialName() == name)){
 				
-				if(storedIngredient.getType().getState() == State.LIQUID) {
-					if(amount > LiquidQuantity.BARREL.getNbOfSmallestUnit()) {
-						amount = LiquidQuantity.BARREL.getNbOfSmallestUnit();
-					}
-					containerType = LiquidQuantity.getContainer(amount);
-				}
-
-				if(storedIngredient.getType().getState() == State.POWDER) {
-					if(amount > PowderQuantity.CHEST.getNbOfSmallestUnit()) {
-						amount = PowderQuantity.CHEST.getNbOfSmallestUnit();
-					}
-					containerType = PowderQuantity.getContainer(amount);
+				if(storedIngredient.getQuantity() < amount) {
+					throw new CapacityException(this, "Not enough of this ingredient.");
 				}
 				
-				if(storedIngredient.getQuantity() < amount) {
-					throw new CapacityException(this);
+				if (Unit.getBiggestContainer(storedIngredient.getState()).getAbsoluteCapacity() < amount) {
+					throw new CapacityException(this, "No container for an amount this big.");
 				}
 				
 				AlchemicIngredient newIngredient = new AlchemicIngredient(storedIngredient.getType(), amount);
+				Unit newContainer = Unit.getContainer(storedIngredient.getState(), amount);
+				
 				if(storedIngredient.getQuantity()-amount > 0) {
 					AlchemicIngredient newStoredIngredient = new AlchemicIngredient(storedIngredient.getType(), storedIngredient.getQuantity()-amount);
 					addAsIngredient(newStoredIngredient);
 				}
-				removeAsIngredient(storedIngredient);
-				newContainer = new IngredientContainer(newIngredient, containerType);
 				
-				break;
+				removeAsIngredient(storedIngredient);
+				return new IngredientContainer(newIngredient, newContainer);
 			}
 		}
-		if(newContainer == null) {
-			throw new CapacityException(this);
-		}
-		return newContainer;
+		throw new IllegalArgumentException("Ingredient not found.");
+		
 	}
 	
 	/**
@@ -327,33 +309,28 @@ public class Laboratory {
 	 * 		   a barrel of chest is returned and the leftovers are deleted
 	 *  	   | if(storedIngredient.getQuantity() > barrel or chest quantity)
 	 *  	   |   storedIngredient = new AlchemicIngredient(storedIngredient.getType(), barrel or chest quantity)
-	 * @throws CapacityException
+	 * @throws IllegalArgumentException
 	 * 		   This laboratory does not contain an ingredient with the given special or simple name
 	 *         | if(newContainer == null)
 	 */
-	public IngredientContainer request(String name) {
-		IngredientContainer newContainer = null;
-		for(AlchemicIngredient storedIngredient : getStorage()) {
+	public IngredientContainer request(String name) throws IllegalArgumentException{
+		for(AlchemicIngredient storedIngredient : storage) {
 			if((storedIngredient.getType().getSimpleName() == name) || (storedIngredient.getType().getSpecialName() == name)){
-				if(storedIngredient.getType().getState() == State.LIQUID) {
-					if(storedIngredient.getQuantity() > LiquidQuantity.BARREL.getNbOfSmallestUnit()) {
-						storedIngredient = new AlchemicIngredient(storedIngredient.getType(), LiquidQuantity.BARREL.getNbOfSmallestUnit());
-					}
+				
+				if (Unit.getBiggestContainer(storedIngredient.getState()).getAbsoluteCapacity() < storedIngredient.getQuantity()) {
+					Unit newContainer = Unit.getBiggestContainer(storedIngredient.getState());
+					AlchemicIngredient newIngredient = new AlchemicIngredient(storedIngredient.getType(),
+							Unit.getBiggestContainer(storedIngredient.getState()).getAbsoluteCapacity());
+					return new IngredientContainer(newIngredient,newContainer);					
 				}
-				if(storedIngredient.getType().getState() == State.POWDER) {
-					if(storedIngredient.getQuantity() > PowderQuantity.CHEST.getNbOfSmallestUnit()) {
-						storedIngredient = new AlchemicIngredient(storedIngredient.getType(), PowderQuantity.CHEST.getNbOfSmallestUnit());
-					}
-				}
-				newContainer = request(name, storedIngredient.getQuantity());
-				break;
+				
+				Unit newContainer = Unit.getContainer(storedIngredient.getState(), storedIngredient.getQuantity());
+				AlchemicIngredient newIngredient = storedIngredient;
+				removeAsIngredient(storedIngredient);
+				return new IngredientContainer(newIngredient, newContainer);
 			}
 		}
-		if(newContainer == null) {
-			throw new CapacityException(this);
-		}
-		
-		return newContainer;
+		throw new IllegalArgumentException("Ingredient not found.");
 	}
 	
 	/**
@@ -419,7 +396,7 @@ public class Laboratory {
 	 * 	      The given device
 	 * @param index
 	 * 		  The given index
-	 * @return True if and only if the device is a coolingbox and the index is 0, the device is an oven and the index is 1,
+	 * @return True if and only if the device is a cooling box and the index is 0, the device is an oven and the index is 1,
 	 * 		   the device is a kettle and the index is 2 or the device is a transmogrifier and the index is 3
 	 *         | if(device.getClass() == CoolingBox.class)
 	 *		   |	result == (index == 0)
@@ -449,7 +426,7 @@ public class Laboratory {
 	/**
 	 * Check whether this laboratory has proper devices in its devices list.
 	 * 
-	 * @return True if and only if the first device is either null or a coolingbox, the second device is either null or an over,
+	 * @return True if and only if the first device is either null or a cooling box, the second device is either null or an over,
 	 * 		   the third device is either null or a kettle and the fourth device is either null or a transmogrifier.
 	 *         | if((getDeviceAt(0).getClass() != CoolingBox.class) && (getDeviceAt(0) != null))
 	 *         |   result == false
@@ -501,7 +478,7 @@ public class Laboratory {
 		else if((device.getClass() == Transmogrifier.class) && (getDeviceAt(3) == null)) {
 			getDevices().add(3, device);
 		} else {
-			throw new CapacityException(this);
+			throw new CapacityException(device,this,"This laboratory cannot accept this device.");
 		}
 	}
 	
@@ -514,21 +491,21 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Return the coolingbox in this laboratory.
+	 * Return the cooling box of this laboratory.
 	 * 
 	 * @throws CapacityException
-	 * 		   This laboratory does not contain a coolingbox
+	 * 		   This laboratory does not contain a cooling box
 	 *         | getDeviceAt(0) == null
 	 */
 	public CoolingBox getCoolingbox() throws CapacityException {
 		if(getDeviceAt(0) == null) {
-			throw new CapacityException(getDeviceAt(0));
+			throw new CapacityException(this,"Cooling box not found.");
 		}
 		return (CoolingBox) getDeviceAt(0);
 	}
 	
 	/**
-	 * Return the oven in this laboratory.
+	 * Return the oven of this laboratory.
 	 * 
 	 * @throws CapacityException
 	 * 		   This laboratory does not contain an oven
@@ -536,13 +513,13 @@ public class Laboratory {
 	 */
 	public Oven getOven() {
 		if(getDeviceAt(1) == null) {
-			throw new CapacityException(getDeviceAt(1));
+			throw new CapacityException(this,"Oven not found.");
 		}
 		return (Oven) getDeviceAt(1);
 	}
 	
 	/**
-	 * Return the kettle in this laboratory
+	 * Return the kettle of this laboratory
 	 * 
 	 * @throws CapacityException
 	 * 		   This laboratory does not contain a kettle
@@ -550,13 +527,13 @@ public class Laboratory {
 	 */
 	public Kettle getKettle() {
 		if(getDeviceAt(2) == null) {
-			throw new CapacityException(getDeviceAt(2));
+			throw new CapacityException(this,"Kettle not found.");
 		}
 		return (Kettle) getDeviceAt(2);
 	}
 	
 	/**
-	 * Return the transmogrifier in this laboratory
+	 * Return the transmogrifier of this laboratory
 	 * 
 	 * @throws CapacityException
 	 * 		   This laboratory does not contain a transmogrifier
@@ -564,7 +541,7 @@ public class Laboratory {
 	 */
 	public Transmogrifier getTransmogrifier() {
 		if(getDeviceAt(3) == null) {
-			throw new CapacityException(getDeviceAt(3));
+			throw new CapacityException(this,"Transmogrifier not found.");
 		}
 		return (Transmogrifier) getDeviceAt(3);
 	}

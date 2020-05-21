@@ -85,7 +85,7 @@ public abstract class TemperatureDevice extends Device {
 	@Override @Raw
 	public final void loadIngredient(IngredientContainer container) throws CapacityException{
 		if(getStartIngredient() != null) {
-			throw new CapacityException(this, container);
+			throw new CapacityException(this, container, "Device has already been loaded.");
 		}
 		setStartIngredient(container.getIngredient());
 		container = null;
