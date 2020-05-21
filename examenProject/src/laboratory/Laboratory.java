@@ -41,7 +41,7 @@ public class Laboratory {
 	 * @post  The capacity of this laboratory is set to the given capacity in storerooms.
 	 * 		  | getCapacity() == capacity
 	 * @post  The storage of this laboratory is set to the given capacity.
-	 *        | getCoolingbox == coolingbox
+	 *        | getCoolingbox == cooling box
 	 *        | getOven == oven
 	 *        | getKettle == kettle
 	 *        | getTransmogrifier == transmogrifier
@@ -204,26 +204,26 @@ public class Laboratory {
 	/**
 	 * Store the ingredient contained by the given container in this laboratory. The old container gets deleted.
 	 * 
-	 * @param container
-	 * 		  The given container.
-	 * @effect The ingredient in the given container gets heated or cooled to it's standard temperature.
-	 *         | makeStandardTemp(container)
-	 * @effect The ingredient in the given container gets added to this laboratory's storage.
-	 *         | addAsIngredient(ingredient)
-	 *         If this laboratory already contains an ingredient of the same type a new ingredient is created with the same type
-	 * 		   and the quantity of the given ingredient counted up with the quantity of the stored ingredient.
-	 *         | if(storedIngredient.getType().equals(ingredient.getType()))
-	 *         |   ingredient = new AlchemicIngredient(ingredient.getType(), ingredient.getQuantity() + storedIngredient.getQuantity())
-	 * 		   |   removeAsIngredient(storedIngredient)
-	 * 		   The old container gets deleted.
-	 * 		   | container = null
-	 * @throws CapacityException
-	 * 		   The quantity in the given container exceeds this laboratory's capacity.
-	 * 		   | if(getStorageQuantity() + container.getContentQuantity() > this.capacity)
-	 * @throws CapacityException
-	 * 	 	   This laboratory already contains an ingredient of the same type and there is no kettle present.
-	 * 		   | if(storedIngredient.getType().equals(ingredient.getType()))
-	 *   	   |   getKettle()
+	 * @param	container
+	 * 			The given container.
+	 * @effect	The ingredient in the given container is heated or cooled to its standard temperature.
+	 * 			| makeStandardTemp(container)
+	 * @effect	The ingredient in the given container is added to this laboratory's storage.
+	 * 			| addAsIngredient(ingredient)
+	 * 			If this laboratory already contains an ingredient of the same type a new ingredient is created with the same type
+	 * 			and the quantity of the given ingredient counted up with the quantity of the stored ingredient.
+	 * 			| if(storedIngredient.getType().equals(ingredient.getType()))
+	 *			|   ingredient = new AlchemicIngredient(ingredient.getType(), ingredient.getQuantity() + storedIngredient.getQuantity())
+	 *			|   removeAsIngredient(storedIngredient)
+	 *			The old container is deleted.
+	 *			| container = null
+	 * @throws	CapacityException
+	 * 			The quantity in the given container exceeds this laboratory's capacity.
+	 *			| if(getStorageQuantity() + container.getContentQuantity() > this.capacity)
+	 * @throws	CapacityException
+	 *			This laboratory already contains an ingredient of the same type and there is no kettle present.
+	 *			| if(storedIngredient.getType().equals(ingredient.getType()))
+	 *			|   getKettle()
 	 */
 	public void store(IngredientContainer container) throws CapacityException {
 		if(getStorageQuantity() + container.getContentQuantity() > this.capacity) {
@@ -317,7 +317,6 @@ public class Laboratory {
 		for(AlchemicIngredient storedIngredient : storage) {
 			if((storedIngredient.getType().getSimpleName() == name) || (storedIngredient.getType().getSpecialName() == name)){
 				
-				int amount;
 				if (Unit.getBiggestContainer(storedIngredient.getState()).getAbsoluteCapacity() < storedIngredient.getQuantity()) {
 					Unit newContainer = Unit.getBiggestContainer(storedIngredient.getState());
 					AlchemicIngredient newIngredient = new AlchemicIngredient(storedIngredient.getType(),
@@ -397,7 +396,7 @@ public class Laboratory {
 	 * 	      The given device
 	 * @param index
 	 * 		  The given index
-	 * @return True if and only if the device is a coolingbox and the index is 0, the device is an oven and the index is 1,
+	 * @return True if and only if the device is a cooling box and the index is 0, the device is an oven and the index is 1,
 	 * 		   the device is a kettle and the index is 2 or the device is a transmogrifier and the index is 3
 	 *         | if(device.getClass() == CoolingBox.class)
 	 *		   |	result == (index == 0)
@@ -427,7 +426,7 @@ public class Laboratory {
 	/**
 	 * Check whether this laboratory has proper devices in its devices list.
 	 * 
-	 * @return True if and only if the first device is either null or a coolingbox, the second device is either null or an over,
+	 * @return True if and only if the first device is either null or a cooling box, the second device is either null or an over,
 	 * 		   the third device is either null or a kettle and the fourth device is either null or a transmogrifier.
 	 *         | if((getDeviceAt(0).getClass() != CoolingBox.class) && (getDeviceAt(0) != null))
 	 *         |   result == false
@@ -492,10 +491,10 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Return the coolingbox in this laboratory.
+	 * Return the cooling box of this laboratory.
 	 * 
 	 * @throws CapacityException
-	 * 		   This laboratory does not contain a coolingbox
+	 * 		   This laboratory does not contain a cooling box
 	 *         | getDeviceAt(0) == null
 	 */
 	public CoolingBox getCoolingbox() throws CapacityException {
@@ -506,7 +505,7 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Return the oven in this laboratory.
+	 * Return the oven of this laboratory.
 	 * 
 	 * @throws CapacityException
 	 * 		   This laboratory does not contain an oven
@@ -520,7 +519,7 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Return the kettle in this laboratory
+	 * Return the kettle of this laboratory
 	 * 
 	 * @throws CapacityException
 	 * 		   This laboratory does not contain a kettle
@@ -534,7 +533,7 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Return the transmogrifier in this laboratory
+	 * Return the transmogrifier of this laboratory
 	 * 
 	 * @throws CapacityException
 	 * 		   This laboratory does not contain a transmogrifier

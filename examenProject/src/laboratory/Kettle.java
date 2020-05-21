@@ -61,7 +61,7 @@ public class Kettle extends BottomlessDevice {
 				closestToWater.add(ingredient);
 			}
 			
-			//Quantity & temperature
+			//Quantity & temperature //TODO optimaliseren met unit?
 			if (ingredient.getState()==State.LIQUID) {
 				quantityOfLiquids += ingredient.getQuantity();
 				cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*Unit.SPOON_LIQUID.getCapacity();
