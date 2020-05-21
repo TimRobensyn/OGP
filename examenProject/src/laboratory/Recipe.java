@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * 		    | hasProperProcesses()
  * @invar	The alchemic ingredients associated with this recipe must be proper ingredients
  * 			for each recipe.
- * 			| hasProperIngredients()
+ * 			| areProperIngredients()
  * 
  * @version	1.0
  * @author	Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
@@ -27,13 +27,19 @@ public class Recipe {
 	 * 			The array list of processes to be given to the new recipe.
 	 * @param	ingredients
 	 * 			The array of ingredients to be given to the new recipe.
-	 * @post	
+	 * @post	If the given processes list does not end with a mix process, it is added at the end of the list.
+	 * 			Else, nothing is added. Either way, the given processes list (with an extra element or not) is set as 
+	 * 			the processes list of this recipe.
+	 *          | if (processes.get(processes.size()-1) != Process.mix)
+	 *		    |    then addProcessAt(Process.mix,processes.size())
+	 *			| new.getProcesses() = processes
 	 * @post	The new array of ingredients of this new recipe is equal
 	 * 			to the given array of ingredients.
 	 * 			| new.getIngredients() == ingredients
 	 * @throws 	IllegalArgumentException
-	 * 			The given array of processes or the given array of ingredients is not valid.
-	 * 			| (!isValidProcessList) || (!canHaveAsIngredients(ingredients))
+	 * 			The amount of add processes in the given processes list is not equal to the 
+	 * 			amount of ingredients.
+	 * 			| (getNbOfAdd() != ingredients.size())
 	 */
 	@Raw
 	public Recipe(ArrayList<Process> processes, ArrayList<AlchemicIngredient> ingredients) throws IllegalArgumentException{
@@ -41,12 +47,22 @@ public class Recipe {
 			addProcessAt(Process.mix,processes.size());
 		this.processes = processes;
 		
-		if (!hasProperIngredients())
+		if (getNbOfAdd() != ingredients.size())
 			throw new IllegalArgumentException("Not the right amount of ingredients");
 		this.ingredients = ingredients;
 	}
 	
-	
+	/**
+	 * Initialize a recipe with empty processes and ingredients lists.
+	 * 
+	 * @post The processes list of this recipe is empty.
+	 * 	     | getProcesses = new ArrayList<Process>()
+	 * @post The ingredients list of this recipe is empty.
+	 * 	 	 | getIngredients = new ArrayList<AlchemicIngredient>()
+	 */
+	@Raw
+	public Recipe() {
+	}
 	
 	/**********************************************************
 	 * Processes
@@ -140,7 +156,7 @@ public class Recipe {
 	}
 	
 	/**
-	 * Check if the given recipe has a valid list of processes.
+	 * Check if the given recipe has a proper list of processes.
 	 * 
 	 * @param  recipe
 	 * 		   The recipe to check.
@@ -150,7 +166,7 @@ public class Recipe {
 	 *         |      canHaveAsProcessAt(recipe.getProcessAt(i),i)
 	 */
 	@Raw
-	public boolean hasValidProcesses(Recipe recipe) {
+	public boolean hasProperProcesses(Recipe recipe) {
 		for (int i=0; i<getNbProcesses(); i++) {
 			if (!canHaveAsProcessAt(recipe.getProcessAt(i),i))
 				return false;
@@ -232,6 +248,7 @@ public class Recipe {
 	/**
 	 * Get the (ordered) array of ingredients of this recipe. 
 	 */
+	@Basic
 	public ArrayList<AlchemicIngredient> getIngredients() {
 		return this.ingredients;
 	}
@@ -239,23 +256,43 @@ public class Recipe {
 	/**
 	 * Get the number of ingredients for this recipe. Each duplicate counts.
 	 */
-	@Raw
-	public int getNbOfIngredients() {
+	@Basic @Raw
+	public int getNbIngredients() {
 		return getIngredients().size();
 	}
 	
 	/**
-	 * Check if this recipe has a valid list of ingredients
+	 * Check whether this recipe can have the given ingredient in its ingredient list or not.
 	 * 
-	 * @param	ingredients
-	 * 			The array of ingredients to check.
-	 * @return  True if and only if the amount of ingredients is equal to the amount of the add processes
-	 * 			in the process list.
-	 * 			| result == (ingredients.getNbOfIngredients()==this.getNbOfAdd())
+	 * @param 	ingredient
+	 * 			The ingredient to check.
+	 * @return  True if and only if the ingredient is effective.
+	 * 			| result == (ingredient!=null)
+	 */
+	public static boolean canHaveAsIngredient(AlchemicIngredient ingredient) {
+		return (ingredient != null);
+	}
+	
+	/**
+	 * Check whether this recipe has proper ingredients associated with it.
+	 * 
+	 * @param	recipe
+	 * 			The recipe to check.
+	 * @return  True if and only if the given recipe can have each item at its index and the amount of 
+	 *          ingredients in this recipe is equal to or greater than the amount of the add processes 
+	 *          in the process list of the given recipe.
+	 *  	    | result ==
+	 *  		|   ( getNbIngredients()>=getNbOfAdd()
+	 *  	    |   && for each ingredient in ingredients
+	 *          |         canHaveAsIngredient(ingredient) )
 	 */
 	@Raw
-	public boolean hasProperIngredients() {
-		return (getNbOfIngredients()==getNbOfAdd());
+	public boolean hasProperIngredients(Recipe recipe) {
+		for (AlchemicIngredient ingredient: recipe.getIngredients()) {
+			if (!canHaveAsIngredient(ingredient))
+				return false;
+		}
+		return (recipe.getNbIngredients()>=recipe.getNbOfAdd());
 	}
 	
 	//TODO: addIngredientAt, removeIngredientAt
@@ -268,7 +305,7 @@ public class Recipe {
 	 * @invar Each item in the ingredient list is effective.
 	 *        | for each item in ingredients:
 	 *        |   item != null
-	 * @note  There are no restrictions on a single ingredient in the list.
+	 * @note  There are no extra restrictions on a single ingredient in the list.
 	 */
 	private ArrayList<AlchemicIngredient> ingredients = new ArrayList<AlchemicIngredient>();
 
