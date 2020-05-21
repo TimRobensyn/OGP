@@ -247,7 +247,7 @@ public class IngredientType {
 	 *          |   if (! isValidSimpleName(simpleNames[I]))
 	 *          |      then result == false
 	 *          |   if (I != simpleNames.length-1
-	 *          |      && simpleNames[i].compareTo(simpleNames[i+1]) < 1)
+	 *          |      && simpleNames[I].compareTo(simpleNames[I+1]) < 1)
 	 *          |      then result == false	
 	 */
 	public static boolean areValidSimpleNames(String[] simpleNames) {
