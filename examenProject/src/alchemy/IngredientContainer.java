@@ -3,7 +3,7 @@ package alchemy;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * An enumeration class of ingredient containers involving a capacity type and contents in spoons.
+ * An class of ingredient containers involving a capacity type and contents in spoons.
  * 
  * @version	1.0
  * @author	Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
@@ -13,11 +13,12 @@ import be.kuleuven.cs.som.annotate.*;
 public class IngredientContainer {
 	
 	/**
-	 * Initialize this container with the given capacity and contents
+	 * Initialize this container with the given capacity and contents.
+	 * 
 	 * @param 	capacity
-	 * 		 	The capacity of this container
+	 * 		 	The capacity of this container.
 	 * @param	contents
-	 * 			The contents in this container
+	 * 			The contents in this container.
 	 * @pre		//TODO
 	 */
 	@Raw
@@ -32,16 +33,18 @@ public class IngredientContainer {
 			assert (contents.getQuantity()<=PowderQuantity.valueOf(newCapacity.toString()).getNbOfSmallestUnit()):
 				"Container is not big enough";
 			capacity = newCapacity;
-		} else {
+		}
+		else {
 			capacity = null;
 		}
 	}
 	
 	/**
-	 * Initialize this empty container with the given capacity
+	 * Initialize this empty container with the given capacity.
+	 * 
 	 * @param 	capacity
-	 * 		 	The capacity of this container
-	 * @pre		//TODO
+	 * 		 	The capacity of this container.
+	 * @pre		
 	 */
 	@Raw
 	public IngredientContainer(Container newCapacity) {
@@ -75,8 +78,8 @@ public class IngredientContainer {
 	 * Set the contents off this container to the given contents
 	 * @param contents
 	 * 		  The given contents
-	 * @pre The given contents is not less than 0 or greater than the capacity of this container
-	 *		| (contents >= 0) && (contents <= this.getCapacity())
+	 * @pre  The given contents is not less than 0 or greater than the capacity of this container
+	 *		 | (contents >= 0) && (contents <= this.getCapacity())
 	 */
 	public void setContents(AlchemicIngredient contents) {
 		if (contents.getType().getState()==State.LIQUID) {
@@ -96,6 +99,8 @@ public class IngredientContainer {
 	 */
 	private AlchemicIngredient contents = null;
 	
+	
+	
 	/************************************************************************
 	 * Capacity
 	 ************************************************************************/
@@ -110,9 +115,9 @@ public class IngredientContainer {
 		}
 		else if(contents.getType().getState()==State.POWDER) {
 			return PowderQuantity.valueOf(capacity.toString()).getQuantity();
-		} else {
-			return 0;
-		}
+		} 
+		else return 0;
+		
 	}
 
 	/**

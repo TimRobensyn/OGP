@@ -13,34 +13,7 @@ import be.kuleuven.cs.som.annotate.*;
 
 @Value
 public enum State {
-	
-	// POWDER("Powder"), LIQUID("Liquid");
-	
-	/**
-	 * Initialize a new state with given name.
-	 * 
-	 * @param name
-	 *        The name of the new state.
-	 * @pre	  The provided name is valid.
-	 * 		  | isValidStateName(name)
-	 * @post  The name of this new state is set to the given name.
-	 *        | new.getStateName().equals(name)
-	 */
-	// @Raw
-	// private State(String name) {
-	//	 this.name = name;
-	// }
-	
-	/**
-	 * Return the name of this state.
-	 */
-	// @Raw @Basic @Immutable
-	// public String getStateName(){
-	//    return this.name;
-	// }
-	
-	// private final String name;
-	
+
 	POWDER, LIQUID;
 	
 	/*
