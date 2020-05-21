@@ -43,9 +43,9 @@ public class Laboratory {
 	 *        | getOven == oven
 	 *        | getKettle == kettle
 	 *        | getTransmogrifier == transmogrifier
-	 * @exception CapacityException
-	 * 			  The given capacity is invalid
-	 * 			  | !isValidCapacity(capacity)
+	 * @throws CapacityException
+	 * 		   The given capacity is invalid
+	 * 		   | !isValidCapacity(capacity)
 	 */
 	@Raw
 	public Laboratory(int capacity, ArrayList<AlchemicIngredient> storage, CoolingBox coolingbox, Oven oven, Kettle kettle, Transmogrifier transmogrifier) throws CapacityException {
@@ -117,6 +117,12 @@ public class Laboratory {
 		return this.storage;
 	}
 	
+	/**
+	 * Set the storage list of this laboratory to the given storage list
+	 * 
+	 * @param storage
+	 * 		  The given storage list
+	 */
 	private void setStorage(ArrayList<AlchemicIngredient> storage) {
 		this.storage = storage;
 	}
