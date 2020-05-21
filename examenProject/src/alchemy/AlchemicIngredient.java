@@ -68,7 +68,15 @@ public class AlchemicIngredient {
 	@Basic @Immutable
 	public IngredientType getType() {
 		return this.type;
-	}	
+	}
+	
+	/**
+	 * Return the state of the type of this ingredient.
+	 */
+	@Immutable
+	public State getState() {
+		return getType().getState();
+	}
 	
 	/**
 	 * Variable indicating the type of this alchemic ingredient.
@@ -130,7 +138,7 @@ public class AlchemicIngredient {
 	 * Return the quantity of this ingredient in drops or pinches (depending on the state).
 	 */
 	public int getQuantity() {
-		return quantity;
+		return this.quantity;
 	}
 	
 	/**

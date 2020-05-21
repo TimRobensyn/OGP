@@ -59,6 +59,18 @@ public enum Unit {
 	}
 	
 	/**
+	 * Check whether the given index is valid or not.
+	 * 
+	 * @param  index
+	 * 		   The index to check.
+	 * @return True if and only if the greater than zero and not above the number of values
+	 *         in this enumeration class.
+	 */
+	public static boolean isValidIndex(int index) {
+		return (index>0 && index<=PowderQuantity.values().length); //TODO deze checker fixen
+	}
+	
+	/**
 	 * A variable containing this unit's index relative to the other units with the same state.
 	 */
 	private int index;
@@ -106,6 +118,53 @@ public enum Unit {
 			}
 		}
 		return result;
+	}
+	/**
+	 * Return the smallest container of the given state that can hold the given quantity.
+	 */
+	public Unit getContainer(State state, int quantity) {
+		Unit result = getBiggestContainer(state);		
+		for (Unit unit: Unit.values()) {
+			if ((((unit.getState()==state)
+					&&(unit.isContainer())
+					&&(unit.getIndex()<result.getIndex()))
+					&&(unit.getAbsoluteCapacity()>=quantity))){
+				result = unit;
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Return the biggest container of the given state.
+	 */
+	private Unit getBiggestContainer(State state) {
+		Unit result = null; //TODO Deze initialisatie bespreken.
+		for (Unit unit: Unit.values()) {
+			if (((unit.getState()==state)
+					&&(unit.isContainer()))
+					&&(unit.getAbsoluteCapacity()<result.getAbsoluteCapacity())){
+				result = unit;
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Return the ratio between two given states, assuming their second unit as base.
+	 * 
+	 * @return	spoonCapacityFirstState/spoonCapacitySecondState
+	 */
+	public double getRatio(State firstState, State secondState) {
+		int firstCapacity = 1;
+		int secondCapacity = 1;
+		for (Unit unit: Unit.values()) {
+			if (unit.getIndex()==2) {
+				if (unit.getState()==firstState) firstCapacity = unit.getCapacity();
+				if (unit.getState()==secondState) secondCapacity = unit.getCapacity();
+			}
+		}
+		return firstCapacity/secondCapacity;
 	}
 
 }

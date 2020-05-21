@@ -1,7 +1,6 @@
 package laboratory;
 
 import be.kuleuven.cs.som.annotate.*;
-import be.kuleuven.cs.som.taglet.*;
 import alchemy.*;
 
 /**
