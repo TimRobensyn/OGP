@@ -32,6 +32,7 @@ public class Kettle extends BottomlessDevice {
 	public void process() throws CapacityException {
 		if ((!getProcessedIngredients().isEmpty()||!getStartIngredients().isEmpty()))
 			throw new CapacityException(this);
+		
 		ArrayList<String> newNameList = new ArrayList<>(0);
 		ArrayList<AlchemicIngredient> closestToWater = new ArrayList<>(0);
 		Temperature waterTemperature = new Temperature(0L,20L);
@@ -58,14 +59,14 @@ public class Kettle extends BottomlessDevice {
 			}
 			
 			//Quantity & temperature
-			if (ingredient.getType().getState()==State.LIQUID) {
+			if (ingredient.getState()==State.LIQUID) {
 				quantityOfLiquids += ingredient.getQuantity();
-				cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*LiquidQuantity.SPOON.getQuantity();
-				totalNbOfSpoons += ingredient.getQuantity()/LiquidQuantity.SPOON.getQuantity();
-			} else if (ingredient.getType().getState()==State.POWDER) {
+				cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*Unit.SPOON_LIQUID.getCapacity();
+				totalNbOfSpoons += ingredient.getQuantity()/Unit.SPOON_LIQUID.getCapacity();
+			} else if (ingredient.getState()==State.POWDER) {
 				quantityOfPowders += ingredient.getQuantity();
-				cumulativeHotness += ingredient.getHotness()*ingredient.getQuantity()*PowderQuantity.SPOON.getQuantity();
-				totalNbOfSpoons += ingredient.getQuantity()/PowderQuantity.SPOON.getQuantity();
+				cumulativeHotness += ingredient.getHotness()*ingredient.getQuantity()*Unit.SPOON_POWDER.getCapacity();
+				totalNbOfSpoons += ingredient.getQuantity()/Unit.SPOON_POWDER.getCapacity();
 			}
 			
 		}
@@ -73,7 +74,7 @@ public class Kettle extends BottomlessDevice {
 		//State
 		State newState = State.POWDER;
 		for (AlchemicIngredient ingredient : closestToWater) {
-			if (ingredient.getType().getState()==State.LIQUID) {
+			if (ingredient.getState()==State.LIQUID) {
 				newState = State.LIQUID;
 			}
 		}
@@ -89,11 +90,13 @@ public class Kettle extends BottomlessDevice {
 		//Quantity
 		int newQuantity = 0;
 		if (newState==State.LIQUID) {
-			int powderToLiquid = LiquidQuantity.SPOON.getQuantity()*( (int) Math.floor(quantityOfPowders*LiquidQuantity.getPowderRatio()));
+			int powderToLiquid = Unit.SPOON_LIQUID.getCapacity()*( (int) Math.floor(quantityOfPowders*Unit.getRatio(
+					newState, newState.otherState())));
 			newQuantity = quantityOfLiquids + powderToLiquid;
 		} else if (newState==State.POWDER) {
-			int liquidToPowder = PowderQuantity.SPOON.getQuantity()*( (int) Math.floor(quantityOfPowders*PowderQuantity.getLiquidRatio()));
-			newQuantity = quantityOfPowders + liquidToPowder;
+			int liquidToPowder = Unit.SPOON_POWDER.getCapacity()*( (int) Math.floor(quantityOfPowders*Unit.getRatio(
+					newState, newState.otherState())));
+			newQuantity = quantityOfPowders + liquidToPowder; //TODO optimaliseren met Unit
 		}
 		
 		//Temperature

@@ -26,6 +26,16 @@ public enum State {
 		}
 		return false;
 	}
+	
+	/**
+	 * Return the other state. //TODO Moet dit beter gedocumenteerd worden?
+	 */
+	public State otherState() {
+		if (this==State.LIQUID)
+			return State.POWDER;
+		else 
+			return State.LIQUID;
+	}
 
 	
 }

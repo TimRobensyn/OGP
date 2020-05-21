@@ -7,7 +7,7 @@ import alchemy.*;
 
 /**
  * An abstract subclass of Device for devices that can hold a limitless
- * amount of ingredients.
+ * amount of ingredients. //TODO Documentatie is nog niet okee
  * 
  * @version	1.0
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
@@ -32,10 +32,10 @@ public abstract class BottomlessDevice extends Device {
 	public BottomlessDevice() {}
 	
 	/**
-	 * @return	startIngredients
+	 * Return the arraylist containing the start ingredients.
 	 */
 	public ArrayList<AlchemicIngredient> getStartIngredients() {
-		return startIngredients;
+		return this.startIngredients;
 	}
 	
 	/**
@@ -48,14 +48,14 @@ public abstract class BottomlessDevice extends Device {
 	/**
 	 * A variable for the loaded ingredients in the device
 	 */
-	private ArrayList<AlchemicIngredient> startIngredients = new ArrayList<>();
+	private ArrayList<AlchemicIngredient> startIngredients = new ArrayList<AlchemicIngredient>();
 	
 	/**
 	 * Return the arrayList with the processedIngredients.
 	 */
 	@Basic
 	protected ArrayList<AlchemicIngredient> getProcessedIngredients() {
-		return processedIngredients;
+		return this.processedIngredients;
 	}
 	
 	
@@ -63,13 +63,13 @@ public abstract class BottomlessDevice extends Device {
 	 * A protected method for adding processed Ingredients to the processed ingredients ArrayList. 
 	 */
 	protected void addProcessedIngredient(AlchemicIngredient ingredient) {
-		processedIngredients.add(ingredient);
+		getProcessedIngredients().add(ingredient);
 	}
 	
 	/**
 	 * A variable for the processed ingredients still in the device
 	 */
-	private ArrayList<AlchemicIngredient> processedIngredients = new ArrayList<>();
+	private ArrayList<AlchemicIngredient> processedIngredients = new ArrayList<AlchemicIngredient>();
 
 	/**
 	 * Loads a new ingredient into this device
@@ -86,18 +86,12 @@ public abstract class BottomlessDevice extends Device {
 	 */
 	@Override
 	public final IngredientContainer emptyDevice() {
-		if (processedIngredients.get(0) == null)
+		AlchemicIngredient outputIngredient = getProcessedIngredients().get(0);
+		if (outputIngredient == null)
 			return null;
-		Container containerType=null;
-		if(processedIngredients.get(0).getType().getState() == State.LIQUID) {
-			containerType = LiquidQuantity.getContainer(processedIngredients.get(0).getQuantity());
-		}
-		else if (processedIngredients.get(0).getType().getState() == State.POWDER) {
-			containerType = PowderQuantity.getContainer(processedIngredients.get(0).getQuantity());
-		}
-		
-		IngredientContainer outputContainer = new IngredientContainer(processedIngredients.get(0), containerType);
-		processedIngredients.remove(0);
+		IngredientContainer outputContainer = new IngredientContainer(outputIngredient,
+				Unit.getContainer(outputIngredient.getState(), outputIngredient.getQuantity()));
+		getProcessedIngredients().remove(0);
 		return outputContainer;
 	}
 

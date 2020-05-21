@@ -31,7 +31,7 @@ public class AlchemicIngredient {
 	 */
 	@Raw
 	public AlchemicIngredient(IngredientType type, int quantity) {
-		assert(Quantity.isValidQuantity(quantity)):
+		assert(isValidQuantity(quantity)):
 			"Quantity is not valid";
 		assert(type!=null):
 			"IngredientType is not valid";
@@ -140,6 +140,19 @@ public class AlchemicIngredient {
 	public int getQuantity() {
 		return this.quantity;
 	}
+	
+	/**
+	 * Check whether the given quantity is a valid quantity for an alchemic ingredient.
+	 * 
+	 * @param  quantity
+	 * 		   The quantity to check.
+	 * @return True if and only if the quantity is not below 0 and not above the maximum value.
+	 * 		   | result ==
+	 * 		   | 	((quantity >= 0) && (quantity <= Long.MAX_VALUE))
+	 */
+	public static boolean isValidQuantity(int quantity) {
+		return ((quantity >= 0) && (quantity <= Long.MAX_VALUE));
+	} //TODO net gemigreerd van Quantity naar hier, check voor de zekerheid.
 	
 	/**
 	 * A variable referencing the quantity of this alchemic ingredient in number of drops or 

@@ -67,7 +67,7 @@ public enum Unit {
 	 *         in this enumeration class.
 	 */
 	public static boolean isValidIndex(int index) {
-		return (index>0 && index<=PowderQuantity.values().length); //TODO deze checker fixen
+		return (index>0); //TODO deze checker fixen
 	}
 	
 	/**
@@ -122,7 +122,7 @@ public enum Unit {
 	/**
 	 * Return the smallest container of the given state that can hold the given quantity.
 	 */
-	public Unit getContainer(State state, int quantity) {
+	public static Unit getContainer(State state, int quantity) {
 		Unit result = getBiggestContainer(state);		
 		for (Unit unit: Unit.values()) {
 			if ((((unit.getState()==state)
@@ -138,7 +138,7 @@ public enum Unit {
 	/**
 	 * Return the biggest container of the given state.
 	 */
-	private Unit getBiggestContainer(State state) {
+	private static Unit getBiggestContainer(State state) {
 		Unit result = null; //TODO Deze initialisatie bespreken.
 		for (Unit unit: Unit.values()) {
 			if (((unit.getState()==state)
@@ -155,7 +155,7 @@ public enum Unit {
 	 * 
 	 * @return	spoonCapacityFirstState/spoonCapacitySecondState
 	 */
-	public double getRatio(State firstState, State secondState) {
+	public static double getRatio(State firstState, State secondState) {
 		int firstCapacity = 1;
 		int secondCapacity = 1;
 		for (Unit unit: Unit.values()) {

@@ -98,17 +98,11 @@ public abstract class TemperatureDevice extends Device {
 	 */
 	@Override
 	public final IngredientContainer emptyDevice() {
-		if (getProcessedIngredient() == null)
+		AlchemicIngredient outputIngredient = getProcessedIngredient();
+		if (outputIngredient == null)
 			return null;
-		Container containerType=null;
-		if(getProcessedIngredient().getType().getState() == State.LIQUID) {
-			containerType = LiquidQuantity.getContainer(getProcessedIngredient().getQuantity());
-		}
-		else if (getProcessedIngredient().getType().getState() == State.POWDER) {
-			containerType = PowderQuantity.getContainer(getProcessedIngredient().getQuantity());
-		}
-		
-		IngredientContainer outputContainer = new IngredientContainer(getProcessedIngredient(), containerType);
+		IngredientContainer outputContainer = new IngredientContainer(outputIngredient,
+				Unit.getContainer(outputIngredient.getState(), outputIngredient.getQuantity()));
 		setProcessedIngredient(null);
 		return outputContainer;
 	}
