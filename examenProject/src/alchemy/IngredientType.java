@@ -25,7 +25,6 @@ public class IngredientType {
 	 ********************************************************/
 	
 	/**
-	 * TODO: Water? Doc
 	 * Initialize an ingredient type object with an array of simple names, a special name,
 	 * a state and a standard temperature.
 	 * 
@@ -40,25 +39,48 @@ public class IngredientType {
 	 * @post  If the given simple names, special name, state and temperature are all valid, 
 	 *        the simple names of this ingredient type are equal to the given array. Else, it is 
 	 *        equal to the array consisting of the single element 'Water'.
-	 *        | 
-	 *        | getSimpleNames() == simpleNames
+	 *        | if ( !areValidSimpleNames(simpleNames)
+	 *	      |   || !isValidSpecialName(specialName)
+	 *	      |   || !State.isValidState(state)
+	 *	      |   || !Temperature.isValidTemperature(standardTemperature) )
+	 *        |    then new.getSimpleNames() == simpleNames
+	 *        | else
+	 *        |    then new.getSimpleNames() == {"Water"}
 	 * @post  If the given simple names, special name, state and temperature are all valid, 
-	 *        the special name of this ingredient type is equal to the given name. Else
-	 *        | getSpecialName() == specialName
+	 *        the special name of this ingredient type is equal to the given name. Else it is set not effective.
+	 *        | if ( !areValidSimpleNames(simpleNames)
+	 *	      |   || !isValidSpecialName(specialName)
+	 *	      |   || !State.isValidState(state)
+	 *	      |   || !Temperature.isValidTemperature(standardTemperature) )
+	 *        |    then new.getSpecialName() == specialName
+	 *        | else
+	 *        |    then new.getSpecialName() == null
 	 * @post  If the given simple names, special name, state and temperature are all valid,
-	 *        the state of this ingredient type is equal to the given state.
-	 *        | getState() == state
+	 *        the state of this ingredient type is equal to the given state. Else, the state is Liquid.
+	 *        | if ( !areValidSimpleNames(simpleNames)
+	 *	      |   || !isValidSpecialName(specialName)
+	 *	      |   || !State.isValidState(state)
+	 *	      |   || !Temperature.isValidTemperature(standardTemperature) )
+	 *        |    then new.getState() == state
+	 *        | else
+	 *        |    then new.getState() == State.LIQUID
 	 * @post  If the given simple names, special name, state and temperature are all valid,
 	 *        the standard temperature of this ingredient type is equal to the given
-	 *        values.
-	 *        | getStandardTemperature() == standardTemperature
+	 *        values. Else the standard temperature is set to {0,20}.
+	 *        | if ( !areValidSimpleNames(simpleNames)
+	 *	      |   || !isValidSpecialName(specialName)
+	 *	      |   || !State.isValidState(state)
+	 *	      |   || !Temperature.isValidTemperature(standardTemperature) )
+	 *        |    then new.getStandardTemperature() == standardTemperature
+	 *        | else
+	 *        |    then new.getStandardTemperature() == {0,20}
 	 */
 	public IngredientType(String[] simpleNames, String specialName, State state, Temperature standardTemperature) {
 		
-		if (( (!areValidSimpleNames(simpleNames))
-			 ||!isValidSpecialName(specialName)
-			 ||!State.isValidState(state))
-			 ||!Temperature.isValidTemperature(standardTemperature)) {
+		if ( !areValidSimpleNames(simpleNames)
+		   ||!isValidSpecialName(specialName)
+		   ||!State.isValidState(state)
+		   ||!Temperature.isValidTemperature(standardTemperature) ) {
 			this.simpleNames = new String[] {"Water"};
 			this.specialName = null;
 			this.state = State.LIQUID;
@@ -168,7 +190,8 @@ public class IngredientType {
 	 *         |      || word contains "cooled" or "Cooled"
 	 *         |      || word contains "heated" or "Heated")
 	 *         |     then result == false
-	 *         
+	 * 
+	 * @note   This checker is equivalent with canHaveAsSimpleName for the array of simple names.         
 	 */
 	public static boolean isValidSimpleName(String name){
 		
