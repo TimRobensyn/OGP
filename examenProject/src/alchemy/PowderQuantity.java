@@ -87,4 +87,8 @@ public enum PowderQuantity implements Quantity{
 		return PowderQuantity.SPOON.getQuantity()/LiquidQuantity.SPOON.getQuantity();
 	}
 
+
+	public static void main(String[] args) {
+		System.out.println(PowderQuantity.values().length);
+	}
 }

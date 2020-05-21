@@ -62,7 +62,7 @@ public enum LiquidQuantity implements Quantity {
 	@Immutable
 	public int getNbOfSmallestUnit() {
 		int NbOfDrops = 1;
-		for (LiquidQuantity quantity : LiquidQuantity.values()) {
+		for (LiquidQuantity quantity: LiquidQuantity.values()) {
 			if (quantity.getIndex()<=this.index)
 				NbOfDrops = NbOfDrops*quantity.getQuantity();
 		}
@@ -72,7 +72,7 @@ public enum LiquidQuantity implements Quantity {
 	
 	//TODO doc
 	public static Container getContainer(int drops) {
-		for (Container container:Container.values()) {			
+		for (Container container: Container.values()) {			
 			for (LiquidQuantity quantity:LiquidQuantity.values()) {
 				if (container.toString()==quantity.toString()) {
 					if (drops <= quantity.getNbOfSmallestUnit())
