@@ -2,6 +2,7 @@ package laboratory;
 
 import be.kuleuven.cs.som.annotate.*;
 import alchemy.*;
+import java.util.ArrayList;
 
 /**
  * A class defining a recipe using a list of processes (add, heat, cool and mix)
@@ -22,52 +23,22 @@ public class Recipe {
 	 * Initialize a recipe with an array of processes and an array of ingredients.
 	 * 
 	 * @param	processes
-	 * 			The array of processes to be given to the new recipe.
+	 * 			The array list of processes to be given to the new recipe.
 	 * @param	ingredients
 	 * 			The array of ingredients to be given to the new recipe.
-	 * @post	When getting the string value of a process, the Process array of processes of this new recipe
-	 * 			is elementwise equal to the given String array of processes.
-	 * 			| for I in 0..processes.length-1
-	 * 			|   new.getProcesses()[I] == Process.valueOf(processes[I])
-	 * 			If the last process in the array is not compatible with the mix process object, a mix process is added.
-	 * 			| if (!hasValidLastProcess(old.getProcesses()))
-	 * 			|   then new.getProcesses() == [old.getProcesses(), Process.mix]
-	 * 			Else, nothing is changed.
+	 * @post	
 	 * @post	The new array of ingredients of this new recipe is equal
 	 * 			to the given array of ingredients.
 	 * 			| new.getIngredients() == ingredients
 	 * @throws 	IllegalArgumentException
 	 * 			The given array of processes or the given array of ingredients is not valid.
 	 * 			| (!isValidProcessList) || (!canHaveAsIngredients(ingredients))
-	 *          An element in the processes string array is not compatible with any enum variable.
-	 *          | for some process in processes
-	 *          |   !(process in Process.values())
 	 */
 	@Raw
-	public Recipe(String[] processes, AlchemicIngredient[] ingredients) throws IllegalArgumentException{
-		Process[] newProcesses = new Process[processes.length];
-		for (int i=0; i<processes.length; i++) {
-			// This throws a illegal argument exception if the string is not compatible with one of the 
-			// process instances.
-			newProcesses[i] = Process.valueOf(processes[i]);
-		}
-		
-		Process[] processList;
-		
-		// If the last process is not a mix, add it.
-		if (!hasValidLastProcess(newProcesses)) {
-			Process[] extraProcess = new Process[newProcesses.length];
-			for (int i=0; i<newProcesses.length; i++)
-				extraProcess[i] = newProcesses[i];
-			extraProcess[newProcesses.length] = Process.mix;
-			processList = extraProcess;
-		}		
-		else processList = newProcesses;
-		
-		if (!isValidProcesses(processList)) {
-			throw new IllegalArgumentException("The list of processes is not valid.");
-		}
-		this.processes = processList;
+	public Recipe(ArrayList<Process> processes, AlchemicIngredient[] ingredients) throws IllegalArgumentException{
+		if (processes.get(processes.size()-1) != Process.mix)
+			addProcessAt(Process.mix,processes.size());
+		this.processes = processes;
 		
 		if (!canHaveAsIngredients(ingredients))
 			throw new IllegalArgumentException("Not the right amount of ingredients");
@@ -82,18 +53,33 @@ public class Recipe {
 	
 	
 	/**
-	 * A local enumeration containing the possible processes in a recipe.
-	 *   
+	 * Variable referencing the ArrayList with the ordered processes to execute in this recipe.
+	 * 
+	 * @invar The list of processes is effective.
+	 *        | processes != null
+	 * @invar Each item in the processes list is effective.
+	 *        | for each item in processes:
+	 *        |   item != null
+	 * @invar The list of processes ends with a mix process.
+	 *        | processes.get(processes.size()-1) == Process.mix
 	 */
-	private enum Process{
-		add,heat,cool,mix
-	}
+	private ArrayList<Process> processes = new ArrayList<Process>();
+	
 	
 	/**
 	 * Get the array containing the processes of this recipe.
 	 */
-	public Process[] getProcesses(){
+	@Basic
+	public ArrayList<Process> getProcesses(){
 		return this.processes;
+	}
+	
+	/**
+	 * Return the number of processes in the process list of thsi recipe.
+	 */
+	@Basic
+	public int getNbProcesses() {
+		return processes.size();
 	}
 	
 	/**
@@ -109,45 +95,133 @@ public class Recipe {
 		return result;
 	}
 	
-	
 	/**
-	 * Check if the given list of processes has a valid last process.
+	 * Return the process at the given index of the processes list.
 	 * 
-	 * @param  processList
-	 *         The list of processes to check.
-	 * @return True if and only if the last process is a mix process.
-	 *         | result ==
-	 *         |   (processList[processList.length-1] == Process.mix)
+	 * @param  index
+	 * 		   The index of the wanted process.
+	 * @return The process of the processes list of this recipe at the given index.
+	 *         | return getProcesses().get(index)
+	 * @throws IndexOutOfBoundsException
+	 * 		   The given index is lesser than zero or greater than or equal to the size of 
+	 * 		   the processes list.
+	 *         | (index<0 || index>=getNbProcesses())
 	 */
-	@Raw
-	public static boolean hasValidLastProcess(Process[] processList) {
-		return (processList[processList.length-1]==Process.mix);
+	public Process getProcessAt(int index) throws IndexOutOfBoundsException {
+		return getProcesses().get(index);
 	}
 	
 	/**
-	 * Check if the given list of processes is valid.
+	 * Check whether this recipe can have the given process as one of its processes at the given index.
 	 * 
-	 * @param  processList
-	 * 		   The list of processes to check.
-	 * @return True if and only if list has a valid last process.
-	 *         | result ==
-	 *         |    hasValidLastProcess(processList)
-	 * @note   This function is now equivalent with hasValidLastProcess, but if additional constraints are
-	 * 		   added on the list of processes, they can easily be added here.
+	 * @param  process
+	 * 		   The process to check.
+	 * @param  index
+	 * 		   The index to check.
+	 * @return False, if the given index is lesser than zero, or it exceeds the number
+	 *         of processes.
+	 *         | if ((index<0)
+	 *         |    || (index > getNbProcesses())
+	 *         |   then result == false
+	 *         Otherwise, true if and only if the index is not at the end of the list or if it is, if the given
+	 * 		   process is 'mix'.
+	 * 		   | else if (index == getNbProcesses()-1)
+	 * 		   |   then result == (process==Process.mix)
+	 * 		   | else
+	 * 		   |   then result == true  
 	 */
-	@Raw
-	public static boolean isValidProcesses(Process[] processList) {
-		return hasValidLastProcess(processList);
+	public boolean canHaveAsProcessAt(Process process, int index) {
+		if ((index<0) || (index>getNbProcesses()))
+			return false;
+		if (index == getNbProcesses()-1)
+			return (process==Process.mix);
+		else return true;
 	}
 	
 	/**
-	 * An array containing the processes of this recipe.
-	 * 	 In its current definition the class distinguishes between 
-	 *   the processes add, mix, heat and cool.
+	 * Check if the given recipe has a valid list of processes.
+	 * 
+	 * @param  recipe
+	 * 		   The recipe to check.
+	 * @return True if and only if the given recipe can have each item at its index.
+	 *  	   | result ==
+	 *  	   |   for each I in 0..getNbProcesses()-1
+	 *         |      canHaveAsProcessAt(recipe.getProcessAt(i),i)
 	 */
-	private final Process[] processes;
+	@Raw
+	public boolean hasValidProcesses(Recipe recipe) {
+		for (int i=0; i<getNbProcesses(); i++) {
+			if (!canHaveAsProcessAt(recipe.getProcessAt(i),i))
+				return false;
+		}
+		return true;
+	}
 	
+	/**
+	 * Add the given process as a process for this recipe at the given index. If we want to add a non-mix process
+	 * at the end of the list, a mix process is added after it.
+	 * 
+	 * @param  process
+	 * 		   The process to be added.
+	 * @param  index
+	 * 		   The index of the process to be added.
+	 * @post   If the given index is equal to the current size of the process list and the given process is not mix,
+	 * 		   the number of processes of this recipe is incremented by two. Else, it is incremented by one.
+	 * 		   | if (index==getNbProcesses() && process!=Process.mix)
+	 * 		   |   then new.getNbProcesses() == getNbProcesses()+2
+	 * 		   | else
+	 * 		   |   new.getNbProcesses() == getNbProcesses()+1
+	 * @post   If the given index is equal to the current size of the process list and the given process is not mix,
+	 *         this recipe has the given process at the given index and the mix process after it. Else, only the given
+	 *         process is at the given index.
+	 *         | if (index==getNbProcesses() && process!=Process.mix)
+	 *         |   then new.getProcessAt(index+1) == Process.mic
+	 *         | new.getProcessAt(index) == process
+	 * @post   If the given index is not equal to the current size of the process list or the given 
+	 * 		   process is mix, all processes for this recipe at an index exceeding the given index, are registered
+	 * 		   as process one index higher.
+	 *         | if !(index==getNbProcesses() && process!=Process.mix)
+	 *         |   then for each I in index..getNbProcesses()
+	 *         |          new.getProcessAt(I+1) == getProcessAt(I)
+	 * @throws IllegalArgumentException
+	 * 		   This recipe cannot have the given process at the given index.
+	 *         | !canHaveAsProcessAt(process,index)
+	 */
+	public void addProcessAt(Process process, int index) throws IllegalArgumentException {
+		if (!canHaveAsProcessAt(process,index))
+			throw new IllegalArgumentException("Invalid process for this index.");
+		if (index==getNbProcesses() && process!=Process.mix) {
+			processes.add(index,Process.mix);
+			processes.add(index,process);
+		}
+		else{
+			processes.add(index,process);
+		}
+	}
 	
+	/**
+	 * Remove the process at the given index.
+	 * 
+	 * @param  index
+	 * 		   The index of the process to be removed.
+	 * @post   The number of processes in the process list of this recipe is decremented by one.
+	 * 		   | new.getNbProcesses() = getNbProcesses()-1
+	 * @post   All processes associated with this recipe at an index exceeding the given index,
+	 *         are registered as process at one index lower.
+	 *         | for each I in index+1..getNbProcesses()
+	 *         |   (new.getProcessAt(I-1) == this.getProcessAt(I))
+	 * @throws IndexOutOfBoundsException
+	 *         The given index is lesser than zero or above or equal to the index of the last element
+	 *         in the list (we do not want to remove Process.mix at the end of the list).
+	 *         (index<0 || index>=getNbProcesses()-1)
+	 */
+	public void removeProcessAt(int index) throws IndexOutOfBoundsException {
+		if (index<0 || index>=getNbProcesses()-1)
+			throw new IndexOutOfBoundsException("The index is not valid.");
+		processes.remove(index);
+	}
+
+
 	
 	/**********************************************************
 	 * Ingredients
