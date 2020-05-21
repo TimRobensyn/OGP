@@ -456,7 +456,7 @@ public class Laboratory {
 				getOven().process();
 				container = getOven().emptyDevice();
 			}
-			getCoolingbox().setTemperature(container.getIngredient().getStandardTemperature());
+			getCoolingbox().setTemperature(container.getIngredient().getStandardTemperatureObject());
 			getCoolingbox().loadIngredient(container);
 			getCoolingbox().process();
 			container = getCoolingbox().emptyDevice();
