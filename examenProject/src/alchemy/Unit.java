@@ -2,6 +2,14 @@ package alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
 
+/**
+ * Enumeration class of units as to be used in alchemy.
+ * 
+ * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
+ * @version 1.0
+ */
+
+@Value
 public enum Unit {
 	DROP_LIQUID(1,1,State.LIQUID,false),
 	SPOON_LIQUID(8,2,State.LIQUID,true),
@@ -20,7 +28,8 @@ public enum Unit {
 	STOREROOM_POWDER(5,7,State.POWDER,false);
 	
 	/**
-	 * Initialize this unit with the given capacity, index and state.
+	 * Initialize this unit with the given capacity, index, state and flag indicating whether this unit
+	 * can be used as a container.
 	 * 
 	 * @param	capacity
 	 * 			The capacity to be given to the new unit.
@@ -28,6 +37,16 @@ public enum Unit {
 	 * 			The index to be given to the new unit.
 	 * @param	state
 	 * 			The state to be given to the new unit.
+	 * @param   isContainer
+	 * 			The flag to be given to the new unit.
+	 * @post    The capacity of this unit is equal to the given capacity.
+	 * 			| new.getCapacity() == capacity
+	 * @post 	The index of this unit is equal to the given index.
+	 * 			| new.getIndex() == index
+	 * @post    The state of this unit is equal to the given state.
+	 * 			| new.getState() == state
+	 * @post    The flag indicating whether this unit can be used as a container is equal to the given flag.
+	 * 			| new.isContainer() == isContainer
 	 */
 	@Raw
 	private Unit(int capacity, int index, State state, boolean isContainer) {
@@ -63,7 +82,7 @@ public enum Unit {
 	 * 
 	 * @param  index
 	 * 		   The index to check.
-	 * @return True if and only if the greater than zero and not above the number of values
+	 * @return True if and only if the index is greater than zero and not above the number of values
 	 *         in this enumeration class.
 	 */
 	public static boolean isValidIndex(int index) {

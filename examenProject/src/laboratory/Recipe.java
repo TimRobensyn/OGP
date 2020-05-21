@@ -74,8 +74,16 @@ public class Recipe {
 		this.ingredients = ingredients;
 	}
 	
+	
+	
+	/**********************************************************
+	 * Processes
+	 **********************************************************/
+	
+	
 	/**
 	 * A local enumeration containing the possible processes in a recipe.
+	 *   
 	 */
 	private enum Process{
 		add,heat,cool,mix
@@ -134,9 +142,16 @@ public class Recipe {
 	
 	/**
 	 * An array containing the processes of this recipe.
+	 * 	 In its current definition the class distinguishes between 
+	 *   the processes add, mix, heat and cool.
 	 */
 	private final Process[] processes;
 	
+	
+	
+	/**********************************************************
+	 * Ingredients
+	 **********************************************************/
 	
 	/**
 	 * Get the (ordered) array of ingredients of this recipe. 

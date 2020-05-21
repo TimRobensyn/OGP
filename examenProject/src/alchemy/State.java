@@ -28,13 +28,27 @@ public enum State {
 	}
 	
 	/**
-	 * Return the other state. //TODO Moet dit beter gedocumenteerd worden?
+	 * If there are only two states, return the other state.
+	 * 
+	 * @return If the state enumeration class only distinguishes between two states, return the
+	 * 		   other state. Otherwise, it returns itself.
+	 * 		   | if (State.values().length == 2)
+	 * 		   |   then if (this==State.values()[0])
+	 * 		   |           then result == State.values()[1]
+	 * 		   |        else
+	 *         |           then result == State.values()[0]
+	 *         | else
+	 *         |   then result == this  		
 	 */
 	public State otherState() {
-		if (this==State.LIQUID)
-			return State.POWDER;
-		else 
-			return State.LIQUID;
+		if (State.values().length == 2) {
+			if (this==State.values()[0])
+				return State.values()[1];
+			else 
+				return State.values()[0];
+		}
+		else return this;
+		
 	}
 
 	
