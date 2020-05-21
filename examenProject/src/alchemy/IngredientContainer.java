@@ -22,21 +22,15 @@ public class IngredientContainer {
 	 * @pre		//TODO
 	 */
 	@Raw
-	public IngredientContainer(AlchemicIngredient contents, Container newCapacity) {
+	public IngredientContainer(AlchemicIngredient contents, Unit capacity) {
 		setContents(contents);
-		if (contents.getType().getState()==State.LIQUID) {
-			assert (contents.getQuantity()<=LiquidQuantity.valueOf(newCapacity.toString()).getNbOfSmallestUnit()):
-				"Container is not big enough";
-			capacity = newCapacity;
-		}
-		else if (contents.getType().getState()==State.POWDER) {
-			assert (contents.getQuantity()<=PowderQuantity.valueOf(newCapacity.toString()).getNbOfSmallestUnit()):
-				"Container is not big enough";
-			capacity = newCapacity;
-		}
-		else {
-			capacity = null;
-		}
+		assert (capacity.isContainer()):
+			"This unit cannot be used as a container.";
+		assert (contents.getQuantity()<=capacity.getAbsoluteCapacity()):
+			"This container is not big enough for this ingredient.";
+		assert (contents.getState()==capacity.getState()):
+			"This container can't contain ingredients with this state.";
+		this.capacity = capacity;
 	}
 	
 	/**
@@ -44,11 +38,11 @@ public class IngredientContainer {
 	 * 
 	 * @param 	capacity
 	 * 		 	The capacity of this container.
-	 * @pre		
+	 * @pre		//TODO
 	 */
 	@Raw
-	public IngredientContainer(Container newCapacity) {
-		this(null, newCapacity);
+	public IngredientContainer(Unit capacity) {
+		this(null, capacity);
 	}
 	
 	/************************************************************************
@@ -60,7 +54,7 @@ public class IngredientContainer {
 	 */
 	@Raw @Basic
 	public AlchemicIngredient getIngredient() {
-		return contents;
+		return this.contents;
 	}
 
 	/**
@@ -68,10 +62,7 @@ public class IngredientContainer {
 	 */
 	@Raw
 	public int getContentQuantity() {
-		if (State.isValidState(contents.getType().getState()))
-			return contents.getQuantity();
-		else
-			return 0;
+		return getIngredient().getQuantity();
 	}
 	
 	/**
@@ -79,18 +70,11 @@ public class IngredientContainer {
 	 * @param contents
 	 * 		  The given contents
 	 * @pre  The given contents is not less than 0 or greater than the capacity of this container
-	 *		 | (contents >= 0) && (contents <= this.getCapacity())
+	 *		 | (contents >= 0) && (contents <= this.getCapacity()) //TODO
 	 */
 	public void setContents(AlchemicIngredient contents) {
-		if (contents.getType().getState()==State.LIQUID) {
-			assert((contents.getQuantity() >= 0) && (contents.getQuantity() <= this.getCapacity())) :
-				"Precondition: Contents is not less than 0 or more than the container's capacity";
-		}
-		if (contents.getType().getState()==State.POWDER) {
-			assert((contents.getQuantity() >= 0) && (contents.getQuantity() <= this.getCapacity())):
-				"Precondition: Contents is not less than 0 or more than the container's capacity";
-		}
-		
+		assert((contents.getQuantity() >= 0) && (contents.getQuantity() <= getAbsoluteCapacity())) :
+			"Precondition: Contents is not less than 0 or more than the container's capacity";
 		this.contents = contents;
 	}
 	
@@ -109,19 +93,20 @@ public class IngredientContainer {
 	 * Return the capacity of this container.
 	 */
 	@Raw @Basic @Immutable
-	public int getCapacity() {
-		if(contents.getType().getState()==State.LIQUID) {
-			return LiquidQuantity.valueOf(capacity.toString()).getQuantity();
-		}
-		else if(contents.getType().getState()==State.POWDER) {
-			return PowderQuantity.valueOf(capacity.toString()).getQuantity();
-		} 
-		else return 0;
-		
+	public Unit getCapacity() {
+		return this.capacity;
+	}
+	
+	/**
+	 * Return the capacity of this container measured in the smallest unit of the same state. //TODO?
+	 */
+	@Immutable
+	public int getAbsoluteCapacity() {
+		return getCapacity().getAbsoluteCapacity();
 	}
 
 	/**
 	 * Variable storing the capacity of this container.
 	 */
-	private final Container capacity; //Geïnitialiseerd in de constructor om te waarborgen dat de variabele idd final is)
+	private final Unit capacity;
 }
