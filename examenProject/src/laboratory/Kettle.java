@@ -30,8 +30,11 @@ public class Kettle extends BottomlessDevice {
 	 */
 	@Override
 	public void process() throws CapacityException {
-		if ((!getProcessedIngredients().isEmpty()||!getStartIngredients().isEmpty()))
-			throw new CapacityException(this);
+		if (!getProcessedIngredients().isEmpty())
+			throw new CapacityException(this,"This kettle isn't empty.");
+		if (!getStartIngredients().isEmpty()) {
+			throw new CapacityException(this,"This kettle has no ingredients to work with.");
+		}
 		
 		ArrayList<String> newNameList = new ArrayList<>(0);
 		ArrayList<AlchemicIngredient> closestToWater = new ArrayList<>(0);

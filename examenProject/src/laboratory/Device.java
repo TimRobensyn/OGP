@@ -45,6 +45,6 @@ public abstract class Device {
 	 * 
 	 * 			//TODO Formal specs
 	 */
-	public abstract void process();
+	public abstract void process() throws CapacityException;
 
 }
