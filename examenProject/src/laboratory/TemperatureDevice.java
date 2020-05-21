@@ -1,10 +1,13 @@
 package laboratory;
 
 import be.kuleuven.cs.som.annotate.*;
+import be.kuleuven.cs.som.taglet.*;
 import alchemy.*;
 
 /**
- * A subclass of Device for cooling boxes.
+ * A subclass of Device for devices with a temperature and limited capacity.
+ * 
+ * @invar	
  * 
  * @version	1.0
  * @author	Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
@@ -35,14 +38,14 @@ public abstract class TemperatureDevice extends Device {
 	 */
 	@Basic
 	protected AlchemicIngredient getStartIngredient() {
-		return startIngredient;
+		return this.startIngredient;
 	}
 	
 	/**
 	 * Set the startIngredient variable to the given ingredient.
 	 */
 	protected void setStartIngredient(AlchemicIngredient ingredient) {
-		startIngredient = ingredient;
+		this.startIngredient = ingredient;
 	}
 	
 	/**
@@ -51,10 +54,18 @@ public abstract class TemperatureDevice extends Device {
 	private AlchemicIngredient startIngredient = null;
 	
 	/**
+	 * Get the processed ingredient of this device.
+	 */
+	@Basic
+	public AlchemicIngredient getProcessedIngredient() {
+		return this.processedIngredient;
+	}
+	
+	/**
 	 * Set the processedIngredient variable to the given Alchemic Ingredient.
 	 */
 	protected void setProcessedIngredient(AlchemicIngredient ingredient) {
-		processedIngredient = ingredient;
+		this.processedIngredient = ingredient;
 	}
 	
 	/**
@@ -66,14 +77,14 @@ public abstract class TemperatureDevice extends Device {
 	 * Loads the ingredients in a given container into this temperature device
 	 * 
 	 * @param container
-	 * 		  The given container
+	 * 		  The given container to be loaded in the device.
 	 * @throws CapacityException
-	 * 		   This device is full
-	 * 		   | startIngredient != null
+	 * 		   This device is full.
+	 * 		   | (getStartIngredient() != null)
 	 */
 	@Override @Raw
 	public final void loadIngredient(IngredientContainer container) throws CapacityException{
-		if(startIngredient != null) {
+		if(getStartIngredient() != null) {
 			throw new CapacityException(this, container);
 		}
 		setStartIngredient(container.getIngredient());
@@ -87,32 +98,17 @@ public abstract class TemperatureDevice extends Device {
 	 */
 	@Override
 	public final IngredientContainer emptyDevice() {
-		if (processedIngredient == null)
+		if (getProcessedIngredient() == null)
 			return null;
 		Container containerType=null;
-		if(processedIngredient.getType().getState() == State.LIQUID) {
-			containerType = LiquidQuantity.getContainer(processedIngredient.getQuantity());
+		if(getProcessedIngredient().getType().getState() == State.LIQUID) {
+			containerType = LiquidQuantity.getContainer(getProcessedIngredient().getQuantity());
 		}
-		else if (processedIngredient.getType().getState() == State.POWDER) {
-			containerType = PowderQuantity.getContainer(processedIngredient.getQuantity());
+		else if (getProcessedIngredient().getType().getState() == State.POWDER) {
+			containerType = PowderQuantity.getContainer(getProcessedIngredient().getQuantity());
 		}
-//		int index = 1;
-//		Container containerType=null;
-//		if(processedIngredient.getType().getState() == State.LIQUID) {
-//			LiquidQuantity Units[] = LiquidQuantity.values();
-//			while(processedIngredient.getQuantity() > Units[index].getNbOfSmallestUnit()) {
-//				index = index + 1;
-//			}
-//			containerType = Container.valueOf(Units[index].toString());
-//		} else if(processedIngredient.getType().getState() == State.POWDER) {
-//			PowderQuantity Units[] = PowderQuantity.values();
-//			while(processedIngredient.getQuantity() > Units[index].getNbOfSmallestUnit()) {
-//				index = index + 1;
-//			}
-//			containerType = Container.valueOf(Units[index].toString());
-//		}
 		
-		IngredientContainer outputContainer = new IngredientContainer(processedIngredient, containerType);
+		IngredientContainer outputContainer = new IngredientContainer(getProcessedIngredient(), containerType);
 		setProcessedIngredient(null);
 		return outputContainer;
 	}
@@ -120,33 +116,40 @@ public abstract class TemperatureDevice extends Device {
 	/**
 	 * Return the temperature of this device in an array of two long values
 	 */
-	public final long[] getTemperature() {
-		return temperature.getTemperature();
+	public long[] getTemperature() {
+		return getTemperatureObject().getTemperature();
 	}
 	
 	/**
 	 * Return the temperature object of this device.
 	 */
+	@Basic
 	public Temperature getTemperatureObject() {
-		return temperature;
+		return this.temperature;
 	}
 
 	/**
-	 * Set the temperature of this device using an array of long values.
+	 * Set the temperature of this device using a Temperature object.
+	 * @param	newTemperature
+	 * 			The new temperature for the device.
+	 * @post	If the given temperature is valid, the temperature of
+	 * 			this device is set to the given temperature.
+	 * 			//TODO moet er hier nog iets formeeels bij? Tis denk ik totaal te programmeren
 	 */
-	public final void setTemperature(long[] temperature) {
-		if (Temperature.isValidTemperature(temperature)) {
-			Temperature newTemperature = new Temperature(temperature);
-			setTemperature(newTemperature);
+	public final void setTemperature(Temperature newTemperature) {
+		if (Temperature.isValidTemperature(newTemperature)) {
+			this.temperature = newTemperature;
 		}
 	}
 	
-	/**
-	 * Set the temperature of this device using a Temperature object.
-	 */
-	public final void setTemperature(Temperature newTemperature) {
-		temperature = newTemperature;
-	}
+//	/**
+//	 * Set the temperature of this device using an array of long values.
+//	 * @param	newTemperature
+//	 * 			The new temperature for the device
+//	 */
+//	public final void setTemperature(long[] newTemperature) {
+//			setTemperature(new Temperature(newTemperature));
+//	}
 	
 	/**
 	 * A variable for the temperature of this temperature device.

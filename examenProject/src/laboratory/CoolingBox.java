@@ -13,7 +13,7 @@ import alchemy.*;
 public class CoolingBox extends TemperatureDevice {
 	
 	/**
-	 * Prachtige constructor //TODO
+	 * Initialize a cooling box with the given temperature and startIngredient. //TODO
 	 * @param temperature
 	 * @param ingredient
 	 */
