@@ -11,6 +11,8 @@ import be.kuleuven.cs.som.annotate.*;
  * 			| isValidCapacity(getCapacity())
  * @invar 	The storage of a laboratory cannot contain duplicate ingredient types
  * 			| hasProperIngredients()
+ * @invar   The device list of this laboratory cannot contain devices of the wrong type at the wrong index
+ * 			| hasProperDevices()
  * 
  * @version  1.0
  * @author   Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
@@ -123,6 +125,7 @@ public class Laboratory {
 	 * @param storage
 	 * 		  The given storage list
 	 */
+	@Raw
 	private void setStorage(ArrayList<AlchemicIngredient> storage) {
 		this.storage = storage;
 	}
@@ -146,19 +149,45 @@ public class Laboratory {
 		return getStorage().size();
 	}
 	
+	/**
+	 * Get the ingredient in this laboratory's storage at the given index
+	 * 
+	 * @param index
+	 * 		  The given index
+	 */
 	@Basic
 	public AlchemicIngredient getIngredientAt(int index) {
 		return getStorage().get(index);
 	}
 	
+	/**
+	 * Add an ingredient to this laboratory's storage
+	 * 
+	 * @param ingredient
+	 * 		  The given ingredient
+	 */
 	public void addAsIngredient(AlchemicIngredient ingredient) {
 		getStorage().add(ingredient);
 	}
 	
+	/**
+	 * Remove an ingredient from this laboratory's storage
+	 * @param ingredient
+	 */
 	public void removeAsIngredient(AlchemicIngredient ingredient) {
 		getStorage().remove(ingredient);
 	}
 	
+	/**
+	 * Check if this laboratory has proper ingredients
+	 * 
+	 * @return True if and only if this laboratory's storage does not contain two of the same ingredient types
+	 * 		   | for each I in 0..getNbIngredient()-2:
+	 * 		   |   for each J in I..getNbIngredient()-1:
+	 * 		   |     if(getIngredientAt(I).getType().equals(getIngredientAt(J).getType()))
+	 * 		   |       return false
+	 *         | return true
+	 */
 	public boolean hasProperIngredients() {
 		boolean bool = true;
 		for(int i=0; i <= getNbIngredients()-2; i++) {
@@ -172,13 +201,28 @@ public class Laboratory {
 	}
 
 	/**
-	 * Store the ingredient contained by the given container in this laboratory. The ingredient gets heated or cooled to it's standard temperature
-	 * using the oven or cooling box in this laboratory. If this laboratory already contains an ingredient with the same type, the ingredients get
-	 * mixed using the kettle.
+	 * Store the ingredient contained by the given container in this laboratory. The old container gets deleted.
 	 * 
 	 * @param container
 	 * 		  The given container
-	 * 
+	 * @effect The ingredient in the given container gets heated or cooled to it's standard temperature
+	 *         | makeStandardTemp(container)
+	 * @effect The ingredient in the given container gets added to this laboratory's storage
+	 *         | addAsIngredient(ingredient)
+	 *         If this laboratory already contains an ingredient of the same type a new ingredient is created with the same type
+	 * 		   and the quantity of the given ingredient counted up with the quantity of the stored ingredient
+	 *         | if(storedIngredient.getType().equals(ingredient.getType()))
+	 *         |   ingredient = new AlchemicIngredient(ingredient.getType(), ingredient.getQuantity() + storedIngredient.getQuantity())
+	 * 		   |   removeAsIngredient(storedIngredient)
+	 * 		   The old container gets deleted
+	 * 		   | container = null
+	 * @throws CapacityException
+	 * 		   The quantity in the given container exceeds this laboratory's capacity
+	 * 		   | if(getStorageQuantity() + container.getContentQuantity() > this.capacity)
+	 * @throws CapacityException
+	 * 	 	   This laboratory already contains an ingredient of the same type and there is no kettle present
+	 * 		   | if(storedIngredient.getType().equals(ingredient.getType()))
+	 *   	   |   getKettle()
 	 */
 	public void store(IngredientContainer container) throws CapacityException {
 		if(getStorageQuantity() + container.getContentQuantity() > this.capacity) {
@@ -215,14 +259,14 @@ public class Laboratory {
 	 * 		   |  if((requestedIngredientName == storedIngredientName) && (storedIngredient.getQuantity() >= amount) &&
 	 *         |     (amount <= Barrel or Chest quantity))
 	 * 		   | 		newContainer = new IngredientContainer(newIngredient, containerType);
-	 * 		   |        storage.remove(requested storedIngredient)
+	 * 		   |        removeAsIngredient(requested storedIngredient)
 	 *  	   If the given amount is greater than a barrel or chest depending on the state of the requested ingredient,
 	 *  	   A barrel or chest is created and the leftovers are deleted
 	 *  	   | if(amount > barrel or chest quantity)
 	 *  	   |  storedIngredient = new AlchemicIngredient(storedIngredient.getType(), barrel or chest quantity)
 	 *  	   |  newIngredient = new AlchemicIngredient(storedIngredient.getType(), barrel or chest quantity)
 	 *  	   |  newContainer = new IngredientContainer(newIngredient, containerType)
-	 *         |  storage.remove(requested storedIngredient)
+	 *         |  removeAsIngredient(requested storedIngredient)
 	 * @throws ItemEmptyException
 	 * 		   This laboratory does not contain enough of the requested item
 	 * 		   | storedIngredient.getQuantity() < amount
@@ -274,10 +318,18 @@ public class Laboratory {
 	
 	/**
 	 * Request the full amount of an ingredient with the given simple or special name that this laboratory contains
+	 * 
 	 * @param name
 	 * 		  The given special of simple name of the ingredient
 	 * @effect The full quantity of the requested ingredient gets requested
 	 * 		   | request(name, storedIngredient.getQuantity())
+	 * 		   If the quantity of the requested ingredient exceeds the capacity of a barrel or chest depending on the state
+	 * 		   a barrel of chest is returned and the leftovers are deleted
+	 *  	   | if(storedIngredient.getQuantity() > barrel or chest quantity)
+	 *  	   |   storedIngredient = new AlchemicIngredient(storedIngredient.getType(), barrel or chest quantity)
+	 * @throws CapacityException
+	 * 		   This laboratory does not contain an ingredient with the given special or simple name
+	 *         | if(newContainer == null)
 	 */
 	public IngredientContainer request(String name) {
 		IngredientContainer newContainer = null;
@@ -304,6 +356,10 @@ public class Laboratory {
 		return newContainer;
 	}
 	
+	/**
+	 * Return an object array with the inventory of this laboratory. 
+	 * The first row contains the full names of the ingredients, the second row contains their quantity.
+	 */
 	public Object[][] getInventory() {
 		Object[][] inventory = new Object[2][getNbIngredients()];
 		int index = 0;
@@ -332,16 +388,50 @@ public class Laboratory {
 		return this.devices;
 	}
 	
+	/**
+	 * Return the number of devices in this laboratory
+	 */
 	@Basic
 	public int getNbDevices() {
-		return getDevices().size();
+		int number = 0;
+		for(int i=0; i<4; i++) {
+			if(getDeviceAt(i) != null) {
+				number += 1;
+			}
+		}
+		return number;
 	}
 	
-	@Basic
+	/**
+	 * Return the device at the given index in this laboratory's device list
+	 * @param index
+	 * 		  The given index
+	 */
+	@Basic @Raw
 	public Device getDeviceAt(int index) {
 		return getDevices().get(index);
 	}
 	
+	/**
+	 * Check whether the given device is a valid device at the given index in this laboratory's device list
+	 * 
+	 * @param device
+	 * 	      The given device
+	 * @param index
+	 * 		  The given index
+	 * @return True if and only if the device is a coolingbox and the index is 0, the device is an oven and the index is 1,
+	 * 		   the device is a kettle and the index is 2 or the device is a transmogrifier and the index is 3
+	 *         | if(device.getClass() == CoolingBox.class)
+	 *		   |	result == (index == 0)
+	 *		   | else if(device.getClass() == Oven.class)
+	 *		   |	result == (index == 1)
+	 *		   | else if(device.getClass() == Kettle.class)
+	 *		   |	result == (index == 2)
+	 *		   | else if(device.getClass() == Transmogrifier.class)
+	 *		   |	result == (index == 3)
+	 *		   | else 
+	 *		   |	result == false
+	 */
 	public static boolean isValidDeviceAt(Device device, int index) {
 		if(device.getClass() == CoolingBox.class) {
 			return(index == 0);
@@ -356,6 +446,21 @@ public class Laboratory {
 		}
 	}
 	
+	/**
+	 * Check whether this laboratory has proper devices in its devices list.
+	 * 
+	 * @return True if and only if the first device is either null or a coolingbox, the second device is either null or an over,
+	 * 		   the third device is either null or a kettle and the fourth device is either null or a transmogrifier.
+	 *         | if((getDeviceAt(0).getClass() != CoolingBox.class) && (getDeviceAt(0) != null))
+	 *         |   result == false
+	 *         | if((getDeviceAt(1).getClass() != Oven.class) && (getDeviceAt(1) != null))
+	 *         |   result == false
+	 *         | if((getDeviceAt(2).getClass() != Kettle.class) && (getDeviceAt(2) != null))
+	 *         |   result == false
+	 *         | if((getDeviceAt(3).getClass() != Transmogrifier.class) && (getDeviceAt(3) != null))
+	 *         |   result == false
+	 *         | result == true
+	 */
 	public boolean hasProperDevices() {
 		boolean bool = true;
 		if((getDeviceAt(0).getClass() != CoolingBox.class) && (getDeviceAt(0) != null)) {
@@ -373,6 +478,16 @@ public class Laboratory {
 		return bool;
 	}
 	
+	/**
+	 * Add a device to this laboratory's device list.
+	 * 
+	 * @param device
+	 * 		  The given device
+	 * @throws CapacityException
+	 * 		   This laboratory already contains a device of this type
+	 * 		   | (device.getClass() == deviceInDevices.getClass()) && (deviceInDevices != null)
+	 */
+	@Raw
 	public void addAsDevice(Device device) throws CapacityException {
 		if((device.getClass() == CoolingBox.class) && (getDeviceAt(0) == null)) {
 			getDevices().add(0, device);
@@ -390,16 +505,20 @@ public class Laboratory {
 		}
 	}
 	
+	/**
+	 * Remove the given device from the device list.
+	 * If the given device is not in the device list nothing happens.
+	 */
 	public void removeAsDevice(Device device) {
 			getDevices().remove(device);
 	}
 	
 	/**
-	 * Return the coolingbox in this laboratory
+	 * Return the coolingbox in this laboratory.
 	 * 
 	 * @throws CapacityException
 	 * 		   This laboratory does not contain a coolingbox
-	 *         | if(devices.get(0) ==
+	 *         | getDeviceAt(0) == null
 	 */
 	public CoolingBox getCoolingbox() throws CapacityException {
 		if(getDeviceAt(0) == null) {
@@ -408,6 +527,13 @@ public class Laboratory {
 		return (CoolingBox) getDeviceAt(0);
 	}
 	
+	/**
+	 * Return the oven in this laboratory.
+	 * 
+	 * @throws CapacityException
+	 * 		   This laboratory does not contain an oven
+	 * 		   | getDeviceAt(1) == null
+	 */
 	public Oven getOven() {
 		if(getDeviceAt(1) == null) {
 			throw new CapacityException(getDeviceAt(1));
@@ -415,6 +541,13 @@ public class Laboratory {
 		return (Oven) getDeviceAt(1);
 	}
 	
+	/**
+	 * Return the kettle in this laboratory
+	 * 
+	 * @throws CapacityException
+	 * 		   This laboratory does not contain a kettle
+	 * 		   | getDeviceAt(2) == null
+	 */
 	public Kettle getKettle() {
 		if(getDeviceAt(2) == null) {
 			throw new CapacityException(getDeviceAt(2));
@@ -422,6 +555,13 @@ public class Laboratory {
 		return (Kettle) getDeviceAt(2);
 	}
 	
+	/**
+	 * Return the transmogrifier in this laboratory
+	 * 
+	 * @throws CapacityException
+	 * 		   This laboratory does not contain a transmogrifier
+	 * 		   | getDeviceAt(3) == null
+	 */
 	public Transmogrifier getTransmogrifier() {
 		if(getDeviceAt(3) == null) {
 			throw new CapacityException(getDeviceAt(3));
@@ -436,15 +576,15 @@ public class Laboratory {
 	 * @param ingredient
 	 * 		  The given ingredient
 	 * @effect If the ingredient is hotter than it's standard temperature it gets cooled to it's standard temperature
-	 *         | if(temperatureDifference(ingredient.getStandardTemperature(), ingredient.getTemperature()) > 0)
-	 *         | 	oven.setTemperature(ingredient.getStandardTemperature())
-	 *         | 	oven.setStartIngredient(ingredient)
-	 *         | 	oven.process()
-	 *         If the ingredient is colder than it's standard temperature it gets heated to it's standard temperature
 	 *         | if(temperatureDifference(ingredient.getStandardTemperature(), ingredient.getTemperature()) < 0)
-	 *         | 	coolingbox.setTemperature(ingredient.getStandardTemperature())
-	 *         |	coolingbox.setStartIngredient(ingredient)
-	 *         |	coolingbox.process()
+	 *         | 	getCoolingbox().setTemperature(ingredient.getStandardTemperature())
+	 *         | 	getCoolingbox().loadIngredient(ingredient)
+	 *         | 	getCoolingbox().process()
+	 *         If the ingredient is colder than it's standard temperature it gets heated to 5% above it's standard temperature and then gets cooled down
+	 *         | if(temperatureDifference(ingredient.getStandardTemperature(), ingredient.getTemperature()) > 0)
+	 *         | 	getOven().setTemperature(Temperature (container.getIngredient().getStandardTemperatureObject().getColdness()*1.05, container.getIngredient().getStandardTemperatureObject().getHotness()*1.05)
+	 *         |	getOven().loadIngredient(ingredient)
+	 *         |	getOven().process()
 	 */
 	private void makeStandardTemp(IngredientContainer container) {
 		long tempDiff = Temperature.temperatureDifference(container.getIngredient().getStandardTemperatureObject(), container.getIngredient().getTemperatureObject());
@@ -463,5 +603,8 @@ public class Laboratory {
 		}
 	}
 
+	/**
+	 * Variable storing the list of devices in this laboratory
+	 */
 	private ArrayList<Device> devices = new ArrayList<Device>();
 }
