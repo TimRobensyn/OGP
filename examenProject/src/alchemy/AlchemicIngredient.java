@@ -172,14 +172,24 @@ public class AlchemicIngredient {
 	}
 	
 	/**
-	 * Cool this ingredient //TODO
+	 * Cool this ingredient with the given amount
+	 * 
+	 * @param amount
+	 * 		  The given amount
+	 * @effect The temperature of this ingredient gets cooled with the given amount
+	 * 		   | temperature.cool(amount)
 	 */
 	public void cool(long amount) {
 		temperature.cool(amount);
 	}
 	
 	/**
-	 * Heat this ingredient //TODO
+	 * Heat this ingredient with the given amount
+	 * 
+	 * @param amount
+	 * 		  The given amount
+	 * @effect The temperature of this ingredient gets heated with the given amount
+	 * 		   | temperature.heat(amount)
 	 */
 	public void heat(long amount) {
 		temperature.heat(amount);
