@@ -13,15 +13,52 @@ import be.kuleuven.cs.som.annotate.*;
 
 public class Laboratory {
 	
-	public Laboratory(int capacity, ArrayList<AlchemicIngredient> storage) {
+	public Laboratory(int capacity, ArrayList<AlchemicIngredient> storage, CoolingBox coolingbox, Oven oven, Kettle kettle, Transmogrifier transmogrifier) {
 		this.capacity = capacity;
 		this.storage = storage;
+		
+		devices.add(coolingbox);
+		devices.add(oven);
+		devices.add(kettle);
+		devices.add(transmogrifier);
 	}
 	
 	public Laboratory(int capacity) {
-		this(capacity, new ArrayList<AlchemicIngredient>());
+		this(capacity, new ArrayList<AlchemicIngredient>(), null, null, null, null);
 	}
 	
+	@Basic
+	public CoolingBox getCoolingbox() throws CapacityException {
+		if(devices.get(0) == null) {
+			throw new CapacityException(devices.get(0));
+		}
+		return (CoolingBox) devices.get(0);
+	}
+	
+	@Basic
+	public Oven getOven() {
+		if(devices.get(1) == null) {
+			throw new CapacityException(devices.get(1));
+		}
+		return (Oven) this.devices.get(1);
+	}
+	
+	@Basic
+	public Kettle getKettle() {
+		if(devices.get(2) == null) {
+			throw new CapacityException(devices.get(2));
+		}
+		return (Kettle) this.devices.get(2);
+	}
+	
+	@Basic
+	public Transmogrifier transmogrifier() {
+		if(devices.get(3) == null) {
+			throw new CapacityException(devices.get(3));
+		}
+		return (Transmogrifier) this.devices.get(3);
+	}
+
 	/**
 	 * Return the quantity that is contained in this laboratory
 	 */
@@ -42,26 +79,24 @@ public class Laboratory {
 	 * 		  The given container
 	 * 
 	 */
-	public void store(IngredientContainer container) throws ItemFullException {
-		if(this.getStorageQuantity() + container.getContentQuantity() > this.capacity) {
-			throw new ItemFullException(container, this);
+	public void store(IngredientContainer container) throws CapacityException {
+		if(getStorageQuantity() + container.getContentQuantity() > this.capacity) {
+			throw new CapacityException(container, this);
 		}
-		AlchemicIngredient ingredient = container.getIngredient();
-		makeStandardTemp(ingredient);
 
-		AlchemicIngredient newIngredient = null;
+		makeStandardTemp(container);
+		AlchemicIngredient ingredient = container.getIngredient();
+
 		for(AlchemicIngredient storedIngredient : storage) {
-			if(storedIngredient.getType() == ingredient.getType()) {
-				IngredientContainer storedContainer = request(storedIngredient.getType().getSimpleName()); //TODO ALS DIT MEER IS DAN EEN CHEST OF BARREL KAN DIT FOUT LOPEN 
-				this.kettle.loadIngredient(storedContainer);
-				this.kettle.loadIngredient(container);
-				this.kettle.process();
-				newIngredient = this.kettle.getProcessedIngredients().get(kettle.getProcessedIngredients().size() -1);
-				//ingredient = new AlchemicIngredient(ingredient.getType(), ingredient.getQuantity() + storedIngredient.getQuantity()); //TODO DIT DOEN MET KETTLE WANNEER KETTLE KLAAR IS
-				//storage.remove(storedIngredient);
+			if(storedIngredient.getType().equals(ingredient.getType())) {
+				getKettle();
+				ingredient = new AlchemicIngredient(ingredient.getType(), ingredient.getQuantity() + storedIngredient.getQuantity()); 
+				storage.remove(storedIngredient);
+				break;
 			}
 		}
-		storage.add(newIngredient);
+		storage.add(ingredient);
+		container = null;
 	}
 	
 	/**
@@ -95,31 +130,30 @@ public class Laboratory {
 	 * 		   | !((storedIngredient.getType().getSimpleName() == name) ||
 	 * 		   |  (storedIngredient.getType().getSpecialName() == name))
 	 */
-	public IngredientContainer request(String name, int amount) throws ItemEmptyException, IllegalArgumentException{
+	public IngredientContainer request(String name, int amount) throws CapacityException{
 		IngredientContainer newContainer = null;
 		Container containerType = null;
 		for(AlchemicIngredient storedIngredient : storage) {
 			if((storedIngredient.getType().getSimpleName() == name) || (storedIngredient.getType().getSpecialName() == name)){
-				if(storedIngredient.getQuantity() < amount) {
-					throw new ItemEmptyException(this);
-				}
 				
 				if(storedIngredient.getType().getState() == State.LIQUID) {
-					if(amount > 10080) {
-						storedIngredient = new AlchemicIngredient(storedIngredient.getType(), 10080);
-						amount = 10080;
+					if(amount > LiquidQuantity.BARREL.getNbOfSmallestUnit()) {
+						amount = LiquidQuantity.BARREL.getNbOfSmallestUnit();
 					}
 					containerType = LiquidQuantity.getContainer(amount);
 				}
 
-				
 				if(storedIngredient.getType().getState() == State.POWDER) {
-					if(amount > 7560) {
-						storedIngredient = new AlchemicIngredient(storedIngredient.getType(), 7560);
-						amount = 7560;
+					if(amount > PowderQuantity.CHEST.getNbOfSmallestUnit()) {
+						amount = PowderQuantity.CHEST.getNbOfSmallestUnit();
 					}
 					containerType = PowderQuantity.getContainer(amount);
 				}
+				
+				if(storedIngredient.getQuantity() < amount) {
+					throw new CapacityException(this);
+				}
+				
 				AlchemicIngredient newIngredient = new AlchemicIngredient(storedIngredient.getType(), amount);
 				if(storedIngredient.getQuantity()-amount > 0) {
 					AlchemicIngredient newStoredIngredient = new AlchemicIngredient(storedIngredient.getType(), storedIngredient.getQuantity()-amount);
@@ -127,11 +161,12 @@ public class Laboratory {
 				}
 				storage.remove(storedIngredient);
 				newContainer = new IngredientContainer(newIngredient, containerType);
+				
+				break;
 			}
-			break;
 		}
 		if(newContainer == null) {
-			throw new IllegalArgumentException("Ingredient not in laboratory");
+			throw new CapacityException(this);
 		}
 		return newContainer;
 	}
@@ -144,17 +179,38 @@ public class Laboratory {
 	 * 		   | request(name, storedIngredient.getQuantity())
 	 */
 	public IngredientContainer request(String name) {
+		IngredientContainer newContainer = null;
 		for(AlchemicIngredient storedIngredient : storage) {
 			if((storedIngredient.getType().getSimpleName() == name) || (storedIngredient.getType().getSpecialName() == name)){
-				request(name, storedIngredient.getQuantity());
+				if(storedIngredient.getType().getState() == State.LIQUID) {
+					if(storedIngredient.getQuantity() > LiquidQuantity.BARREL.getNbOfSmallestUnit()) {
+						storedIngredient = new AlchemicIngredient(storedIngredient.getType(), LiquidQuantity.BARREL.getNbOfSmallestUnit());
+					}
+				}
+				if(storedIngredient.getType().getState() == State.POWDER) {
+					if(storedIngredient.getQuantity() > PowderQuantity.CHEST.getNbOfSmallestUnit()) {
+						storedIngredient = new AlchemicIngredient(storedIngredient.getType(), PowderQuantity.CHEST.getNbOfSmallestUnit());
+					}
+				}
+				newContainer = request(name, storedIngredient.getQuantity());
+				break;
 			}
-			break;
 		}
-		return null;
+		if(newContainer == null) {
+			throw new CapacityException(this);
+		}
+		
+		return newContainer;
 	}
 	
-	public void getOverview() {
-		
+	public Object[][] getInventory() {
+		Object[][] inventory = new Object[2][storage.size()];
+		int index = 0;
+		while(index < storage.size()) {
+			inventory[0][index] = storage.get(index).getFullName();
+			inventory[1][index] = storage.get(index).getQuantity();
+		}
+		return inventory;
 	}
 	
 	/**
@@ -174,16 +230,20 @@ public class Laboratory {
 	 *         |	coolingbox.setStartIngredient(ingredient)
 	 *         |	coolingbox.process()
 	 */
-	private void makeStandardTemp(AlchemicIngredient ingredient) {
-		long tempDiff = Temperature.temperatureDifference(ingredient.getStandardTemperatureObject(), ingredient.getTemperatureObject());
-		if(tempDiff > 0) {
-			oven.setTemperature(ingredient.getStandardTemperature());
-			oven.setStartIngredient(ingredient);
-			oven.process();
-		} else if(tempDiff < 0) {
-			coolingbox.setTemperature(ingredient.getStandardTemperature());
-			coolingbox.setStartIngredient(ingredient);
-			coolingbox.process();
+	private void makeStandardTemp(IngredientContainer container) {
+		long tempDiff = Temperature.temperatureDifference(container.getIngredient().getStandardTemperatureObject(), container.getIngredient().getTemperatureObject());
+		if(tempDiff != 0) {
+			if(tempDiff > 0) {
+				getOven().setTemperature(new Temperature ((long) (container.getIngredient().getStandardTemperatureObject().getColdness()*1.05d),
+						(long) (container.getIngredient().getStandardTemperatureObject().getHotness()*1.05d)));
+				getOven().loadIngredient(container);
+				getOven().process();
+				container = getOven().emptyDevice();
+			}
+			getCoolingbox().setTemperature(container.getIngredient().getStandardTemperature());
+			getCoolingbox().loadIngredient(container);
+			getCoolingbox().process();
+			container = getCoolingbox().emptyDevice();
 		}
 	}
 	
@@ -197,11 +257,5 @@ public class Laboratory {
 	 */
 	private final int capacity;
 	
-	private CoolingBox coolingbox = new CoolingBox(new Temperature(0,0));
-	
-	private Oven oven = new Oven(new Temperature(0,0));
-	
-	private Kettle kettle = new Kettle();
-	
-	private Transmogrifier transmogrifier = new Transmogrifier();
+	private ArrayList<Device> devices = new ArrayList<Device>();
 }

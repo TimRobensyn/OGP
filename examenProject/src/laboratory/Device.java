@@ -23,10 +23,10 @@ public abstract class Device {
 	 * @return	If the device can hold an unlimited amount of ingredients,
 	 * 				container is loaded into the device.
 	 * 			|if //TODO Formal specs
-	 * @throws	ItemFullException
+	 * @throws	CapacityException
 	 * 			This device has a limited amount of room for ingredients and this amount is already filled.
 	 */
-	public abstract void loadIngredient(IngredientContainer container) throws ItemFullException;
+	public abstract void loadIngredient(IngredientContainer container) throws CapacityException;
 	
 	/**
 	 * Take the result of the process out of the device and put it into a container.

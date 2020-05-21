@@ -42,7 +42,7 @@ public abstract class BottomlessDevice extends Device {
 	 * Clear the startIngredients arrayList.
 	 */
 	protected void clearStartIngredients() {
-		startIngredients = new ArrayList<>(0);
+		getStartIngredients().clear();
 	}
 
 	/**

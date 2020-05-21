@@ -56,7 +56,7 @@ public class IngredientType {
 	public IngredientType(String[] simpleNames, String specialName, State state, Temperature standardTemperature) {
 		
 		if (( (!areValidSimpleNames(simpleNames))
-			 ||!isValidSimpleName(specialName)
+			 ||!isValidSpecialName(specialName)
 			 ||!State.isValidState(state))
 			 ||!Temperature.isValidTemperature(standardTemperature)) {
 			this.simpleNames = new String[] {"Water"};
@@ -70,7 +70,6 @@ public class IngredientType {
 			this.state = state;
 			this.standardTemperature = standardTemperature;
 		}
-
 	}
 	
 	/**
@@ -173,18 +172,16 @@ public class IngredientType {
 	 */
 	public static boolean isValidSimpleName(String name){
 		
-		boolean valid = true;
-		
 		//Naam is niet null of leeg.
 		if (name==null||name=="")
-			valid = false;
+			return false;
 		
 		String[] choppedUpName = name.split(" ");
 		
 		//Naam van 1 woord is minstens 3 tekens lang.
 		if ( choppedUpName.length<2
 		   && name.length()<3 )
-			valid = false;
+			return false;
 		
 		for (String word: choppedUpName) {
 			
@@ -193,24 +190,21 @@ public class IngredientType {
 			  ||(word.matches("^[" + specialCharacters + "]*[Mm]ixed[" + specialCharacters + "]*$")))
 			  ||(word.matches("^[" + specialCharacters + "]*[Cc]ooled[" + specialCharacters + "]*$")
 			  ||(word.matches("^[" + specialCharacters + "]*[Hh]eated[" + specialCharacters + "]*$")))){
-				valid = false;
-				break;
+				return false;
 			}
 			
 			//Elk woord is minstens 2 letters lang
 			if (word.length()<2) {
-				valid = false;
-				break;
+				return false;
 			}
 			
 			// Elk woord begint met een hoofdletter (hier kan een speciaal teken voor staan), 
 			// de rest van de letters zijn klein of speciaal
 			if (!word.matches("^[" + specialCharacters + "A-Z][a-z]*$")){
-				valid = false;
-				break;
+				return false;
 			}
 		}
-		return valid;
+		return true;
 	}
 	
 	
