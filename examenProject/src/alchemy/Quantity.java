@@ -15,14 +15,14 @@ public interface Quantity {
 	/**
 	 * Return the amount of this quantity unit.
 	 */
-	@Basic @Raw @Immutable
+	@Basic @Immutable
 	public int getQuantity();
 	
 	/**
 	 * Return the index of this quantity unit, relative to the other
 	 * units (smaller unit, smaller index, starting at 1).
 	 */
-	@Basic @Raw @Immutable
+	@Basic @Immutable
 	public int getIndex();
 	
 	/**
@@ -32,23 +32,19 @@ public interface Quantity {
 	@Raw @Immutable
 	public int getNbOfSmallestUnit();
 	
-//	/**
-//	 * Return the smallest container that can hold the given amount. 
-//	 */
-//	@Raw
-//	public Container getContainer(int amount);
-	
+
 	/**
 	 * Check whether the given quantity is a valid quantity for an alchemic ingredient.
 	 * 
-	 * @param quantity
-	 * 		  The quantity to check
-	 * @return True if and only if the quantity is not below 0 and not above the maximum value
+	 * @param  quantity
+	 * 		   The quantity to check.
+	 * @return True if and only if the quantity is not below 0 and not above the maximum value.
 	 * 		   | result ==
 	 * 		   | 	((quantity >= 0) && (quantity <= Long.MAX_VALUE))
 	 */
 	public static boolean isValidQuantity(int quantity) {
-		return((quantity >= 0) && (quantity <= Long.MAX_VALUE));
+		return ((quantity >= 0) && (quantity <= Long.MAX_VALUE));
 	}
+	
 
 }

@@ -2,14 +2,25 @@ package alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
 
+/**
+ * An enumeration of powder quantities.
+ * 
+ * @invar   Each powder quantity must have a valid quantity value.
+ * 			| Quantity.isValidQuantity(getQuantity())
+ * 
+ * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
+ * @version 1.0
+ */
+
 public enum PowderQuantity implements Quantity{
 	
 	PINCH(1,1), SPOON(6,2), SACHET(7,3), BOX(6,4), SACK(3,5), CHEST(10,6), STOREROOM(5,7);
 	
 	/**
-	 * Initialize this capacity with the given amount
+	 * Initialize this capacity with the given amount.
+	 * 
 	 * @param amount
-	 * 		  The amount of this capacity
+	 * 		  The amount of this capacity.
 	 */
 	@Raw
 	private PowderQuantity(int amount, int index) {
@@ -18,22 +29,22 @@ public enum PowderQuantity implements Quantity{
 	}
 	
 	/**
-	 * Returns the amount of this capacity
+	 * Returns the amount of this capacity.
 	 */
-	@Basic @Raw @Immutable
+	@Basic @Immutable
 	public int getQuantity() {
 		return this.quantity;
 	}
 	
 	/**
-	 * Variable storing the amount of capacity
+	 * Variable storing the amount of capacity.
 	 */
 	private final int quantity;
 
 	/**
 	 * Returns the index of this unit.
 	 */
-	@Basic @Raw @Immutable @Override
+	@Basic @Immutable
 	public int getIndex() {
 		return this.index;
 	}
@@ -46,10 +57,10 @@ public enum PowderQuantity implements Quantity{
 	/**
 	 * Return the quantity of this unit in drops.
 	 */
-	@Raw @Immutable @Override
+	@Immutable
 	public int getNbOfSmallestUnit() {
 		int NbOfPinches = 1;
-		for (PowderQuantity quantity : PowderQuantity.values()) {
+		for (PowderQuantity quantity: PowderQuantity.values()) {
 			if (quantity.getIndex()<=this.index)
 				NbOfPinches = NbOfPinches*quantity.getQuantity();
 		}
@@ -58,7 +69,7 @@ public enum PowderQuantity implements Quantity{
 	
 	//TODO doc
 	public static Container getContainer(int drops) {
-		for (Container container:Container.values()) {			
+		for (Container container: Container.values()) {			
 			for (PowderQuantity quantity:PowderQuantity.values()) {
 				if (container.toString()==quantity.toString()) {
 					if (drops <= quantity.getNbOfSmallestUnit())
@@ -76,4 +87,8 @@ public enum PowderQuantity implements Quantity{
 		return PowderQuantity.SPOON.getQuantity()/LiquidQuantity.SPOON.getQuantity();
 	}
 
+
+	public static void main(String[] args) {
+		System.out.println(PowderQuantity.values().length);
+	}
 }

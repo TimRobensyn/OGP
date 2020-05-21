@@ -11,6 +11,6 @@ import be.kuleuven.cs.som.annotate.*;
 
 public enum Container {
 	
-	SPOON,VIAL,BOTTLE,JUG,BARREL,SACHET,BOX,SACK,CHEST
+	SPOON,VIAL,BOTTLE,JUG,BARREL,SACHET,BOX,SACK,CHEST;
 
 }
