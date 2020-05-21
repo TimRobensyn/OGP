@@ -7,6 +7,8 @@ import be.kuleuven.cs.som.annotate.*;
  * 
  * @invar   Each powder quantity must have a valid quantity value.
  * 			| Quantity.isValidQuantity(getQuantity())
+ * @invar   Each powder quantity must have a valid index.
+ *          | isValidIndex(getIndex())
  * 
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  * @version 1.0
@@ -41,6 +43,19 @@ public enum PowderQuantity implements Quantity{
 	 */
 	private final int quantity;
 
+	
+	/**
+	 * Check whether the given index is valid or not.
+	 * 
+	 * @param  index
+	 * 		   The index to check.
+	 * @return True if and only if the greater than zero and not above the number of values
+	 *         in this enumeration class.
+	 */
+	public static boolean isValidIndex(int index) {
+		return (index>0 && index<=PowderQuantity.values().length);
+	}
+	
 	/**
 	 * Returns the index of this unit.
 	 */
