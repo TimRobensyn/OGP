@@ -7,9 +7,9 @@ import be.kuleuven.cs.som.annotate.*;
  * 
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  * @version 1.0
- *
  */
 
+@Value
 public enum Unit {
 	DROP_LIQUID(1,1,State.LIQUID,false),
 	SPOON_LIQUID(8,2,State.LIQUID,true),
