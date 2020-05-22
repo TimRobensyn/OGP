@@ -13,7 +13,9 @@ public class Kettle extends BottomlessDevice {
 		super(ingredientArray);
 	}
 
-	public Kettle() {}
+	public Kettle() {
+		super();
+	}
 
 	/**
 	 * Rip documentatie hiervoor
