@@ -64,6 +64,8 @@ public class Recipe {
 	public Recipe() {
 	}
 	
+	
+	
 	/**********************************************************
 	 * Processes
 	 **********************************************************/
@@ -295,7 +297,75 @@ public class Recipe {
 		return (recipe.getNbIngredients()>=recipe.getNbOfAdd());
 	}
 	
-	//TODO: addIngredientAt, removeIngredientAt
+	/**
+	 * Return the ingredient at the given index of the ingredients list.
+	 * 
+	 * @param  index
+	 * 		   The index of the wanted ingredient.
+	 * @return The ingredient of the ingredients list of this recipe at the given index.
+	 *         | return getIngredients().get(index)
+	 * @throws IndexOutOfBoundsException
+	 * 		   The given index is lesser than zero or greater than or equal to the size of 
+	 * 		   the ingredients list.
+	 *         | (index<0 || index>=getNbProcesses())
+	 */
+	public AlchemicIngredient getIngredientAt(int index) throws IndexOutOfBoundsException {
+		return getIngredients().get(index);
+	}
+	
+	/**
+	 * Add the given ingredient as an ingredient for this recipe at the given index.
+	 * 
+	 * @param  ingredient
+	 * 		   The ingredient to be added.
+	 * @param  index
+	 * 		   The index of the ingredient to be added.
+	 * @post   The number of processes of this recipe is incremented by one.
+	 * 		   | new.getNbIngredients() == getNbIngredients()+1
+	 * @post   This recipe has the given ingredient at the given index
+	 *         | new.getIngredientAt(index) == ingredient
+	 * @post   Allingredients for this recipe at an index exceeding the given index, are registered
+	 * 		   as ingredient one index higher.
+	 *         | for each I in index..getNbIngredients()
+	 *         |   new.getIngredientAt(I+1) == getIngredientAt(I)
+	 * @throws IllegalArgumentException
+	 * 		   This recipe cannot have the given ingredient as one of its ingredients.
+	 *         | !canHaveAsIngredient(ingredient)
+	 */
+	public void addIngredientAt(AlchemicIngredient ingredient, int index) throws IllegalArgumentException {
+		if (!canHaveAsIngredient(ingredient))
+			throw new IllegalArgumentException("This ingredient is not valid.");
+		ingredients.add(index,ingredient);
+	}
+	
+	
+	/**
+	 * If there are less add processes in the process list than ingredients in the ingredient list,
+	 * remove the ingredient at the given index.
+	 * 
+	 * @param  index
+	 * 		   The index of the ingredient to be removed.
+	 * @post   If there are less add processes in the process list than ingredients in the ingredient list,
+	 *         the number of ingredients in ingredient list of this recipe is decremented by one.
+	 *         | if (getNbOfAdd() < getNbIngredients())
+	 * 		   |   then new.getNbIngredients() = getNbIngredients()-1
+	 * @post   If there are less add processes in the process list than ingredients in the ingredient list,
+	 * 		   all ingredients associated with this recipe at an index exceeding the given index,
+	 *         are registered as process at one index lower.
+	 *         | if (getNbOfAdd() < getNbIngredients())
+	 *         |   then for each I in index+1..getNbIngredients()
+	 *         |           (new.getIngredientAt(I-1) == this.getIngredientAt(I))
+	 * @throws IndexOutOfBoundsException
+	 *         The given index is lesser than zero or above or equal to the number of ingredients currently
+	 *         in the list.
+	 *         | (index<0 || index>=getNbProcesses())
+	 */
+	public void removeIngredientAt(int index) throws IndexOutOfBoundsException {
+		if (index<0 || index>=getNbIngredients())
+			throw new IndexOutOfBoundsException("The index is not valid.");
+		if (getNbOfAdd() < getNbIngredients())
+			processes.remove(index);
+	}
 	
 	/**
 	 * An array containing the alchemic ingredients needed by the processes of this recipe.
