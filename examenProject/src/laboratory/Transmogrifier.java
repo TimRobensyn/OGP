@@ -36,7 +36,7 @@ public class Transmogrifier extends BottomlessDevice {
 	 */
 	@Raw
 	public Transmogrifier() {
-		super(null);
+		super();
 	}
 
 	/**

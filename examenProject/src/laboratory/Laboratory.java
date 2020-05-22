@@ -45,15 +45,15 @@ public class Laboratory {
 	 *        | getOven == oven
 	 *        | getKettle == kettle
 	 *        | getTransmogrifier == transmogrifier
-	 * @throws IllegalArgumentException
+	 * @throws CapacityException
 	 * 		   The given capacity is invalid.
 	 * 		   | !isValidCapacity(capacity)
 	 */
 	@Raw
 	public Laboratory(int capacity, ArrayList<AlchemicIngredient> storage, CoolingBox coolingbox,
-			Oven oven, Kettle kettle, Transmogrifier transmogrifier) throws IllegalArgumentException {
+			Oven oven, Kettle kettle, Transmogrifier transmogrifier) throws CapacityException {
 		if(!isValidCapacity(capacity)) {
-			throw new IllegalArgumentException();
+			throw new CapacityException(this, "The given capacity is invalid.");
 		}
 		this.capacity = capacity;
 		setStorage(storage);
@@ -77,6 +77,27 @@ public class Laboratory {
 	@Raw
 	public Laboratory(int capacity) {
 		this(capacity, new ArrayList<AlchemicIngredient>(), null, null, null, null);
+	}
+	
+	/**
+	 * Initialize a new laboratory with the given capacity and devices with an empty storage
+	 * 
+	 * @param capacity
+	 * 		  The given capacity
+	 * @param coolingbox
+	 * 		  The given coolingbox
+	 * @param oven
+	 * 		  The given oven
+	 * @param kettle
+	 * 		  The given kettle
+	 * @param transmogrifier
+	 * 		  The given transmogrifier
+	 * @effect The new laboratory has the given capacity and devices and an empty storage
+	 * 		   | this(capacity, new ArrayList<AlchemicIngredient>(), coolingbox, oven, kettle, transmogrifier)
+	 */
+	@Raw
+	public Laboratory(int capacity, CoolingBox coolingbox, Oven oven, Kettle kettle, Transmogrifier transmogrifier) {
+		this(capacity,new ArrayList<AlchemicIngredient>(),coolingbox,oven,kettle,transmogrifier);
 	}
 	
 	/**************************************************
