@@ -115,6 +115,23 @@ public class Recipe {
 	}
 	
 	/**
+	 * Return the index of the nth add process in the process list.   
+	 */
+	public int getIndexOfNthAdd(int n) {
+		int index = 1;
+		int count = 0;
+		
+		while (index<=getNbProcesses() && count<n) {
+			if (getProcessAt(index) == Process.add) {
+				count++;
+			}
+			index++;
+		}
+		
+		return index-1;
+	}
+	
+	/**
 	 * Return the process at the given index of the processes list.
 	 * 
 	 * @param  index
@@ -315,7 +332,7 @@ public class Recipe {
 	
 	/**
 	 * Add the given ingredient as an ingredient for this recipe at the given index and accordingly add an add process
-	 * at the processes list at its given index.
+	 * at the processes list.
 	 * 
 	 * @param  ingredient
 	 * 		   The ingredient to be added.
@@ -331,29 +348,27 @@ public class Recipe {
 	 * 		   as ingredient one index higher.
 	 *         | for each I in index..getNbIngredients()
 	 *         |   new.getIngredientAt(I+1) == getIngredientAt(I)
-	 * @effect An add process is added at the process list of this recipe at the given index.
-	 * 		   | addProcessAt(Process.add, indexAddProcess)
+	 * @effect An add process is added at the process list of this recipe at the appropriate index.
+	 * 		   | addProcessAt(Process.add, getIndexOfNthAdd(indexIngredient))
 	 * @throws IllegalArgumentException
 	 * 		   This recipe cannot have the given ingredient as one of its ingredients.
 	 *         | !canHaveAsIngredient(ingredient)
 	 */
-	public void addIngredientAt(AlchemicIngredient ingredient, int indexIngredient, int indexAddProcess)
+	public void addIngredientAt(AlchemicIngredient ingredient, int indexIngredient)
 			throws IllegalArgumentException {
 		if (!canHaveAsIngredient(ingredient))
 			throw new IllegalArgumentException("This ingredient is not valid.");
 		ingredients.add(indexIngredient-1,ingredient);
 		// Raw state
-		addProcessAt(Process.add, indexAddProcess);
+		addProcessAt(Process.add, getIndexOfNthAdd(indexIngredient));
 	}
 	
 	
 	/**
-	 * Remove an ingredient from the ingredients at the given index, along with an add process at the given index.
+	 * Remove an ingredient from the ingredients at the given index, along with an add process.
 	 * 
 	 * @param  indexIngredient
 	 * 		   The index of the ingredient to be removed.
-	 * @param  indexAddProcess
-	 * 		   The index of the add process to be removed.
 	 * @post   If there are less add processes in the process list than ingredients in the ingredient list,
 	 *         the number of ingredients in ingredient list of this recipe is decremented by one.
 	 *         | if (getNbOfAdd() < getNbIngredients())
@@ -364,25 +379,20 @@ public class Recipe {
 	 *         | if (getNbOfAdd() < getNbIngredients())
 	 *         |   then for each I in index+1..getNbIngredients()
 	 *         |           (new.getIngredientAt(I-1) == this.getIngredientAt(I))
-	 * @effect The add process at the given index is deleted.
-	 * 		   | removeProcessAt(indexAddProcess);
-	 * @throws IllegalArgumentException
-	 * 		   The given index is not of a add process in the processes list.
-	 * 		   | getProcessAt(indexAddProcess) != Process.add
+	 * @effect The add process at the appropriate ndex is deleted.
+	 * 		   | removeProcessAt(getIndexOfNthAdd(indexIngredient));
 	 * @throws IndexOutOfBoundsException
 	 *         The given index is lesser than zero or above or equal to the number of ingredients currently
 	 *         in the list.
 	 *         | (index<0 || index>=getNbProcesses())
 	 */
-	public void removeIngredientAt(int indexIngredient, int indexAddProcess)
-			throws IndexOutOfBoundsException, IllegalArgumentException {
+	public void removeIngredientAt(int indexIngredient)
+			throws IndexOutOfBoundsException {
 		if (indexIngredient<0 || indexIngredient>=getNbIngredients())
 			throw new IndexOutOfBoundsException("The index is not valid.");
-		if (getProcessAt(indexAddProcess) != Process.add)
-			throw new IllegalArgumentException("The index of the process to be removed must be of an add process.");
 		ingredients.remove(indexIngredient-1);
 		// Raw state
-		removeProcessAt(indexAddProcess);
+		removeProcessAt(getIndexOfNthAdd(indexIngredient));
 	}
 	
 	/**
