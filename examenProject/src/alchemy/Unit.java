@@ -5,6 +5,11 @@ import be.kuleuven.cs.som.annotate.*;
 /**
  * Enumeration class of units as to be used in alchemy.
  * 
+ * @invar   Each unit has a valid capacity.
+ *          | isValidCapacity(getCapacity())
+ * @invar   Each unit has a valid index according to its state.
+ * 			| isValidIndex(getIndex(),getState())
+ * 
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  * @version 1.0
  */
@@ -65,6 +70,17 @@ public enum Unit {
 	}
 	
 	/**
+	 * Check whether the given capacity is valid.
+	 * 
+	 * @return True if and only if the given value is greater than or equal to zero and
+	 * 		   not above the max value of a number.
+	 * 		   | result == (capacity>=0 && capacity<=Long.MAX_VALUE)
+	 */
+	public boolean isValidCapacity(int capacity) {
+		return (capacity>=0 && capacity<=Long.MAX_VALUE);
+	}
+	
+	/**
 	 * A variable containing this unit's capacity.
 	 */
 	private int capacity;
@@ -78,15 +94,28 @@ public enum Unit {
 	}
 	
 	/**
-	 * Check whether the given index is valid or not.
+	 * Check whether the given index is valid or not depending on the state of the unit.
 	 * 
 	 * @param  index
 	 * 		   The index to check.
+	 * @param  state
+	 * 		   The state to check the index for.
 	 * @return True if and only if the index is greater than zero and not above the number of values
-	 *         in this enumeration class.
+	 *         in this enumeration class with the given state.
+	 *         | count=0
+	 *         | for each unit in Unit.values()
+	 *         |   if (unit.getState()==state)
+	 *         |      then count++
+	 *         | result == (index>0 && index<=count)
 	 */
-	public static boolean isValidIndex(int index) {
-		return (index>0); //TODO deze checker fixen
+	public static boolean isValidIndex(int index, State state) {
+		int count = 0;
+		for (Unit unit: Unit.values()) {
+			if (unit.getState()==state)
+				count++;
+		}
+		
+		return (index>0 && index<=count);
 	}
 	
 	/**
@@ -104,6 +133,9 @@ public enum Unit {
 	
 	/**
 	 * A variable containing this unit's state.
+	 * 
+	 * @note No checker is needed, values that are not mentioned in the state enumeration class are 
+	 *       rejected anyway.
 	 */
 	private State state;
 	
@@ -117,6 +149,8 @@ public enum Unit {
 	
 	/**
 	 * A variable containing the boolean which decides whether this unit can be a container.
+	 * 
+	 * @note No checker is needed, because the only two values (true and false) are correct.
 	 */
 	private boolean isContainer;
 	
