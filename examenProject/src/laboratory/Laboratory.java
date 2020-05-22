@@ -179,7 +179,7 @@ public class Laboratory {
 	 */
 	@Basic
 	public AlchemicIngredient getIngredientAt(int index) {
-		return getStorage().get(index);
+		return getStorage().get(index-1);
 	}
 	
 	/**
@@ -214,7 +214,7 @@ public class Laboratory {
 		boolean bool = true;
 		for(int i=0; i <= getNbIngredients()-2; i++) {
 			for(int j = i+1; j < getNbIngredients(); j++) {
-				if(getIngredientAt(i).getType().equals(getIngredientAt(j).getType())) {
+				if(getIngredientAt(i+1).getType().equals(getIngredientAt(j+1).getType())) {
 					bool = false;
 				}
 			}
@@ -286,12 +286,12 @@ public class Laboratory {
 	 * 			This laboratory does not contain enough of the requested item or no container is big enough to hold
 	 * 			the requested amount.
 	 * 			| storedIngredient.getQuantity() < amount
-	 * @throws	IllegalArgumentException
+	 * @throws	CapacityException
 	 * 			This laboratory does not contain an ingredient with the given name.
 	 * 			| !((storedIngredient.getType().getSimpleName() == name) ||
 	 * 			|  (storedIngredient.getType().getSpecialName() == name))
 	 */
-	public IngredientContainer request(String name, int amount) throws CapacityException, IllegalArgumentException{
+	public IngredientContainer request(String name, int amount) throws CapacityException{
 		for(AlchemicIngredient storedIngredient : storage) {
 			if((storedIngredient.getType().getSimpleName() == name) || (storedIngredient.getType().getSpecialName() == name)){
 				
@@ -315,7 +315,7 @@ public class Laboratory {
 				return new IngredientContainer(newIngredient, newContainer);
 			}
 		}
-		throw new IllegalArgumentException("Ingredient not found.");
+		throw new CapacityException(this, "Ingredient not found.");
 		
 	}
 	
@@ -330,11 +330,11 @@ public class Laboratory {
 	 * 		   a barrel of chest is returned and the leftovers are deleted
 	 *  	   | if(storedIngredient.getQuantity() > barrel or chest quantity)
 	 *  	   |   storedIngredient = new AlchemicIngredient(storedIngredient.getType(), barrel or chest quantity)
-	 * @throws IllegalArgumentException
+	 * @throws CapacityException
 	 * 		   This laboratory does not contain an ingredient with the given special or simple name
 	 *         | if(newContainer == null)
 	 */
-	public IngredientContainer request(String name) throws IllegalArgumentException{
+	public IngredientContainer request(String name) throws CapacityException{
 		for(AlchemicIngredient storedIngredient : storage) {
 			if((storedIngredient.getType().getSimpleName() == name) || (storedIngredient.getType().getSpecialName() == name)){
 				
@@ -351,7 +351,7 @@ public class Laboratory {
 				return new IngredientContainer(newIngredient, newContainer);
 			}
 		}
-		throw new IllegalArgumentException("Ingredient not found.");
+		throw new CapacityException(this, "Ingredient not found.");
 	}
 	
 	/**
@@ -362,8 +362,8 @@ public class Laboratory {
 		Object[][] inventory = new Object[2][getNbIngredients()];
 		int index = 0;
 		while(index < getNbIngredients()) {
-			inventory[0][index] = getIngredientAt(index).getFullName();
-			inventory[1][index] = getIngredientAt(index).getQuantity();
+			inventory[0][index] = getIngredientAt(index+1).getFullName();
+			inventory[1][index] = getIngredientAt(index+1).getQuantity();
 		}
 		return inventory;
 	}
@@ -393,7 +393,7 @@ public class Laboratory {
 	public int getNbDevices() {
 		int number = 0;
 		for(int i=0; i<4; i++) {
-			if(getDeviceAt(i) != null) {
+			if(getDeviceAt(i+1) != null) {
 				number += 1;
 			}
 		}
@@ -407,7 +407,7 @@ public class Laboratory {
 	 */
 	@Basic @Raw
 	public Device getDeviceAt(int index) {
-		return getDevices().get(index);
+		return getDevices().get(index-1);
 	}
 	
 	/**
@@ -417,28 +417,28 @@ public class Laboratory {
 	 * 	      The given device
 	 * @param index
 	 * 		  The given index
-	 * @return True if and only if the device is a cooling box and the index is 0, the device is an oven and the index is 1,
-	 * 		   the device is a kettle and the index is 2 or the device is a transmogrifier and the index is 3
+	 * @return True if and only if the device is a cooling box and the index is 1, the device is an oven and the index is 2,
+	 * 		   the device is a kettle and the index is 3 or the device is a transmogrifier and the index is 4
 	 *         | if(device.getClass() == CoolingBox.class)
-	 *		   |	result == (index == 0)
-	 *		   | else if(device.getClass() == Oven.class)
 	 *		   |	result == (index == 1)
-	 *		   | else if(device.getClass() == Kettle.class)
+	 *		   | else if(device.getClass() == Oven.class)
 	 *		   |	result == (index == 2)
-	 *		   | else if(device.getClass() == Transmogrifier.class)
+	 *		   | else if(device.getClass() == Kettle.class)
 	 *		   |	result == (index == 3)
+	 *		   | else if(device.getClass() == Transmogrifier.class)
+	 *		   |	result == (index == 4)
 	 *		   | else 
 	 *		   |	result == false
 	 */
 	public static boolean isValidDeviceAt(Device device, int index) {
 		if(device.getClass() == CoolingBox.class) {
-			return(index == 0);
-		} else if(device.getClass() == Oven.class) {
 			return(index == 1);
-		} else if(device.getClass() == Kettle.class) {
+		} else if(device.getClass() == Oven.class) {
 			return(index == 2);
-		} else if(device.getClass() == Transmogrifier.class) {
+		} else if(device.getClass() == Kettle.class) {
 			return(index == 3);
+		} else if(device.getClass() == Transmogrifier.class) {
+			return(index == 4);
 		} else {
 			return false;
 		}
@@ -461,16 +461,16 @@ public class Laboratory {
 	 */
 	public boolean hasProperDevices() {
 		boolean bool = true;
-		if((getDeviceAt(0).getClass() != CoolingBox.class) && (getDeviceAt(0) != null)) {
+		if((getDeviceAt(1).getClass() != CoolingBox.class) && (getDeviceAt(1) != null)) {
 			bool = false;
 		}
-		if((getDeviceAt(1).getClass() != Oven.class) && (getDeviceAt(1) != null)) {
+		if((getDeviceAt(2).getClass() != Oven.class) && (getDeviceAt(2) != null)) {
 			bool = false;
 		}
-		if((getDeviceAt(2).getClass() != Kettle.class) && (getDeviceAt(2) != null)) {
+		if((getDeviceAt(3).getClass() != Kettle.class) && (getDeviceAt(3) != null)) {
 			bool = false;
 		}
-		if((getDeviceAt(3).getClass() != Transmogrifier.class) && (getDeviceAt(3) != null)) {
+		if((getDeviceAt(4).getClass() != Transmogrifier.class) && (getDeviceAt(4) != null)) {
 			bool = false;
 		}
 		return bool;
@@ -487,16 +487,16 @@ public class Laboratory {
 	 */
 	@Raw
 	public void addAsDevice(Device device) throws CapacityException {
-		if((device.getClass() == CoolingBox.class) && (getDeviceAt(0) == null)) {
+		if((device.getClass() == CoolingBox.class) && (getDeviceAt(1) == null)) {
 			getDevices().add(0, device);
 		}
-		else if((device.getClass() == Oven.class) && (getDeviceAt(1) == null)) {
+		else if((device.getClass() == Oven.class) && (getDeviceAt(2) == null)) {
 			getDevices().add(1, device);
 		}
-		else if((device.getClass() == Kettle.class) && (getDeviceAt(2) == null)) {
+		else if((device.getClass() == Kettle.class) && (getDeviceAt(3) == null)) {
 			getDevices().add(2, device);
 		}
-		else if((device.getClass() == Transmogrifier.class) && (getDeviceAt(3) == null)) {
+		else if((device.getClass() == Transmogrifier.class) && (getDeviceAt(4) == null)) {
 			getDevices().add(3, device);
 		} else {
 			throw new CapacityException(device,this,"This laboratory cannot accept this device.");
@@ -519,10 +519,10 @@ public class Laboratory {
 	 *         | getDeviceAt(0) == null
 	 */
 	public CoolingBox getCoolingbox() throws CapacityException {
-		if(getDeviceAt(0) == null) {
+		if(getDeviceAt(1) == null) {
 			throw new CapacityException(this,"Cooling box not found.");
 		}
-		return (CoolingBox) getDeviceAt(0);
+		return (CoolingBox) getDeviceAt(1);
 	}
 	
 	/**
@@ -533,10 +533,10 @@ public class Laboratory {
 	 * 		   | getDeviceAt(1) == null
 	 */
 	public Oven getOven() {
-		if(getDeviceAt(1) == null) {
+		if(getDeviceAt(2) == null) {
 			throw new CapacityException(this,"Oven not found.");
 		}
-		return (Oven) getDeviceAt(1);
+		return (Oven) getDeviceAt(2);
 	}
 	
 	/**
@@ -547,10 +547,10 @@ public class Laboratory {
 	 * 		   | getDeviceAt(2) == null
 	 */
 	public Kettle getKettle() {
-		if(getDeviceAt(2) == null) {
+		if(getDeviceAt(3) == null) {
 			throw new CapacityException(this,"Kettle not found.");
 		}
-		return (Kettle) getDeviceAt(2);
+		return (Kettle) getDeviceAt(3);
 	}
 	
 	/**
@@ -561,10 +561,10 @@ public class Laboratory {
 	 * 		   | getDeviceAt(3) == null
 	 */
 	public Transmogrifier getTransmogrifier() {
-		if(getDeviceAt(3) == null) {
+		if(getDeviceAt(4) == null) {
 			throw new CapacityException(this,"Transmogrifier not found.");
 		}
-		return (Transmogrifier) getDeviceAt(3);
+		return (Transmogrifier) getDeviceAt(4);
 	}
 	
 	/**
