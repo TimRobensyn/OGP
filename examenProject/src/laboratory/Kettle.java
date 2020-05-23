@@ -7,41 +7,142 @@ import java.util.List;
 
 import be.kuleuven.cs.som.*;
 
-//TODO DOCUMENTATIE
+/**
+ * A class of kettles involving an array of ingredients that the kettle can mix.
+ * 
+ * @version 1.0
+ * @author Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
+ * 
+ * @note In this class we assume that there are only two possible states for an alchemic ingredient to have.
+ */
 
 public class Kettle extends BottomlessDevice {
-
+	
+	/**
+	 * Initialize a new kettle with the given array of ingredient containers.
+	 * 
+	 * @param ingredientArray
+	 * 		  The given array with ingredient containers that will be loaded in this kettle.
+	 * @effect This new kettle is initialized as a bottomless device with the given array of ingredient containers.
+	 * 		   | super(ingredientArray)
+	 */
 	public Kettle(IngredientContainer[] ingredientArray) {
 		super(ingredientArray);
 	}
-
+	
+	/**
+	 * Initialize a new, empty kettle.
+	 * 
+	 * @effect This new kettle is initialized as an empty bottomless device.
+	 * 		   | super()
+	 */
 	public Kettle() {
 		super();
 	}
 
 	/**
-	 * Rip documentatie hiervoor
-	 * Naam is combinatie van alle unieke simpleNames in the ingredienten, alfabetisch gerangschikt
-	 * closestToWater zijn alle ingredienten waarvan de standaardTemperatuur dichtst bij water zit (array want sommige zitten even ver)
-	 * State is liquid behalve als alle elementen in closestToWater powder zijn.
-	 * StandardTemperature is de hoogste standaardTemperatuur van alle ingredienten in closestToWater
-	 * Quantity is zoals opgave beveelt (ingewikkeld dus)
-	 * Temperature is gewogen gemiddelde van temperatures van gegeven ingredienten
+	 * Process the start ingredients loaded in this kettle.
+	 * The kettle mixes its start ingredients into a processed ingredient. 
 	 * 
-	 * Mix the ingredients in the device and empty the loading area.
+	 * @post The simple names array of the processed ingredient is an array with the simple names of all the
+	 * 		 start ingredients in alphabetical order.
+	 * 		 | for(AlchemicIngredient ingredient : getStartIngredients())
+	 *       |     for(String simpleName:ingredient.getType().getSimpleName())
+	 *       |         if(!newNameList.contains(simpleName)) newNameList.add(simpleName)
+	 * 		 | Collections.sort(newNameList)
+	 * 		 | String[] newSimpleNames = (String[]) newNameList.toArray();
 	 * 
-	 * Welke tags moet ik hier gebruiken help
+	 * @post The state of the processed ingredient is set to the state of the start ingredient whose standard temperature
+	 * 		 is closest to the standard temperature of water. If multiple start ingredients have a standard temperature closest
+	 * 		 to this temperature, then liquid is prioritized over powder.
+	 *       | closestToWater.add(getStartIngredient().get(0))
+	 *       | for(AlchemicIngredient ingredient : getStartIngredients())
+	 *       |     if(ingredient.getStandardTemperature() closer to water.getStandardTemperature())
+	 *       |		  List<AlchemicIngredient> closestToWater = new ArrayList<>()
+	 *       |		  closestToWater.add(ingredient)
+	 *       |	   else if(ingredient.getStandardTemperature() same difference from water.getStandardTemperature())
+	 *       |		  closestToWater.add(ingredient)
+	 *       | newState = State.POWDER
+	 *       | for(AlchemicIngredient ingredient : closestToWater)
+	 *       |     if(ingredient.getState()==State.LIQUID)
+	 *       |        newState = State.LIQUID
+	 * 
+	 * @post If every start ingredient has the same state, the processed ingredient's quantity is equal to the sum of
+	 * 		 all the start ingredients' quantities.
+	 *       | for(AlchemicIngredient ingredient : getStartIngredients())
+	 *       |     quantityOfState += ingredient.getQuantity()
+	 *       | newQuantity = quantityOfState
+	 *       If not every start ingredient has the same state, all the quantities of the start ingredients that
+	 *       have a different state than the eventual processed ingredient are summed as a fraction of spoons.
+	 *       This fraction then gets rounded down to a rounded number of spoons and then gets added to the sum of all the
+	 *       quantities of the start ingredients that have the same state as the eventual processed ingredient.
+	 *       | for(AlchemicIngredient ingredient : getStartIngredients())
+	 *       |     if(ingredient.getState() == State.LIQUID)
+	 *       |        quantityOfLiquids += ingredient.getQuantity()
+	 *       |     else if(ingredient.getState() == State.Powder)
+	 *       |        quantityOfPowder += ingredient.getQuantity()
+	 *       | oldStateToNewState = Unit.SPOON_NEWSTATE.getCapacity() * (Math.floor(quantityOfOldState*Unit.getRatio(newState, oldState)))
+	 *       | newQuantity = quantityOfNewState + oldStateToNewState
+	 * 
+	 * @post The standard temperature of the processed ingredient is set to the standard temperature of the starting ingredient
+	 * 	     with the standard temperature closest to that of water. If multiple starting ingredients are closest to this
+	 * 		 temperature, the hottest is selected.
+	 * 		 | closestToWater.add(getStartIngredient().get(0))
+	 *       | for(AlchemicIngredient ingredient : getStartIngredients())
+	 *       |     if(ingredient.getStandardTemperature() closer to water.getStandardTemperature())
+	 *       |		  List<AlchemicIngredient> closestToWater = new ArrayList<>()
+	 *       |		  closestToWater.add(ingredient)
+	 *       |	   else if(ingredient.getStandardTemperature() same difference from water.getStandardTemperature())
+	 *       |		  closestToWater.add(ingredient)
+	 *       | newStandardTemperature = closestToWater.get(0).getStandardTemperatureObject()
+	 *       | for(AlchemicIngredient ingredient : closestToWater)
+	 *       |     if(Temperature.compareTemperature(ingredient.getStandardTemperatureObject(), newStandardTemperature) == 1)
+	 *       |		  newStandardTemperature = ingredient.getStandardTemperatureObject()
+	 * 
+	 * @post The temperature of the processed ingredient is set to the weighted average of the temperatures of the
+	 * 		 start ingredients.
+	 *       | for(AlchemicIngredient ingredient : getStartIngredients())
+	 *       |	   cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*Unit.SPOON_STATE.getCapacity()
+	 *       |	   cumulativeHotness += ingredient.getHotness()*ingredient.getQuantity()*Unit.SPOON_STATE.getCapacity()
+	 *       |     totalNbOfSpoons +=  ingredient.getQuantity()/Unit.SPOON_STATE.getCapacity()
+	 *       | temperature = ((-cumulativeColdness + cumulativeHotness)/totalNbOfSpoons)
+	 *       | if(temperature < 0)
+	 *       |    newTemperature = new Temperature(-temperature, 0)
+	 *       | else if(temperature >= 0)
+	 *       |    newTemperature = new Temperature(0, temperature)
+	 *       
+	 * @effect A new ingredient type is created with the new simple names, the new state and the new standard temperature
+	 *         and a new ingredient is created with the new ingredient type and the new quantity.
+	 *         The new Ingredient's temperature is set to the new temperature.
+	 *         The start ingredients get deleted and the processed ingredient gets added to the processed ingredients list
+	 *         | newType = new IngredientType(newSimpleNames, newState, newStandardTemperature)
+	 *         | newIngredient = new AlchemicIngredient(newType, newQuantity)
+	 *         | difference = Temperature.temperatureDifference(newTemperature, newStandardTemperature)
+	 *         | if(difference > 0)
+	 *         |    newIngredient.heat(difference)
+	 *         | else if (difference < 0)
+	 *         |    newIngredient.cool(-difference)
+	 *         | clearStartIngredients()
+	 *         | addProcessedIngredient(newIngredient)
+	 * 
+	 * @throws CapacityException
+	 * 		   The kettle already contains processed ingredients
+	 * 		   | !getProcessedIngredients().isEmpty()
+	 * 		   The kettle doesn't contain start ingredients
+	 * 		   | getStartIngredients().isEmpty()
+	 * 
+	 * 		   
 	 */
 	@Override
 	public void process() throws CapacityException {
 		if (!getProcessedIngredients().isEmpty())
 			throw new CapacityException(this,"This kettle isn't empty.");
-		if (!getStartIngredients().isEmpty()) {
+		if (getStartIngredients().isEmpty()) {
 			throw new CapacityException(this,"This kettle has no ingredients to work with.");
 		}
 		
 		List<String> newNameList = new ArrayList<>(0);
-		List<AlchemicIngredient> closestToWater = new ArrayList<>(0);
+		List<AlchemicIngredient> closestToWater = new ArrayList<>();
 		Temperature waterTemperature = new Temperature(0L,20L);
 		long diffClosest = Math.abs(Temperature.temperatureDifference(getStartIngredients().get(0).getStandardTemperatureObject(),waterTemperature));
 		int quantityOfLiquids=0;
@@ -65,13 +166,15 @@ public class Kettle extends BottomlessDevice {
 				closestToWater.add(ingredient);
 			}
 			
-			//Quantity & temperature //TODO optimaliseren met unit?
+			//Quantity & temperature
 			if (ingredient.getState()==State.LIQUID) {
 				quantityOfLiquids += ingredient.getQuantity();
 				cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*Unit.SPOON_LIQUID.getCapacity();
+				cumulativeHotness += ingredient.getHotness()*ingredient.getQuantity()*Unit.SPOON_LIQUID.getCapacity();
 				totalNbOfSpoons += ingredient.getQuantity()/Unit.SPOON_LIQUID.getCapacity();
 			} else if (ingredient.getState()==State.POWDER) {
 				quantityOfPowders += ingredient.getQuantity();
+				cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*Unit.SPOON_POWDER.getCapacity();
 				cumulativeHotness += ingredient.getHotness()*ingredient.getQuantity()*Unit.SPOON_POWDER.getCapacity();
 				totalNbOfSpoons += ingredient.getQuantity()/Unit.SPOON_POWDER.getCapacity();
 			}
@@ -87,7 +190,7 @@ public class Kettle extends BottomlessDevice {
 		}
 		
 		//StandardTemperature
-		Temperature newStandardTemperature = getStartIngredients().get(0).getStandardTemperatureObject();
+		Temperature newStandardTemperature = closestToWater.get(0).getStandardTemperatureObject();
 		for (AlchemicIngredient ingredient:closestToWater) {
 			if (Temperature.compareTemperature(ingredient.getStandardTemperatureObject(), newStandardTemperature)==1) {
 				newStandardTemperature = ingredient.getStandardTemperatureObject();
@@ -101,9 +204,9 @@ public class Kettle extends BottomlessDevice {
 					newState, newState.otherState())));
 			newQuantity = quantityOfLiquids + powderToLiquid;
 		} else if (newState==State.POWDER) {
-			int liquidToPowder = Unit.SPOON_POWDER.getCapacity()*( (int) Math.floor(quantityOfPowders*Unit.getRatio(
+			int liquidToPowder = Unit.SPOON_POWDER.getCapacity()*( (int) Math.floor(quantityOfLiquids*Unit.getRatio(
 					newState, newState.otherState())));
-			newQuantity = quantityOfPowders + liquidToPowder; //TODO optimaliseren met Unit
+			newQuantity = quantityOfPowders + liquidToPowder;
 		}
 		
 		//Temperature
@@ -111,10 +214,8 @@ public class Kettle extends BottomlessDevice {
 		Temperature newTemperature;
 		if (temperature<0) {
 			newTemperature = new Temperature(-temperature,0);
-		} else if (temperature>0) {
-			newTemperature = new Temperature(0,temperature);
 		} else {
-			newTemperature = newStandardTemperature;
+			newTemperature = new Temperature(0,temperature);
 		}
 
 		//Toewijzing
@@ -129,7 +230,7 @@ public class Kettle extends BottomlessDevice {
 			newIngredient.heat(difference);
 		}
 		else if (difference<0) {
-			newIngredient.cool(difference);
+			newIngredient.cool(-difference);
 		}
 		
 		clearStartIngredients();
