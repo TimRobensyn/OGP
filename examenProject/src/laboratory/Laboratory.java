@@ -61,7 +61,9 @@ public class Laboratory {
 		this.capacity = capacity;
 		setStorage(storage);
 		
-		addAsDevice(coolingbox);
+		this.devices = new ArrayList<Device>(10);
+		
+		//addAsDevice(coolingbox);
 		addAsDevice(oven);
 		addAsDevice(kettle);
 		addAsDevice(transmogrifier);
@@ -410,7 +412,7 @@ public class Laboratory {
 	 */
 	@Basic @Raw
 	public Device getDeviceAt(int index) {
-		return getDevices().get(index-1);
+		return this.devices.get(index-1);
 	}
 	
 	/**
@@ -511,7 +513,7 @@ public class Laboratory {
 	 * If the given device is not in the device list nothing happens.
 	 */
 	public void removeAsDevice(Device device) {
-			getDevices().remove(device);
+		getDevices().remove(device);
 	}
 	
 	/**
@@ -607,5 +609,5 @@ public class Laboratory {
 	/**
 	 * Variable storing the list of devices in this laboratory
 	 */
-	private List<Device> devices = new ArrayList<Device>();
+	private List<Device> devices = new ArrayList<Device>(4);
 }
