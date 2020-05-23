@@ -50,7 +50,7 @@ public class RecipeBook {
 	public RecipeBook(int nbPages, List<Recipe> recipes) throws IllegalArgumentException {
 		if (!isValidNbPages(nbPages))
 			throw new IllegalArgumentException("Invalid number of pages.");
-		this.NbPages = nbPages;
+		this.nbPages = nbPages;
 		for (Recipe recipe:recipes) {
 			addAsRecipe(recipe);
 		}
@@ -66,7 +66,7 @@ public class RecipeBook {
 	 */
 	@Basic @Raw
 	public int getNbPages() {
-		return this.NbPages;
+		return this.nbPages;
 	}
 	
 	/**
@@ -85,7 +85,7 @@ public class RecipeBook {
 	/**
 	 * A variable for the amount of pages in this book.
 	 */
-	private final int NbPages;
+	private final int nbPages;
 	
 	
 	/**********************************************************
@@ -111,7 +111,7 @@ public class RecipeBook {
 	 * 
 	 * @param	number
 	 * 			The number of recipes to check.
-	 * @return	False if the numer is negative or greater than the number of
+	 * @return	False if the number is negative or greater than the number of
 	 * 			pages in this book.
 	 * 			| (number >= 0) && (number <= getNbPages())
 	 */

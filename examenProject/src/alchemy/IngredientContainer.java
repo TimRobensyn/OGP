@@ -77,8 +77,8 @@ public class IngredientContainer {
 	 * 
 	 * @param contents
 	 * 		  The given contents
-	 * @pre   The given contents is not less than 0 or greater than the capacity of this container
-	 *		  | (contents >= 0) && (contents <= this.getCapacity()) //TODO
+	 * @pre   This ingredient container can have the given alchemic ingredient as contents.
+	 * 		  | canHaveAsContents(contents)
 	 */
 	@Raw
 	public void setContents(AlchemicIngredient contents) {

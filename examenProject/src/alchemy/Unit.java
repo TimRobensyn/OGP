@@ -277,9 +277,4 @@ public enum Unit {
 		return firstCapacity/secondCapacity;
 	}
 
-	
-	public static void main(String [ ] args) {
-		boolean flag = isValidIndex(2,State.LIQUID);
-		System.out.println(flag);
-	}
 }
