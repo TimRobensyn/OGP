@@ -79,7 +79,7 @@ public class RecipeBook {
 	 *         | result == (nbPages>0 && nbPages<=Long.MAX_VALUE)
 	 */
 	public boolean isValidNbPages(int nbPages) {
-		return (nbPages>0 && nbPages<=Long.MAX_VALUE);
+		return (nbPages>0 && nbPages<=Integer.MAX_VALUE);
 	}
 	
 	/**

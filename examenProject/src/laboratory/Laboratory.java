@@ -1,8 +1,10 @@
 package laboratory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import alchemy.*;
@@ -112,6 +114,14 @@ public class Laboratory {
 	public int getCapacity() {
 		return this.capacity;
 	}
+	
+	/**
+	 * Return the total capacity in spoons.
+	 */
+	public int getCapacityInSpoons() {
+		return (getCapacity()*Unit.STOREROOM_LIQUID.getAbsoluteCapacity())
+				/Unit.SPOON_LIQUID.getCapacity();
+	}
 
 	/**
 	 * Check whether the given capacity is a valid capacity for a laboratory.
@@ -133,6 +143,96 @@ public class Laboratory {
 	/**************************************************
 	 * STORAGE
 	 **************************************************/
+	
+	/**
+	 * Get the quantity of the given ingredient type.
+	 */
+	@Basic @Raw
+	public int getQuantityOf(IngredientType type) {
+		return this.storage.get(type);
+	}
+	
+	/**
+	 * Check whether this class contains the given ingredient type.
+	 */
+	@Basic @Raw
+	public boolean hasAsIngredientType(IngredientType type) {
+		return this.storage.containsKey(type);
+	}
+	
+	/**
+	 * Check whether the given ingredient type is a valid type.
+	 * 
+	 * @param	type
+	 * 			The ingredient type to check.
+	 * @return	True if the given type is effective.
+	 * 			| (type!=null)
+	 */
+	@Raw
+	public boolean isValidIngredientType(IngredientType type) {
+		return (type!=null);
+	}
+	
+	/**
+	 * Check whether the given ingredient type has a valid quantity.
+	 * 
+	 * @param	type
+	 * 			The type to check the quantity of.
+	 * @return	True if the quantity of the given type is bigger
+	 * 			than zero.
+	 */
+	@Raw
+	public boolean canHaveAsQuantity(IngredientType type) {
+		return (getQuantityOf(type)>0);
+	}
+	
+	/**
+	 * Return the used capacity of this laboratory in spoons in the form of a double.
+	 */
+	@Raw
+	public double getUsedCapacity() {
+		double usedCapacity = 0;
+		for (IngredientType type:this.storage.keySet()) {
+			if (type.getState()==State.LIQUID)
+				usedCapacity += (getQuantityOf(type)/Unit.SPOON_LIQUID.getCapacity());
+			else if (type.getState()==State.POWDER){
+				usedCapacity += (getQuantityOf(type)/Unit.SPOON_POWDER.getCapacity());
+			}
+		}
+		return usedCapacity;
+	}
+	
+	/**
+	 * Check whether the storage of this laboratory is a valid
+	 * storage for this laboratory.
+	 * 
+	 * @return	True if and only if all the stored ingredients and their
+	 * 			quantities are valid ingredients and quantities,
+	 * 			and if the total capacity taken by the ingredient's quantities
+	 * 			is less than the available capacity of the laboratorium.
+	 * 			| for each type in Storage:
+	 * 			|	((!isValidIngredientType(type))
+	 * 			|	  ||(!canHaveAsQuantity(type)))
+	 * 			| && (getUsedCapacity()>getCapacityInSpoons()
+	 */
+	public boolean hasProperStorage() {
+		for (IngredientType type:this.storage.keySet()) {
+			if (!isValidIngredientType(type)) return false;
+			if (!canHaveAsQuantity(type)) return false;
+		}
+		if (getUsedCapacity()>getCapacityInSpoons())
+			return false;
+		return true;
+	}
+	
+	//TODO fix storage
+	
+	/**
+	 * A map containing the ingredient types of this laboratory as keys
+	 * and their quantities as values.
+	 */
+	private Map<IngredientType,Integer> storage = new HashMap<IngredientType,Integer>();
+	
 	
 
 	/**
@@ -370,11 +470,11 @@ public class Laboratory {
 		return inventory;
 	}
 	
-	
-	/**
-	 * Variable storing the contents of this laboratory in drops or pinches
-	 */
-	private List<AlchemicIngredient> storage = new ArrayList<AlchemicIngredient>();
+//	
+//	/**
+//	 * Variable storing the contents of this laboratory in drops or pinches
+//	 */
+//	private List<AlchemicIngredient> storage = new ArrayList<AlchemicIngredient>();
 	
 	/**************************************************
 	 * DEVICES
@@ -584,7 +684,9 @@ public class Laboratory {
 	 */
 	@Basic @Raw
 	public void terminate() {
+		
 		for (Device device: this.devices) {
+			device.setLaboratory(null);
 			removeAsDevice(device);
 		}
 		this.terminated = true;
