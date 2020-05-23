@@ -154,6 +154,7 @@ public abstract class TemperatureDevice extends Device {
 
 	/**
 	 * Set the temperature of this device using a Temperature object.
+	 * 
 	 * @param	newTemperature
 	 * 			The new temperature for the device.
 	 * @post	If the given temperature is valid, the temperature of
@@ -161,7 +162,7 @@ public abstract class TemperatureDevice extends Device {
 	 * 			| if (Temperature.isValidTemperature(newTemperature))
 	 * 		    |   then new.getTemperature() == newTemperature
 	 */
-	public final void setTemperature(Temperature newTemperature) {
+	public void setTemperature(Temperature newTemperature) {
 		if (Temperature.isValidTemperature(newTemperature)) {
 			this.temperature = newTemperature;
 		}
