@@ -1,6 +1,7 @@
 package alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
+import java.util.ArrayList;
 
 /**
  * Enumeration class of units as to be used in alchemy.
@@ -18,7 +19,7 @@ import be.kuleuven.cs.som.annotate.*;
 public enum Unit {
 	DROP_LIQUID(1,1,State.LIQUID,false),
 	SPOON_LIQUID(8,2,State.LIQUID,true),
-	VIAL_LIQUID(5,3,State.LIQUID,true),
+	VIAL_LIQUID(5,2,State.LIQUID,true),
 	BOTTLE_LIQUID(3,4,State.LIQUID,true),
 	JUG_LIQUID(7,5,State.LIQUID,true),
 	BARREL_LIQUID(12,6,State.LIQUID,true),
@@ -61,6 +62,8 @@ public enum Unit {
 		this.isContainer = isContainer;
 	}
 	
+	
+	
 	/**
 	 * Return the capacity of this unit.
 	 */
@@ -83,7 +86,7 @@ public enum Unit {
 	/**
 	 * A variable containing this unit's capacity.
 	 */
-	private int capacity;
+	private final int capacity;
 	
 	/**
 	 * Return the index of this unit.
@@ -100,7 +103,12 @@ public enum Unit {
 	 * 		   The index to check.
 	 * @param  state
 	 * 		   The state to check the index for.
-	 * @return True if and only if the index is greater than zero and not above the number of values
+	 * @return False if there are units with the same state and the same index.
+	 * 		   | for some unit1, unit2 in Unit.values()
+	 * 		   | if ( unit1.getState() == unit2.getState()
+	 * 		   |   && unit1.getIndex() == unit2.getIndex()
+	 * 		   |   then result == false
+	 * 		   Otherwise, true if and only if the index is greater than zero and not above the number of values
 	 *         in this enumeration class with the given state.
 	 *         | count=0
 	 *         | for each unit in Unit.values()
@@ -110,18 +118,24 @@ public enum Unit {
 	 */
 	public static boolean isValidIndex(int index, State state) {
 		int count = 0;
+		ArrayList<Integer> usedIndexes = new ArrayList<Integer>();
 		for (Unit unit: Unit.values()) {
-			if (unit.getState()==state)
+			if (unit.getState()==state) {
 				count++;
+				// If we want to add the given index a second time, return false.
+				if (usedIndexes.contains(unit.getIndex())
+				   && unit.getIndex()==index)
+					return false;
+				else usedIndexes.add(unit.getIndex());
+			}
 		}
-		
 		return (index>0 && index<=count);
 	}
 	
 	/**
 	 * A variable containing this unit's index relative to the other units with the same state.
 	 */
-	private int index;
+	private final int index;
 	
 	/**
 	 * Return the state of this unit.
@@ -137,7 +151,7 @@ public enum Unit {
 	 * @note No checker is needed, values that are not mentioned in the state enumeration class are 
 	 *       rejected anyway.
 	 */
-	private State state;
+	private final State state;
 	
 	/**
 	 * Check if this unit can be a container.
@@ -152,36 +166,51 @@ public enum Unit {
 	 * 
 	 * @note No checker is needed, because the only two values (true and false) are correct.
 	 */
-	private boolean isContainer;
+	private final boolean isContainer;
 	
 	/********************************************************************************
 	 * METHODS
 	 ********************************************************************************/
 	
 	/**
-	 * Return the capacity of this unit measured in the smallest unit of the same state. //TODO
+	 * Return the capacity of this unit measured in the smallest unit of the same state.
 	 */
 	@Immutable
 	public int getAbsoluteCapacity() {
 		int result = 1;
 		for (Unit unit: Unit.values()) {
-			if ((unit.getState()==this.getState())
-					&&(unit.getIndex()<=this.getIndex())){
+			if ( unit.getState()==this.getState()
+		      && unit.getIndex()<=this.getIndex() ){
 				result *= this.getCapacity();
 			}
 		}
 		return result;
 	}
+	
 	/**
-	 * Return the smallest container of the given state that can hold the given quantity.//TODO
+	 * Return the smallest container of the given state that can hold the given quantity.
+	 * 
+	 * @param  state
+	 * 		   The state of which the container should be.
+	 * @param  quantity
+	 * 	       The quantity we want to store as efficiently as possible, that is in the smallest container needed.
+	 * @return From the collection of units that has the given state as its state, can be a container and
+	 * 		   has an absolute capacity not below the given quantity, the unit is returned which has the smallest
+	 * 		   index.
+	 * 		   | result == such that 
+	 *         | for each unit in Unit.values()
+	 *         |   if (unit.getState()==state
+	 *         |      && unit.isContainer()
+	 *         |      && unit.getAbsoluteCapacity()>=quantity)
+	 *         |     then result.getIndex() <= unit.getIndex()
 	 */
 	public static Unit getContainer(State state, int quantity) {
 		Unit result = getBiggestContainer(state);		
 		for (Unit unit: Unit.values()) {
-			if ((((unit.getState()==state)
-					&&(unit.isContainer())
-					&&(unit.getIndex()<result.getIndex()))
-					&&(unit.getAbsoluteCapacity()>=quantity))){
+			if ( unit.getState()==state
+			  && unit.isContainer()
+			  && unit.getIndex()<result.getIndex()
+		      && unit.getAbsoluteCapacity()>=quantity ){
 				result = unit;
 			}
 		}
@@ -189,35 +218,67 @@ public enum Unit {
 	}
 	
 	/**
-	 * Return the biggest container of the given state.//TODO
+	 * Return the biggest possible container of the given state.
+	 * 
+	 * @param  state
+	 * 		   The state we want the biggest container of.
+	 * @return From the collection of units that have the given state as its state and can be a container, the 
+	 * 		   unit with the biggest index (and thus the biggest absolute capacity) is returned. If this collection
+	 * 		   is empty, a non-effective unit is returned.
+	 * 		   | result == such that 
+	 *         | for each unit in Unit.values()
+	 *         |   if (unit.getState()==state
+	 *         |      && unit.isContainer())
+	 *         |     then result.getIndex() >= unit.getIndex()
+	 * @note   We use the invariant on the index that says that an index cannot be negative.
 	 */
 	public static Unit getBiggestContainer(State state) {
-		Unit result = null; //TODO Deze initialisatie bespreken.
+		Unit result = null;
+		int highestIndex = -1;
 		for (Unit unit: Unit.values()) {
-			if (((unit.getState()==state)
-					&&(unit.isContainer()))
-					&&(unit.getAbsoluteCapacity()<result.getAbsoluteCapacity())){
+			if ( unit.getState()==state
+			  && unit.isContainer()
+			  && unit.getIndex()>highestIndex ){
 				result = unit;
+				highestIndex = unit.getIndex();
 			}
 		}
 		return result;
 	}
 	
 	/**
-	 * Return the ratio between two given states, assuming their second unit as base.//TODO
+	 * Return the ratio between two given states, assuming their second unit as base.
 	 * 
-	 * @return	spoonCapacityFirstState/spoonCapacitySecondState
+	 * @param   firstState
+	 * 			The first given state to calculate the ratio of.
+	 * @param   secondState
+	 * 			The second given state to calculate the ratio to.
+	 * @return	Assuming the unit with index 2 of both states represents the same quantity in real-life 
+	 * 			alchemy, the ratio between their capacities relative to their own smallest unit is returned.
+	 * 			| unitFirstState is such that
+	 *          |   ( unitFirstState.getState() == firstState
+	 *          |   && unitFirstState.getIndex() == 2)
+	 *          | unitSecondState is such that
+	 *          |   ( unitSecondState.getState() == secondState
+	 *          |   && unitSecondState.getIndex() == 2)
+	 *          | result == unitFirstState.getAbsoluteCapacity()/unitSecondState.getAbsoluteCapacity()
 	 */
 	public static double getRatio(State firstState, State secondState) {
+		final int base = 2;
 		int firstCapacity = 1;
 		int secondCapacity = 1;
 		for (Unit unit: Unit.values()) {
-			if (unit.getIndex()==2) {
-				if (unit.getState()==firstState) firstCapacity = unit.getCapacity();
-				if (unit.getState()==secondState) secondCapacity = unit.getCapacity();
+			if (unit.getIndex()==base) {
+				if (unit.getState()==firstState) firstCapacity = unit.getAbsoluteCapacity();
+				if (unit.getState()==secondState) secondCapacity = unit.getAbsoluteCapacity();
 			}
 		}
 		return firstCapacity/secondCapacity;
 	}
 
+	
+	public static void main(String [ ] args) {
+		boolean flag = isValidIndex(2,State.LIQUID);
+		System.out.println(flag);
+	}
 }
