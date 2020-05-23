@@ -8,7 +8,7 @@ import alchemy.*;
 
 /**
  * An abstract subclass of Device for devices that can hold a limitless
- * amount of ingredients. //TODO Documentatie is nog niet okee
+ * amount of ingredients.
  * 
  * @version	1.0
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
@@ -17,7 +17,13 @@ import alchemy.*;
 public abstract class BottomlessDevice extends Device {
 	
 	/**
-	 * Constructor enal //TODO
+	 * Initialize a new bottomless device with a given array of ingredients containers.
+	 * 
+	 *  @param ingredientArray
+	 *  	   The given array of ingredient containers to load in this device.
+	 * @effect The containers in the given ingredient container array get loaded into this bottomless device.
+	 * 		   | for(IngredientContainer container : ingredientArray)
+	 * 		   |   loadIngredient(container)
 	 */
 	@Model @Raw
 	public BottomlessDevice(IngredientContainer[] ingredientArray) {
@@ -27,7 +33,7 @@ public abstract class BottomlessDevice extends Device {
 	}
 	
 	/**
-	 * Constructor enal //TODO
+	 * Initialize a new, empty bottomless device.
 	 */
 	@Model @Raw
 	public BottomlessDevice() {}
@@ -62,6 +68,9 @@ public abstract class BottomlessDevice extends Device {
 	
 	/**
 	 * A protected method for adding processed Ingredients to the processed ingredients list. 
+	 * 
+	 * @param ingredient
+	 * 	      The given ingredient that needs to be added to the processed ingredients list.
 	 */
 	protected void addProcessedIngredient(AlchemicIngredient ingredient) {
 		getProcessedIngredients().add(ingredient);
@@ -73,7 +82,13 @@ public abstract class BottomlessDevice extends Device {
 	private List<AlchemicIngredient> processedIngredients = new ArrayList<AlchemicIngredient>();
 
 	/**
-	 * Loads a new ingredient into this device
+	 * Loads a new ingredient in a container into this device.
+	 * 
+	 * @param container
+	 * 		  The given container containing the ingredient that will be loaded into this device.
+	 * @post  The ingredient in the given container gets added to the start ingredients of this device and the container gets deleted.
+	 * 		  | this.getStartIngredients().add(container.getContents())
+	 * 		  | container = null
 	 */
 	@Override @Raw
 	public final void loadIngredient(IngredientContainer container) {
@@ -84,6 +99,15 @@ public abstract class BottomlessDevice extends Device {
 	/**
 	 * Empties the first ingredient from this device into a new container. 
 	 * This container is the smallest container that can contain the ingredient.
+	 * 
+	 * @effect If the outputIngredient is null, null gets returned.
+	 * 		   | if(outputIngredient == null)
+	 * 		   |   return null
+	 * @effect A new container is created containing the outputIngredient and the outputIngredient gets removed from the
+	 * 		   processed ingredients list. This container is the smallest container that can contain the outputIngredient.
+	 * 		   | outputContainer = new IngredientContainer(outputIngredient, 
+	 * 		   |                   Unit.getContainer(outputIngredient.getState(), outputIngredient.getQuantity()))
+	 * 		   | getProcessedIngredients().remove(0)
 	 */
 	@Override
 	public final IngredientContainer emptyDevice() {
@@ -95,7 +119,11 @@ public abstract class BottomlessDevice extends Device {
 		getProcessedIngredients().remove(0);
 		return outputContainer;
 	}
-
+	
+	/**
+	 * This bottomless device processes the ingredients in the start ingredients list. The processed ingredients get added to the
+	 * processed ingredients list.
+	 */
 	@Override
 	public abstract void process();
 
