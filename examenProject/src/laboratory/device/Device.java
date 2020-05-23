@@ -1,7 +1,8 @@
-package laboratory;
+package laboratory.device;
 
 import be.kuleuven.cs.som.annotate.*;
-//import be.kuleuven.cs.som.*;
+import laboratory.CapacityException;
+import laboratory.Laboratory;
 import alchemy.*;
 
 /**

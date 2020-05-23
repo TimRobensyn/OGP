@@ -1,4 +1,4 @@
-package laboratory;
+package recipe;
 
 import be.kuleuven.cs.som.annotate.*;
 import alchemy.*;

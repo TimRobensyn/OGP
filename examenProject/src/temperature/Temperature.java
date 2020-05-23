@@ -1,4 +1,4 @@
-package alchemy;
+package temperature;
 
 import be.kuleuven.cs.som.annotate.*;
 

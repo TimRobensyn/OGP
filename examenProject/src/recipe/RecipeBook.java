@@ -1,4 +1,4 @@
-package laboratory;
+package recipe;
 
 import java.util.List;
 import java.util.ArrayList;

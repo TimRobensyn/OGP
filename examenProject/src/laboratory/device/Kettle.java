@@ -1,11 +1,13 @@
-package laboratory;
+package laboratory.device;
 
 import alchemy.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import be.kuleuven.cs.som.*;
+import be.kuleuven.cs.som.annotate.*;
+import laboratory.CapacityException;
+import temperature.Temperature;
 
 /**
  * A class of kettles involving an array of ingredients that the kettle can mix.
@@ -26,6 +28,7 @@ public class Kettle extends BottomlessDevice {
 	 * @effect This new kettle is initialized as a bottomless device with the given array of ingredient containers.
 	 * 		   | super(ingredientArray)
 	 */
+	@Raw
 	public Kettle(IngredientContainer[] ingredientArray) {
 		super(ingredientArray);
 	}
@@ -36,6 +39,7 @@ public class Kettle extends BottomlessDevice {
 	 * @effect This new kettle is initialized as an empty bottomless device.
 	 * 		   | super()
 	 */
+	@Raw
 	public Kettle() {
 		super();
 	}

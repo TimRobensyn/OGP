@@ -1,8 +1,10 @@
-package laboratory;
+package recipe;
 import alchemy.*;
+
 import static org.junit.Assert.*;
 import org.junit.*;
 import java.util.ArrayList;
+import be.kuleuven.cs.som.annotate.*;
 
 /**
  * A class for testing the recipe class.

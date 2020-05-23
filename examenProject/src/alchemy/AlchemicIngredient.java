@@ -1,6 +1,7 @@
 package alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
+import temperature.Temperature;
 
 /**
  * A class of alchemic ingredients involving a name, temperature, type, quantity and a liquid or powder state.

@@ -1,4 +1,4 @@
-package laboratory;
+package laboratory.device;
 
 import be.kuleuven.cs.som.annotate.*;
 import java.util.ArrayList;

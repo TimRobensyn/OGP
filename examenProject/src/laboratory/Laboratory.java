@@ -9,6 +9,9 @@ import java.util.Set;
 
 import alchemy.*;
 import be.kuleuven.cs.som.annotate.*;
+import laboratory.device.*;
+import recipe.Recipe;
+import temperature.Temperature;
 
 /**
  * A class describing a laboratory for storing and handling alchemic ingredients and devices.

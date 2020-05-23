@@ -1,6 +1,7 @@
-package laboratory;
+package laboratory.device;
 
 import be.kuleuven.cs.som.annotate.*;
+import temperature.Temperature;
 import alchemy.*;
 
 /**

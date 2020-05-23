@@ -1,7 +1,8 @@
-package laboratory;
+package laboratory.device;
 
 import alchemy.*;
 import be.kuleuven.cs.som.annotate.*;
+import temperature.Temperature;
 
 /**
  * A class for Oven devices involving a temperature, a start ingredient and a processed ingredient.

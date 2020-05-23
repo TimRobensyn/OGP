@@ -1,6 +1,8 @@
-package laboratory;
+package laboratory.device;
 
 import be.kuleuven.cs.som.annotate.*;
+import laboratory.CapacityException;
+import temperature.Temperature;
 import alchemy.*;
 
 /**

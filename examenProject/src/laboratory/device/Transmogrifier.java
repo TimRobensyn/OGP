@@ -1,4 +1,4 @@
-package laboratory;
+package laboratory.device;
 
 import alchemy.*;
 import be.kuleuven.cs.som.annotate.*;
