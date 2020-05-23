@@ -3,7 +3,7 @@ package alchemy;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * An class of ingredient containers involving a capacity unit and alchemic ingredient as contents of it.
+ * A class of ingredient containers involving a capacity unit and alchemic ingredient as contents of it.
  * 
  * @invar   The capacity of a container must be valid for any container.
  * 			| isValidCapacity(getCapacity())
