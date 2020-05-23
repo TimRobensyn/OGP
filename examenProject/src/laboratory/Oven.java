@@ -5,9 +5,7 @@ import be.kuleuven.cs.som.annotate.*;
 
 /**
  * A class for Oven devices involving a temperature, a start ingredient and a processed ingredient.
- * 
- * //TODO invarianten?
- * 
+ *  
  * @version	1.0
  * @author	Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  */
@@ -46,9 +44,9 @@ public class Oven extends TemperatureDevice {
 	 * Heat the start ingredient to approximately the temperature of this Oven
 	 * and put it in the processed ingredient variable.
 	 * 
-	 * @post	If the temperature of the loaded ingredient is lower than the temperature of this oven,
-	 * 			the temperature of the ingredient is set to a value within 5% of the temperature of the Oven
-	 * 			and it is put in the processed ingredient variable. Else, it is processed without a temperature change.
+	 * @post If the temperature of the loaded ingredient is lower than the temperature of this oven,
+	 * 		 the temperature of the ingredient is set to a value within 5% of the temperature of the Oven
+	 * 		 and it is put in the processed ingredient variable. Else, it is processed without a temperature change.
 	 * 		 | if (Temperature.compareTemperature(getStartIngredient().getTemperatureObject(),
 	 * 		 |	                                  getTemperatureObject())==1)
 	 * 		 |     then (new.getProcessedIngredient().getTemperature() < getTemperature()*1.05
