@@ -32,7 +32,6 @@ public class LaboratoryTest {
 	
 	@BeforeClass
 	public static void setUpImmutableFixture() {
-
 		coolingboxAll = new CoolingBox(new Temperature(0,0));
 		ovenAll = new Oven(new Temperature(0,0));
 		kettleAll = new Kettle();
@@ -41,52 +40,43 @@ public class LaboratoryTest {
 		basicOven = new Oven(new Temperature(0,0));
 		basicKettle = new Kettle();
 		basicTransmogrifier = new Transmogrifier();
-
-		emptyStorage = new ArrayList<AlchemicIngredient>();
-		basicStorage = new ArrayList<AlchemicIngredient>();
-		bigStorage = new ArrayList<AlchemicIngredient>();
 		
 		water = new AlchemicIngredient(10);
 		basicWater = new AlchemicIngredient(10);
 		bigIngredient = new AlchemicIngredient(15000);
 		
+		emptyStorage = new ArrayList<AlchemicIngredient>();
+		basicStorage = new ArrayList<AlchemicIngredient>();
+		bigStorage = new ArrayList<AlchemicIngredient>();
+		waterStorage = new ArrayList<AlchemicIngredient>();
+		waterStorage.add(water);
+		storage = new ArrayList<AlchemicIngredient>();
+		storage.add(ingredientLiquid);
+		storage.add(ingredientPowder);
 
-		laboratory_empty_allDevices = new Laboratory(100, coolingboxAll, ovenAll, kettleAll, transmogrifierAll);
-
-		laboratory_empty = new Laboratory(100);
-		
 		waterContainer = new IngredientContainer(water, Unit.VIAL_LIQUID);
 		bigStorage.add(bigIngredient);
 	}
 	
 	@Before
 	public void setUpFixture() {
-
 		basicLiquidContainer = new IngredientContainer(Unit.BARREL_LIQUID);
 		
-		//coolingBox = new CoolingBox(new Temperature(0,0));
-		//oven = new Oven(new Temperature(0,0));
-
 		ingredientTypeLiquid = new IngredientType("ingredientTypeLiquid", State.LIQUID, new Temperature(0,15));
 		ingredientLiquid = new AlchemicIngredient(ingredientTypeLiquid,15);
 		ingredientTypePowder = new IngredientType("ingredientTypePowder", State.POWDER, new Temperature(0,15));
 		ingredientPowder = new AlchemicIngredient(ingredientTypePowder,15);
 		
-		waterStorage = new ArrayList<AlchemicIngredient>();
-		waterStorage.add(water);
-		storage = new ArrayList<AlchemicIngredient>();
-		storage.add(ingredientLiquid);
-		storage.add(ingredientPowder);
 		laboratory_waterStorage = new Laboratory(100, waterStorage, null, null, null, null);
-
+		laboratory_empty = new Laboratory(100);
 		laboratory_storage = new Laboratory(1000, storage, storageCoolingbox, storageOven, storageKettle, null);
 		laboratory_big = new Laboratory(5000, bigStorage, null, null, null, null);
-
+		
+		laboratory_empty_allDevices = new Laboratory(100, coolingboxAll, ovenAll, kettleAll, transmogrifierAll);
 	}
 	
 	@Test
 	public void testConstructorFull_Legal() {
-
 		laboratoryCapacityStorageDevices = new Laboratory(100, basicStorage, basicCoolingbox, basicOven, basicKettle, basicTransmogrifier);
 
 		assertEquals(100, laboratoryCapacityStorageDevices.getCapacity());
@@ -299,7 +289,7 @@ public class LaboratoryTest {
 	}
 	
 	@Test
-	public void testIsValidDeviceAt_LegalCase() { //TODO NOT VALID IF ALREADY IN ANOTHER LAB
+	public void testIsValidDeviceAt_LegalCase() {
 		assertTrue(laboratory_empty.isValidDeviceAt(basicCoolingbox, 1));
 		assertTrue(laboratory_empty.isValidDeviceAt(basicOven, 2));
 		assertTrue(laboratory_empty.isValidDeviceAt(basicKettle, 3));
@@ -308,7 +298,7 @@ public class LaboratoryTest {
 	
 	@Test
 
-	public void testIsValidDeviceAt_IllegalCase_InvalidIndex() { //TODO TEST NOT VALID IF ALREADY IN ANOTHER LAB
+	public void testIsValidDeviceAt_IllegalCase_InvalidIndex() { 
 		assertFalse(laboratory_empty.isValidDeviceAt(basicCoolingbox, 2));
 		assertFalse(laboratory_empty.isValidDeviceAt(basicCoolingbox, 3));
 		assertFalse(laboratory_empty.isValidDeviceAt(basicCoolingbox, 4));
