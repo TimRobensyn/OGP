@@ -567,4 +567,39 @@ public class Laboratory {
 	public void execute(Recipe recipe, int amount) {
 		
 	}
+	
+	/**************************************************
+	 * Termination
+	 **************************************************/
+	
+	/**
+	 * Terminate this laboratory.
+	 * 
+	 * @post	This laboratory is terminated.
+	 * 			| new.isTerminated()
+	 * @post	No device is attached to this laboratory anymore.
+	 * 			| new.getNbDevices() == 0
+	 * @effect	Each non-terminated device is removed from this
+	 * 			laboratory.
+	 */
+	@Basic @Raw
+	public void terminate() {
+		for (Device device: this.devices) {
+			removeAsDevice(device);
+		}
+		this.terminated = true;
+	}
+	
+	/**
+	 * Check whether this laboratory is terminated.
+	 */
+	@Basic
+	public boolean isTerminated() {
+		return this.terminated;
+	}
+	
+	/**
+	 * A variable for the termination of this laboratory.
+	 */
+	private boolean terminated = true;
 }
