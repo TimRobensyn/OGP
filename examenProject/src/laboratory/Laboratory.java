@@ -72,13 +72,16 @@ public class Laboratory {
 		//addAsDevice(oven);
 		//addAsDevice(kettle);
 		//addAsDevice(transmogrifier);
-
-		this.devices = new ArrayList<Device>(10);
 		
 		//addAsDevice(coolingbox);
-		addAsDevice(oven);
-		addAsDevice(kettle);
-		addAsDevice(transmogrifier);
+		//addAsDevice(oven);
+		//addAsDevice(kettle);
+		//addAsDevice(transmogrifier);
+		
+		initializeDevice(coolingbox, 1);
+		initializeDevice(oven, 2);
+		initializeDevice(kettle, 3);
+		initializeDevice(transmogrifier, 4);
 
 	}
 	
@@ -450,10 +453,8 @@ public class Laboratory {
 	 *		   |	result == false
 	 */
 	public boolean isValidDeviceAt(Device device, int index) {
-		if((device != null) && (device.getLaboratory() != this) && (device.getLaboratory() != null)) {
+		if((device.getLaboratory() != this) && (device.getLaboratory() != null)) {
 			return false;
-		} else if((device == null) && (getDeviceAt(index) == null)){
-			return true;
 		} else if(((device.getClass() == CoolingBox.class)) && ((getDeviceAt(1) == null) || (getDeviceAt(1) == device))) {
 			return(index == 1);
 		} else if(((device.getClass() == Oven.class)) && ((getDeviceAt(2) == null) || (getDeviceAt(2) == device))) {
@@ -497,6 +498,32 @@ public class Laboratory {
 			bool = false;
 		}
 		return bool;
+	}
+	
+	/**
+	 * Initialize the given device in the devices list with the given index.
+	 * 
+	 * @param device
+	 * 		  The given device
+	 * @param index
+	 * 		  The given index
+	 * @post  The position in the devices list with the given index gets set to the given device
+	 * 		  | devices.set(index, device)
+	 * @effect If the given device is not null, the laboratory of this device gets set to this laboratory
+	 * 		   | if(device != null)
+	 *         |   device.setLaboratory(this)
+	 * @throws CapacityException
+	 * 		   The device is already in another laboratory
+	 * 		   | (device != null) && (device.getLaboratory() != null)
+	 */
+	private void initializeDevice(Device device, int index) throws CapacityException {
+		if((device != null) && (device.getLaboratory() != null)) {
+			throw new CapacityException(device, this, "Device is already in another laboratory.");
+		}
+		devices.set(index, device);
+		if(device != null) {
+			device.setLaboratory(this);
+		}
 	}
 	
 	/**
@@ -612,7 +639,7 @@ public class Laboratory {
 	 *         |	getOven().process()
 	 */
 	private void makeStandardTemp(IngredientContainer container) {
-		long tempDiff = Temperature.temperatureDifference(container.getContents().getStandardTemperatureObject(), container.getIngredient().getTemperatureObject());
+		long tempDiff = Temperature.temperatureDifference(container.getContents().getStandardTemperatureObject(), container.getContents().getTemperatureObject());
 		if(tempDiff != 0) {
 			if(tempDiff > 0) {
 				getOven().setTemperature(new Temperature ((long) (container.getContents().getStandardTemperatureObject().getColdness()*1.05d),

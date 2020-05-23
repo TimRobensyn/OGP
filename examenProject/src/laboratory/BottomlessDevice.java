@@ -77,7 +77,7 @@ public abstract class BottomlessDevice extends Device {
 	 */
 	@Override @Raw
 	public final void loadIngredient(IngredientContainer container) {
-		this.getStartIngredients().add(container.getIngredient());
+		this.getStartIngredients().add(container.getContents());
 		container = null;
 	}
 
