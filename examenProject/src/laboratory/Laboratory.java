@@ -1,7 +1,9 @@
 package laboratory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import alchemy.*;
 import be.kuleuven.cs.som.annotate.*;
@@ -52,49 +54,15 @@ public class Laboratory {
 	 * 		   | !isValidCapacity(capacity)
 	 */
 	@Raw
-	public Laboratory(int capacity, List<AlchemicIngredient> storage, CoolingBox coolingbox,
-			Oven oven, Kettle kettle, Transmogrifier transmogrifier) throws CapacityException {
-
+	public Laboratory(int capacity, List<AlchemicIngredient> storage, Set<Device> devices)
+			throws CapacityException {
 		if(!isValidCapacity(capacity)) {
 			throw new CapacityException(this, "The given capacity is invalid.");
 		}
 		this.capacity = capacity;
 		setStorage(storage);
-		
-
-		//TODO
-		devices.add(coolingbox);
-		devices.add(oven);
-		devices.add(kettle);
-		devices.add(transmogrifier);
-		
-		//addAsDevice(coolingbox);
-		//addAsDevice(oven);
-		//addAsDevice(kettle);
-		//addAsDevice(transmogrifier);
-		
-		//addAsDevice(coolingbox);
-		//addAsDevice(oven);
-		//addAsDevice(kettle);
-		//addAsDevice(transmogrifier);
-		
-		//initializeDevice(coolingbox, oven, kettle, transmogrifier);
-
-	}
-	
-	/**
-	 * Initialize a new laboratory with the given capacity, an empty storage and no devices.
-	 * 
-	 * @param capacity
-	 * 	      The given capacity.
-	 * 		  | getCapacity() == capacity
-	 * @effect The new laboratory is initialized with the given capacity.
-	 * 		   It's storage is empty and the devices are set to null.
-	 * 		   | this(capacity, new List<AlchemicIngredient>(), null, null, null, null)
-	 */
-	@Raw
-	public Laboratory(int capacity) {
-		this(capacity, new ArrayList<AlchemicIngredient>(), null, null, null, null);
+		this.devices = new HashSet<Device>();
+		this.devices.addAll(devices);
 	}
 	
 	/**
@@ -114,8 +82,23 @@ public class Laboratory {
 	 * 		   | this(capacity, new ArrayList<AlchemicIngredient>(), coolingbox, oven, kettle, transmogrifier)
 	 */
 	@Raw
-	public Laboratory(int capacity, CoolingBox coolingbox, Oven oven, Kettle kettle, Transmogrifier transmogrifier) {
-		this(capacity,new ArrayList<AlchemicIngredient>(),coolingbox,oven,kettle,transmogrifier);
+	public Laboratory(int capacity, Set<Device> devices) {
+		this(capacity,new ArrayList<AlchemicIngredient>(),devices);
+	}
+	
+	/**
+	 * Initialize a new laboratory with the given capacity, an empty storage and no devices.
+	 * 
+	 * @param capacity
+	 * 	      The given capacity.
+	 * 		  | getCapacity() == capacity
+	 * @effect The new laboratory is initialized with the given capacity.
+	 * 		   It's storage is empty and the devices are set to null.
+	 * 		   | this(capacity, new List<AlchemicIngredient>(), null, null, null, null)
+	 */
+	@Raw
+	public Laboratory(int capacity) {
+		this(capacity, new ArrayList<AlchemicIngredient>(), new HashSet<Device>());
 	}
 	
 	/**************************************************
@@ -150,6 +133,7 @@ public class Laboratory {
 	/**************************************************
 	 * STORAGE
 	 **************************************************/
+	
 
 	/**
 	 * Return the storage of this laboratory.
@@ -274,7 +258,7 @@ public class Laboratory {
 
 		for(AlchemicIngredient storedIngredient : storage) {
 			if(storedIngredient.getType().equals(ingredient.getType())) {
-				getKettle();
+				getDevice(Kettle.class);
 				ingredient = new AlchemicIngredient(ingredient.getType(), ingredient.getQuantity() + storedIngredient.getQuantity()); 
 				removeAsIngredient(storedIngredient);
 				break;
@@ -397,270 +381,134 @@ public class Laboratory {
 	 **************************************************/
 	
 	/**
-	 * Return the list of devices in this laboratory
-	 */
-	@Basic
-	public List<Device> getDevices(){
-		return this.devices;
-	}
-	
-	/**
-	 * Return the number of devices in this laboratory
-	 */
-	@Basic
-	public int getNbDevices() {
-		int number = 0;
-		for(int i=0; i<4; i++) {
-			if(getDeviceAt(i+1) != null) {
-				number += 1;
-			}
-		}
-		return number;
-	}
-	
-	/**
-	 * Return the device at the given index in this laboratory's device list
-	 * @param index
-	 * 		  The given index
+	 * Check whether the given device is in the set or not.
+	 * 
+	 * @param	device
+	 * 			The device to be checked.
 	 */
 	@Basic @Raw
-	public Device getDeviceAt(int index) {
-		return this.devices.get(index-1);
+	public boolean hasAsDevice(Device device) {
+		return this.devices.contains(device);
 	}
 	
 	/**
-	 * Check whether the given device is a valid device at the given index in this laboratory's device list
+	 * Check whether a laboratory can have the given device
+	 * in its set of devices.
 	 * 
-	 * @param device
-	 * 	      The given device
-	 * @param index
-	 * 		  The given index
-	 * @return True if and only if the device is not in another laboratory yet and the device is a cooling box 
-	 * 		   and the index is 1, the device is an oven and the index is 2, the device is a kettle and the index
-	 *         is 3 or the device is a transmogrifier and the index is 4
-	 *         | if(device.getClass() == CoolingBox.class)
-	 *		   |	result == (index == 1)
-	 *		   | else if(device.getClass() == Oven.class)
-	 *		   |	result == (index == 2)
-	 *		   | else if(device.getClass() == Kettle.class)
-	 *		   |	result == (index == 3)
-	 *		   | else if(device.getClass() == Transmogrifier.class)
-	 *		   |	result == (index == 4)
-	 *		   | else 
-	 *		   |	result == false
-	 */
-	public boolean isValidDeviceAt(Device device, int index) {
-		if((device.getLaboratory() != this) && (device.getLaboratory() != null)) {
-			return false;
-		} else if(((device.getClass() == CoolingBox.class)) && ((getDeviceAt(1) == null) || (getDeviceAt(1) == device))) {
-			return(index == 1);
-		} else if(((device.getClass() == Oven.class)) && ((getDeviceAt(2) == null) || (getDeviceAt(2) == device))) {
-			return(index == 2);
-		} else if(((device.getClass() == Kettle.class)) && ((getDeviceAt(3) == null) || (getDeviceAt(3) == device))) {
-			return(index == 3);
-		} else if(((device.getClass() == Transmogrifier.class)) && ((getDeviceAt(4) == null) || (getDeviceAt(4) == device))) {
-			return(index == 4);
-		} else {
-			return false;
-		}
-	}
-	
-	/**
-	 * Check whether this laboratory has proper devices in its devices list.
-	 * 
-	 * @return True if and only if the first device is either null or a cooling box, the second device is either null or an over,
-	 * 		   the third device is either null or a kettle and the fourth device is either null or a transmogrifier.
-	 *         | if((getDeviceAt(0).getClass() != CoolingBox.class) && (getDeviceAt(0) != null))
-	 *         |   result == false
-	 *         | if((getDeviceAt(1).getClass() != Oven.class) && (getDeviceAt(1) != null))
-	 *         |   result == false
-	 *         | if((getDeviceAt(2).getClass() != Kettle.class) && (getDeviceAt(2) != null))
-	 *         |   result == false
-	 *         | if((getDeviceAt(3).getClass() != Transmogrifier.class) && (getDeviceAt(3) != null))
-	 *         |   result == false
-	 *         | result == true
-	 */
-	public boolean hasProperDevices() {
-		boolean bool = true;
-		if((getDeviceAt(1).getClass() != CoolingBox.class) && (getDeviceAt(1) != null)) {
-			bool = false;
-		}
-		if((getDeviceAt(2).getClass() != Oven.class) && (getDeviceAt(2) != null)) {
-			bool = false;
-		}
-		if((getDeviceAt(3).getClass() != Kettle.class) && (getDeviceAt(3) != null)) {
-			bool = false;
-		}
-		if((getDeviceAt(4).getClass() != Transmogrifier.class) && (getDeviceAt(4) != null)) {
-			bool = false;
-		}
-		return bool;
-	}
-	
-	/**
-	 * Initialize the given device in the devices list with the given index.
-	 * 
-	 * @param device
-	 * 		  The given device
-	 * @param index
-	 * 		  The given index
-	 * @post  The position in the devices list with the given index gets set to the given device
-	 * 		  | devices.set(index, device)
-	 * @effect If the given device is not null, the laboratory of this device gets set to this laboratory
-	 * 		   | if(device != null)
-	 *         |   device.setLaboratory(this)
-	 * @throws CapacityException
-	 * 		   The device is already in another laboratory
-	 * 		   | (device != null) && (device.getLaboratory() != null)
-	 */
-	private void initializeDevice(CoolingBox coolingbox, Oven oven, Kettle kettle, Transmogrifier transmogrifier) throws CapacityException {
-		if(coolingbox != null) {
-			if(coolingbox.getLaboratory() != null) {
-				throw new CapacityException(coolingbox, "Coolingbox is already in another laboratory.");
-			} else {
-				coolingbox.setLaboratory(this);
-			}
-		}
-		if(oven != null) {
-			if(oven.getLaboratory() != null) {
-				throw new CapacityException(oven, "Oven is already in another laboratory.");
-			} else {
-				oven.setLaboratory(this);
-			}
-		}
-		if(kettle != null) {
-			if(kettle.getLaboratory() != null) {
-				throw new CapacityException(kettle, "Kettle is already in another laboratory.");
-			} else {
-				kettle.setLaboratory(this);
-			}
-		}
-		if(transmogrifier != null) {
-			if(transmogrifier.getLaboratory() != null) {
-				throw new CapacityException(transmogrifier, "Coolingbox is already in another laboratory.");
-			} else {
-				transmogrifier.setLaboratory(this);
-			}
-		}
-
-		devices.add(null);
-		devices.add(null);
-		devices.add(null);
-		devices.add(null);
-		
-		devices.set(0, coolingbox);
-		devices.set(1, oven);
-		devices.set(2, kettle);
-		devices.set(3, transmogrifier);
-	}
-	
-	/**
-	 * Add a device to this laboratory's device list.
-	 * 
-	 * @param device
-	 * 		  The given device
-	 * @throws CapacityException
-	 * 		   This laboratory already contains a device of this type
-	 * 		   | (device.getClass() == deviceInDevices.getClass()) && (deviceInDevices != null)
+	 * @param	device
+	 * 			The device to be checked.
+	 * @return	True if the device is effective.
+	 * 			| device != null
 	 */
 	@Raw
-	public void addAsDevice(Device device) throws CapacityException {
-		if(isValidDeviceAt(device,1)) {
-			getDevices().set(0, device);
-		}
-		else if(isValidDeviceAt(device,2)) {
-			getDevices().set(1, device);
-		}
-		else if(isValidDeviceAt(device,3)) {
-			getDevices().set(2, device);
-		}
-		else if(isValidDeviceAt(device,4)) {
-			getDevices().set(3, device);
-		} else {
-			throw new CapacityException(device,this,"This laboratory cannot accept this device.");
-		}
-		if(device != null) {
-			device.setLaboratory(this);
-		}
+	public static boolean isValidDevice(Device device) {
+		return (device != null);
 	}
 	
 	/**
-	 * Remove the given device from the device list.
-	 * If the given device is not in the device list nothing happens.
-	 * @effect The entry in the device list gets set to null at the index of the given device.
-	 * 	       | getDevices().set(deviceIndex, null)
+	 * Check whether the set of this laboratory has proper
+	 * devices.
+	 * 
+	 * @return	True if and only if this laboratory can have each of
+	 * 			its devices as a device, and if each of these devices
+	 * 			reference this laboratory as their laboratory.
+	 * 			| result ==
+	 * 			|	for each device in Devices:
+	 * 			|	   ( if (this.hasAsDevice(device))
+	 * 			|			then isValidDevice(device)
+	 * 			|			  && (device.getLaboratory() == this))
+	 */
+	@Raw
+	public boolean hasProperDevices() {
+		for (Device device:this.devices) {
+			if (! (isValidDevice(device)
+					&& device.getLaboratory() == this))
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Add the given device to the set of devices attached to this
+	 * laboratory.
+	 * 
+	 * @param	device
+	 * 			The device to be added.
+	 * @post	This laboratory has the given device as one of
+	 * 			its devices.
+	 * 			| new.hasAsDevice(device)
+	 * @post	The given device references this laboratory as the
+	 * 			laboratory to which it is attached.
+	 * 			| (new device).getLaboratory() == this
+	 * @throws	IllegalArgumentException
+	 * 			This laboratory cannot have the given device as
+	 * 			one of its devices.
+	 * 			| ! isValidDevice(device)
+	 * @throws	IllegalArgumentException
+	 * 			The given device is already attached to some
+	 * 			laboratory.
+	 * 			| (device != null)
+	 * 			|	&& (device.getLaboratory() != null))
+	 */
+	public void addAsDevice(Device device) throws IllegalArgumentException{
+		if (!isValidDevice(device))
+			throw new IllegalArgumentException("Device invalid");
+		if (device.getLaboratory()!=null)
+			throw new IllegalArgumentException("Device is already in another laboratory");
+		this.devices.add(device);
+	}
+	
+	/**
+	 * Remove the given device from the set of devices
+	 * attached to this laboratory.
+	 * 
+	 * @param	device
+	 * 			The device to be removed.
+	 * @post	This device does not have the given device as
+	 * 			one of its devices.
+	 * 			| ! new.hasAsDevice(device)
+	 * @post	If this laboratory has the given device in it,
+	 * 			the given device is no longer attached to any laboratory.
+	 * 			| if (hasAsDevice(device))
+	 * 			|	then ((new device).getLaboratory() == null)
 	 */
 	public void removeAsDevice(Device device) {
-		device.setLaboratory(null);
-		if(device.getClass() == CoolingBox.class) {
-			getDevices().set(0, null);
-		}
-		if(device.getClass() == Oven.class) {
-			getDevices().set(1, null);
-		}
-		if(device.getClass() == Kettle.class) {
-			getDevices().set(2, null);
-		}
-		if(device.getClass() == Transmogrifier.class) {
-			getDevices().set(3, null);
-		}
+		if (hasAsDevice(device))
+			this.devices.remove(device);
 	}
 	
 	/**
-	 * Return the cooling box of this laboratory.
+	 * Return the of this laboratory.
 	 * 
 	 * @throws CapacityException
 	 * 		   This laboratory does not contain a cooling box
 	 *         | getDeviceAt(0) == null
 	 */
-	public CoolingBox getCoolingbox() throws CapacityException {
-		if(getDeviceAt(1) == null) {
-			throw new CapacityException(this,"Cooling box not found.");
+	public Device getDevice(Class<?> deviceClass) throws ClassCastException, CapacityException {
+		for (Device device:this.devices) {
+			if (device.getClass()==(deviceClass.asSubclass(Device.class))) {
+				return device;
+			}
 		}
-		return (CoolingBox) getDeviceAt(1);
+		throw new CapacityException(this,"Device not found.");
 	}
 	
 	/**
-	 * Return the oven of this laboratory.
+	 * A set containing the devices of this laboratory.
 	 * 
-	 * @throws CapacityException
-	 * 		   This laboratory does not contain an oven
-	 * 		   | getDeviceAt(1) == null
+	 * @invar	The set of devices is effective.
+	 * 			| devices != null
+	 * @invar	Each device in the set of devices references
+	 * 			a device that is an acceptable device for
+	 * 			this laboratory.
+	 * 			| for each device in devices:
+	 * 			| 	canHaveAsDevice(device)
+	 * @invar	Each device in the set of devices references
+	 * 			this laboratory as its laboratory.
+	 * 			| for each device in devices:
+	 * 			|	(devices.getLaboratory() == this)
 	 */
-	public Oven getOven() {
-		if(getDeviceAt(2) == null) {
-			throw new CapacityException(this,"Oven not found.");
-		}
-		return (Oven) getDeviceAt(2);
-	}
-	
-	/**
-	 * Return the kettle of this laboratory
-	 * 
-	 * @throws CapacityException
-	 * 		   This laboratory does not contain a kettle
-	 * 		   | getDeviceAt(2) == null
-	 */
-	public Kettle getKettle() {
-		if(getDeviceAt(3) == null) {
-			throw new CapacityException(this,"Kettle not found.");
-		}
-		return (Kettle) getDeviceAt(3);
-	}
-	
-	/**
-	 * Return the transmogrifier of this laboratory
-	 * 
-	 * @throws CapacityException
-	 * 		   This laboratory does not contain a transmogrifier
-	 * 		   | getDeviceAt(3) == null
-	 */
-	public Transmogrifier getTransmogrifier() {
-		if(getDeviceAt(4) == null) {
-			throw new CapacityException(this,"Transmogrifier not found.");
-		}
-		return (Transmogrifier) getDeviceAt(4);
-	}
+	private Set<Device> devices = new HashSet<Device>();
 	
 	/**
 	 * Heat or cool the given ingredient to it's standard temperature using the oven or cooling box in this laboratory
@@ -683,23 +531,25 @@ public class Laboratory {
 		long tempDiff = Temperature.temperatureDifference(container.getContents().getStandardTemperatureObject(), container.getContents().getTemperatureObject());
 		if(tempDiff != 0) {
 			if(tempDiff > 0) {
-				getOven().setTemperature(new Temperature ((long) (container.getContents().getStandardTemperatureObject().getColdness()*1.05d),
+				Oven oven = (Oven) (getDevice(Oven.class));
+				oven.setTemperature(new Temperature ((long) (container.getContents().getStandardTemperatureObject().getColdness()*1.05d),
 						(long) (container.getContents().getStandardTemperatureObject().getHotness()*1.05d)));
-				getOven().loadIngredient(container);
-				getOven().process();
-				container = getOven().emptyDevice();
+				oven.loadIngredient(container);
+				oven.process();
+				container = oven.emptyDevice();
 			}
-			getCoolingbox().setTemperature(container.getContents().getStandardTemperatureObject());
-			getCoolingbox().loadIngredient(container);
-			getCoolingbox().process();
-			container = getCoolingbox().emptyDevice();
+			CoolingBox coolingBox = (CoolingBox) getDevice(CoolingBox.class);
+			coolingBox.setTemperature(container.getContents().getStandardTemperatureObject());
+			coolingBox.loadIngredient(container);
+			coolingBox.process();
+			container = coolingBox.emptyDevice();
 		}
 	}
 
 	/**
 	 * Variable storing the list of devices in this laboratory
 	 */
-	private List<Device> devices = new ArrayList<Device>(4);
+	//private List<Device> devices = new ArrayList<Device>(4);
 	
 	
 	/**************************************************
@@ -707,14 +557,49 @@ public class Laboratory {
 	 **************************************************/
 	
 	/**
-	 * Execute the given recipe a given amount of time.
+	 * Execute the given recipe a given amount of times.
 	 *  
 	 * @param recipe
-	 * 		  The given recipe to execute .
+	 * 		  The given recipe to execute.
 	 * @param amount
-	 * 		  The given amount .
+	 * 		  The given amount of times.
 	 */
 	public void execute(Recipe recipe, int amount) {
 		
 	}
+	
+	/**************************************************
+	 * Termination
+	 **************************************************/
+	
+	/**
+	 * Terminate this laboratory.
+	 * 
+	 * @post	This laboratory is terminated.
+	 * 			| new.isTerminated()
+	 * @post	No device is attached to this laboratory anymore.
+	 * 			| new.getNbDevices() == 0
+	 * @effect	Each non-terminated device is removed from this
+	 * 			laboratory.
+	 */
+	@Basic @Raw
+	public void terminate() {
+		for (Device device: this.devices) {
+			removeAsDevice(device);
+		}
+		this.terminated = true;
 	}
+	
+	/**
+	 * Check whether this laboratory is terminated.
+	 */
+	@Basic
+	public boolean isTerminated() {
+		return this.terminated;
+	}
+	
+	/**
+	 * A variable for the termination of this laboratory.
+	 */
+	private boolean terminated = true;
+}

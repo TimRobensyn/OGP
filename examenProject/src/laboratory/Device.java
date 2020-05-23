@@ -51,9 +51,10 @@ public abstract class Device {
 	 **************************************************/
 	
 	/**
-	 * Return the laboratory this device is in.
+	 * Return the laboratory this device is in. Null is returned
+	 * in case the device has no laboratory.
 	 */
-	@Basic
+	@Basic @Raw
 	public Laboratory getLaboratory() {
 		return this.laboratory;
 	}
@@ -87,7 +88,7 @@ public abstract class Device {
 	 * @result True if and only if this laboratory has this device as one of its devices.
 	 */
 	public boolean hasProperLaboratory() {
-		return(getLaboratory().getDevices().contains(this));
+		return(getLaboratory().hasAsDevice(this));
 	}
 	
 	/**
