@@ -7,6 +7,9 @@ import be.kuleuven.cs.som.annotate.*;
 /**
  * A class for books filled with recipes involving a list of recipes.
  * 
+ * @invar   The number of pages in this book must be a proper amount for each
+ * 		    recipe book.
+ * 			| isValidNbPages(getNbPages())
  * @invar	The recipes in this book must be proper recipes for this
  * 			book.
  * 			| hasProperRecipes()
@@ -21,6 +24,10 @@ import be.kuleuven.cs.som.annotate.*;
 
 public class RecipeBook {
 
+	/**********************************************************
+	 * Constructor
+	 **********************************************************/
+	
 	/**
 	 * Initialize a new recipe book with a given number of pages and a list
 	 * of recipes.
@@ -40,9 +47,9 @@ public class RecipeBook {
 	 * 			recipes contains duplicates or is too long.
 	 */
 	@Raw
-	public RecipeBook(int nbPages, List<Recipe> recipes) throws IllegalArgumentException{
-		if ((nbPages<1) || (nbPages>Long.MAX_VALUE))
-			throw new IllegalArgumentException("Invalid number of pages");
+	public RecipeBook(int nbPages, List<Recipe> recipes) throws IllegalArgumentException {
+		if (!isValidNbPages(nbPages))
+			throw new IllegalArgumentException("Invalid number of pages.");
 		this.NbPages = nbPages;
 		for (Recipe recipe:recipes) {
 			addAsRecipe(recipe);
@@ -50,6 +57,9 @@ public class RecipeBook {
 	}
 	
 	
+	/**********************************************************
+	 * Number of pages
+	 **********************************************************/
 	
 	/**
 	 * Return the original amount of pages in this book.
@@ -60,9 +70,27 @@ public class RecipeBook {
 	}
 	
 	/**
+	 * Check whether the given number of pages is valid.
+	 * 
+	 * @param  nbPages
+	 * 		   The number of pages to check.
+	 * @return True if and only if the given value is positive and not above the maximal value for a 
+	 * 		   integer.
+	 *         | result == (nbPages>0 && nbPages<=Long.MAX_VALUE)
+	 */
+	public boolean isValidNbPages(int nbPages) {
+		return (nbPages>0 && nbPages<=Long.MAX_VALUE);
+	}
+	
+	/**
 	 * A variable for the amount of pages in this book.
 	 */
 	private final int NbPages;
+	
+	
+	/**********************************************************
+	 * Recipes
+	 **********************************************************/
 	
 	
 	/**
@@ -94,13 +122,14 @@ public class RecipeBook {
 	
 	/**
 	 * Change the number of recipes in this book.
+	 * 
 	 * @param	number
 	 * 			The new number of recipes for this book.
 	 * @post	The new number of recipes in this book is now the given number.
 	 * 			| new.getNbRecipes()==number
 	 * @throws	IllegalArgumentException
 	 * 			The new number of recipes is invalid for this book.
-	 * 			| ! canHaveAsNbRecipes(number)
+	 * 			| !canHaveAsNbRecipes(number)
 	 * @note	The number of recipes is automatically changed thanks
 	 * 			to the usage of ArrayList, this method is merely introduced
 	 * 			to follow good coding practice and to better maintainability.
@@ -109,6 +138,8 @@ public class RecipeBook {
 	private void setNbRecipes(int number) throws IllegalArgumentException{
 		if (!canHaveAsNbRecipes(number))
 			throw new IllegalArgumentException("Invalid number of recipes");
+		
+		
 	}
 	
 	/**
@@ -149,14 +180,13 @@ public class RecipeBook {
 	/**
 	 * Return the page of the last recipe in this book.
 	 * 
-	 * @return	Return the page of the last recipe in this book.
-	 * @return	Return zero if there are no recipes in this book.
-	 *  //TODO moet er hier een IndexOutOfBoundsException bij?
+	 * @return	Return the page of the last recipe in this book. 
+	 * 			Return zero if there are no recipes in this book.
 	 */
 	@Raw
 	public int getPageOfLastRecipe() {
 		int result = 0;
-		for (int page = 1; page<=getNbPages();page++) {
+		for (int page = 1; page<=getNbPages(); page++) {
 			if (getRecipeAt(page)!=null)
 				result = page;
 		}
@@ -169,40 +199,13 @@ public class RecipeBook {
 	 * @param	recipe
 	 * 			The recipe to check.
 	 * @return	False if the given recipe is already in the book.
-	 * 			| ! hasAsRecipe(recipe)
+	 * 			| !hasAsRecipe(recipe)
 	 */
 	@Raw
 	public boolean canHaveAsRecipe(Recipe recipe) {
 		return (!hasAsRecipe(recipe));
 	}
 	
-//	/**
-//	 * Check whether this book can have the given recipe on the given page.
-//	 * 
-//	 * @param	recipe
-//	 * 			The recipe to check.
-//	 * @param	page
-//	 * 			The page to check.
-//	 * @return	False if this book cannot have the given recipe at any page.
-//	 * 			| if (! canHaveAsRecipe(recipe))
-//	 * 			|	then result == false
-//	 * 			Otherwise, false if the given page is not
-//	 * 			positive, or if it exceeds the number of pages
-//	 * 			with more than one.
-//	 * 			| else if ( (page < 1)
-//	 * 			|		 ||	(page > getNbPages()) )
-//	 * 			|	then result == false
-//	 * 			Otherwise, true if and only if the given recipe
-//	 * 			is not registered as a recipe on another page.
-//	 * 			| else result ==
-//	 * 			|	for each I in 1..getNbRecipes():
-//	 * 			|	  ( (I == page)
-//	 * 			|	 || (getNbRecipes(I) != recipe) )
-//	 */
-//	@Raw
-//	public boolean canHaveAsRecipeAt(Recipe recipe, int page) {
-//		
-//	}
 	
 	/**
 	 * Check whether this book has proper recipes associated with it.
@@ -236,15 +239,11 @@ public class RecipeBook {
 	 */
 	@Raw
 	public boolean hasAsRecipe(Recipe recipe) {
-		for (Recipe candidateRecipe: this.book) {
-			if (candidateRecipe.equals(recipe)) return true;
-		}
-		return false;
+		return this.book.contains(recipe);
 	}
 	
 	/**
 	 * Return a list of all recipes associated with this book.
-	 * The index of the recipes are their pages in the book.
 	 * 
 	 * @return	The number of elements in the resulting list is
 	 * 			equal to the number of pages in this book.
@@ -256,40 +255,10 @@ public class RecipeBook {
 	 * 			|	(result.get(I) == getRecipeAt(I+1))
 	 */
 	public List<Recipe> getAllRecipes() {
-		List<Recipe> recipeList = new ArrayList<Recipe>();
-		for (int i = 0; i<getNbRecipes(); i++) {
-			recipeList.add(i+1, getRecipeAt(i));;
-		}
-		return recipeList;		
+		return this.book;		
 	}
 	
-//	/**
-//	 * Add the given recipe in the book at the given page.
-//	 * 
-//	 * @param	recipe
-//	 * 			The recipe to be added.
-//	 * @param	page
-//	 * 			The page where the recipe is to be added.
-//	 * @post	This book has the given recipe on the given
-//	 * 			page in this book.
-//	 * 			| new.getRecipeAt(page) == recipe
-//	 * @post	The number of recipes in this book is incremented
-//	 * 			by 1.
-//	 * 			| new.getNbRecipes() == getNbRecipes() + 1
-//	 * @post	All recipes for this book at a page exceeding the
-//	 * 			the given page, are registered as recipe at one
-//	 * 			page higher.
-//	 * 			| for each I in page..getNbRecipes():
-//	 * 			|	(new.getRecipeAt(I+1) == getRecipeAt(I)
-//	 * @throws	IllegalArgumentException
-//	 * 			This book cannot have the given recipe at the
-//	 * 			given page.
-//	 * 			| ! canHaveAsRecipeAt(recipe,page)
-//	 */
-//	public void addRecipeAt(Recipe recipe, int page) {
-//		
-//	}
-	
+
 	/**
 	 * Remove the recipe in this book at the given page by tearing
 	 * the page out.
@@ -311,7 +280,7 @@ public class RecipeBook {
 	 */
 	public void removeRecipeAt(int page) throws IndexOutOfBoundsException, IllegalArgumentException{
 		if (getRecipeAt(page)==null)
-			throw new IllegalArgumentException("Recipe has already been torn out");
+			throw new IllegalArgumentException("Recipe has already been torn out.");
 		setNbRecipes(getNbRecipes()-1);
 		this.book.set(page-1, null);
 	}
@@ -323,17 +292,18 @@ public class RecipeBook {
 	 * @param	recipe
 	 * 			The recipe to put in the book.
 	 * @post	This book has the given recipe as its last recipe.
+	 * 			| new.getRecipeAt(getPageOfLastRecipe()) == recipe
 	 * @post	The number of recipes in this book is incremented
 	 * 			by 1.
 	 * 			| new.getNbRecipes() == getNbRecipes() + 1
 	 * @throws	IllegalArgumentException
 	 * 			This book already has the given recipe.
-	 * 			| ! canHaveAsRecipe(recipe)
+	 * 			| !canHaveAsRecipe(recipe)
 	 */
 	@Raw
 	public void addAsRecipe(Recipe recipe) throws IllegalArgumentException{
 		if (!canHaveAsRecipe(recipe))
-			throw new IllegalArgumentException("This book already contains this recipe");
+			throw new IllegalArgumentException("This book already contains this recipe.");
 		setNbRecipes(getNbRecipes()+1);
 		this.book.set(getPageOfLastRecipe()-1, recipe);
 		
