@@ -111,19 +111,19 @@ public class Kettle extends BottomlessDevice {
 	 *       | else if(temperature >= 0)
 	 *       |    newTemperature = new Temperature(0, temperature)
 	 *       
-	 * @post A new ingredient type is created with the new simple names, the new state and the new standard temperature
-	 *       and a new ingredient is created with the new ingredient type and the new quantity.
-	 *       The new Ingredient's temperature is set to the new temperature.
-	 *       The start ingredients get deleted and the processed ingredient gets added to the processed ingredients list
-	 *       | newType = new IngredientType(newSimpleNames, newState, newStandardTemperature)
-	 *       | newIngredient = new AlchemicIngredient(newType, newQuantity)
-	 *       | difference = Temperature.temperatureDifference(newTemperature, newStandardTemperature)
-	 *       | if(difference > 0)
-	 *       |    newIngredient.heat(difference)
-	 *       | else if (difference < 0)
-	 *       |    newIngredient.cool(-difference)
-	 *       | clearStartIngredients()
-	 *       | addProcessedIngredient(newIngredient)
+	 * @effect A new ingredient type is created with the new simple names, the new state and the new standard temperature
+	 *         and a new ingredient is created with the new ingredient type and the new quantity.
+	 *         The new Ingredient's temperature is set to the new temperature.
+	 *         The start ingredients get deleted and the processed ingredient gets added to the processed ingredients list
+	 *         | newType = new IngredientType(newSimpleNames, newState, newStandardTemperature)
+	 *         | newIngredient = new AlchemicIngredient(newType, newQuantity)
+	 *         | difference = Temperature.temperatureDifference(newTemperature, newStandardTemperature)
+	 *         | if(difference > 0)
+	 *         |    newIngredient.heat(difference)
+	 *         | else if (difference < 0)
+	 *         |    newIngredient.cool(-difference)
+	 *         | clearStartIngredients()
+	 *         | addProcessedIngredient(newIngredient)
 	 * 
 	 * @throws CapacityException
 	 * 		   The kettle already contains processed ingredients

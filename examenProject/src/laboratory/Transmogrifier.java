@@ -18,10 +18,9 @@ public class Transmogrifier extends BottomlessDevice {
 	 * Initialize a Transmogrifier device with a start ingredient array.
 	 * 
 	 * @param	ingredientArray
-	 * 			The array of ingredients to be loaded in the device.
-	 * @effect	The array of ingredients is loaded in the new device
-	 * 			| for each ingredient in ingredientArray
-	 * 			|   (new.getStartIngredients().contains(ingredient))
+	 * 			The array of ingredient containers to be loaded in the device.
+	 * @effect	The new transmogrifier is initialized as a bottomless device with the given array of ingredient containers.
+	 * 			| super(ingredientArray)
 	 */
 	@Raw
 	public Transmogrifier(IngredientContainer[] ingredientArray) {
@@ -31,8 +30,8 @@ public class Transmogrifier extends BottomlessDevice {
 	/**
 	 * Initialize a Transmogrifier device without start ingredients.
 	 * 
-	 * @effect	The start ingredients arrayList is empty.
-	 * 			| (new.getStartIngredients().isEmpty())
+	 * @effect	This new transmogrifier is initialized as an empty bottomless device.
+	 *          | super()
 	 */
 	@Raw
 	public Transmogrifier() {
@@ -41,13 +40,16 @@ public class Transmogrifier extends BottomlessDevice {
 
 	/**
 	 * Change the state of all the start ingredients and put them in the processed ingredients arrayList.
-	 * 
-	 * @effect	The start ingredients arrayList is emptied.
-	 * 			| (new.getStartIngredients().isEmpty())
-	 * 			The processed ingredients arrayList is filled with the ingredients that were in the start
-	 * 			ingredients arrayList but with the other state.
-	 * 			| (for each ingredient in new.getProcessedIngredients()
-	 * 			|	ingredient screw it //TODO help tis tlaatste
+     *
+	 * @post A new ingredient type is created with the same simple names, the new state and the same standard temperature.
+	 *       A new alchemic ingredient is created with the new ingredient type and a new quantity. The new quantity is the
+	 *       quantity of the ingredient converted to the other state rounded down to an integer.
+	 *       | newType = new IngredientType(ingredient.getType().getSimpleNames(), newState, ingredient.getStandardTemperatureObject())
+	 *       | newQuantity = Math.floor(ingredient.getQuantity()*Unit.getRatio(newState, oldState))
+	 *       | newIngredient = new AlchemicIngredient(newType, newQuantity)
+	 * @effect The new ingredient gets added to the processed ingredients list and the start ingredients are deleted
+	 *         | addProcessedIngredient(newIngredient)
+	 *         | clearStartIngredients()
 	 */
 	@Override
 	public void process() {
