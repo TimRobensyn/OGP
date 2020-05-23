@@ -8,7 +8,7 @@ import be.kuleuven.cs.som.annotate.*;
  * @invar   The capacity of a container must be valid for any container.
  * 			| isValidCapacity(getCapacity())
  * @invar   Each container can have its contents as its contents.
- * 			| isValidContents(getContents())
+ * 			| canHaveAsContents(getContents())
  * 
  * @version	1.0
  * @author	Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
@@ -82,7 +82,7 @@ public class IngredientContainer {
 	 */
 	@Raw
 	public void setContents(AlchemicIngredient contents) {
-		assert(isValidContents(contents)) :
+		assert(canHaveAsContents(contents)) :
 			"Precondition: The contents are valid for this container.";
 		this.contents = contents;
 	}
@@ -101,7 +101,7 @@ public class IngredientContainer {
 	 *		   |              && contents.getState()==getCapacity().getState()) )
 	 */
 	@Raw
-	public boolean isValidContents(AlchemicIngredient contents) {
+	public boolean canHaveAsContents(AlchemicIngredient contents) {
 		if (contents == null)
 			return true;
 		return ( contents.getQuantity()>=0
