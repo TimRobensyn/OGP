@@ -18,8 +18,14 @@ import alchemy.*;
 public abstract class TemperatureDevice extends Device {
 	
 	/**
-	 * A model constructor for this kind of device, setting a temperature
-	 * and loading an ingredient.
+	 * @param  temperature
+	 * 	       The temperature of this new temperature device.
+	 * @param  startIngredient
+	 * 		   The new alchemic ingredient to be used in this temperature device.
+	 * @effect The temperature of this temperature device is set to the given value.
+	 * 		   | setTemperature(temperature)
+	 * @effect The given start ingredient is loaded into the temperature device.
+	 * 		   | loadIngredient(startIngredient)
 	 */
 	@Model @Raw
 	public TemperatureDevice(Temperature temperature, IngredientContainer startIngredient) {
@@ -28,7 +34,10 @@ public abstract class TemperatureDevice extends Device {
 	}
 	
 	/**
-	 * A model constructor for this kind of device, setting the temperature.
+	 * @param  temperature
+	 * 	       The temperature of this new temperature device.
+	 * @effect The temperature of this temperature device is set to the given value.
+	 * 		   | setTemperature(temperature)
 	 */
 	@Model @Raw
 	public TemperatureDevice(Temperature temperature) {
@@ -145,6 +154,7 @@ public abstract class TemperatureDevice extends Device {
 
 	/**
 	 * Set the temperature of this device using a Temperature object.
+	 * 
 	 * @param	newTemperature
 	 * 			The new temperature for the device.
 	 * @post	If the given temperature is valid, the temperature of
@@ -152,7 +162,7 @@ public abstract class TemperatureDevice extends Device {
 	 * 			| if (Temperature.isValidTemperature(newTemperature))
 	 * 		    |   then new.getTemperature() == newTemperature
 	 */
-	public final void setTemperature(Temperature newTemperature) {
+	public void setTemperature(Temperature newTemperature) {
 		if (Temperature.isValidTemperature(newTemperature)) {
 			this.temperature = newTemperature;
 		}
