@@ -63,10 +63,10 @@ public class Laboratory {
 		
 
 		//TODO
-		//devices.add(coolingbox);
-		//devices.add(oven);
-		//devices.add(kettle);
-		//devices.add(transmogrifier);
+		devices.add(coolingbox);
+		devices.add(oven);
+		devices.add(kettle);
+		devices.add(transmogrifier);
 		
 		//addAsDevice(coolingbox);
 		//addAsDevice(oven);
@@ -78,10 +78,7 @@ public class Laboratory {
 		//addAsDevice(kettle);
 		//addAsDevice(transmogrifier);
 		
-		initializeDevice(coolingbox, 1);
-		initializeDevice(oven, 2);
-		initializeDevice(kettle, 3);
-		initializeDevice(transmogrifier, 4);
+		//initializeDevice(coolingbox, oven, kettle, transmogrifier);
 
 	}
 	
@@ -234,8 +231,8 @@ public class Laboratory {
 	public boolean hasProperIngredients() {
 		boolean bool = true;
 		for(int i=0; i <= getNbIngredients()-2; i++) {
-			for(int j = i+1; j < getNbIngredients(); j++) {
-				if(getIngredientAt(i+1).getType().equals(getIngredientAt(j+1).getType())) {
+			for(int j = i+1; j <= getNbIngredients()-1; j++) {
+				if(getIngredientAt(i+1).getType() == getIngredientAt(j+1).getType()) {
 					bool = false;
 				}
 			}
@@ -314,7 +311,7 @@ public class Laboratory {
 	 */
 	public IngredientContainer request(String name, int amount) throws CapacityException{
 		for(AlchemicIngredient storedIngredient : storage) {
-			if((storedIngredient.getType().getSimpleName() == name) || (storedIngredient.getType().getSpecialName() == name)){
+			if((storedIngredient.getType().getSimpleName().equals(name)) || (storedIngredient.getType().getSpecialName().equals(name))){
 				
 				if(storedIngredient.getQuantity() < amount) {
 					throw new CapacityException(this, "Not enough of this ingredient.");
@@ -516,14 +513,45 @@ public class Laboratory {
 	 * 		   The device is already in another laboratory
 	 * 		   | (device != null) && (device.getLaboratory() != null)
 	 */
-	private void initializeDevice(Device device, int index) throws CapacityException {
-		if((device != null) && (device.getLaboratory() != null)) {
-			throw new CapacityException(device, this, "Device is already in another laboratory.");
+	private void initializeDevice(CoolingBox coolingbox, Oven oven, Kettle kettle, Transmogrifier transmogrifier) throws CapacityException {
+		if(coolingbox != null) {
+			if(coolingbox.getLaboratory() != null) {
+				throw new CapacityException(coolingbox, "Coolingbox is already in another laboratory.");
+			} else {
+				coolingbox.setLaboratory(this);
+			}
 		}
-		devices.set(index, device);
-		if(device != null) {
-			device.setLaboratory(this);
+		if(oven != null) {
+			if(oven.getLaboratory() != null) {
+				throw new CapacityException(oven, "Oven is already in another laboratory.");
+			} else {
+				oven.setLaboratory(this);
+			}
 		}
+		if(kettle != null) {
+			if(kettle.getLaboratory() != null) {
+				throw new CapacityException(kettle, "Kettle is already in another laboratory.");
+			} else {
+				kettle.setLaboratory(this);
+			}
+		}
+		if(transmogrifier != null) {
+			if(transmogrifier.getLaboratory() != null) {
+				throw new CapacityException(transmogrifier, "Coolingbox is already in another laboratory.");
+			} else {
+				transmogrifier.setLaboratory(this);
+			}
+		}
+
+		devices.add(null);
+		devices.add(null);
+		devices.add(null);
+		devices.add(null);
+		
+		devices.set(0, coolingbox);
+		devices.set(1, oven);
+		devices.set(2, kettle);
+		devices.set(3, transmogrifier);
 	}
 	
 	/**
@@ -559,10 +587,23 @@ public class Laboratory {
 	/**
 	 * Remove the given device from the device list.
 	 * If the given device is not in the device list nothing happens.
+	 * @effect The entry in the device list gets set to null at the index of the given device.
+	 * 	       | getDevices().set(deviceIndex, null)
 	 */
 	public void removeAsDevice(Device device) {
 		device.setLaboratory(null);
-		getDevices().remove(device);
+		if(device.getClass() == CoolingBox.class) {
+			getDevices().set(0, null);
+		}
+		if(device.getClass() == Oven.class) {
+			getDevices().set(1, null);
+		}
+		if(device.getClass() == Kettle.class) {
+			getDevices().set(2, null);
+		}
+		if(device.getClass() == Transmogrifier.class) {
+			getDevices().set(3, null);
+		}
 	}
 	
 	/**
@@ -659,4 +700,21 @@ public class Laboratory {
 	 * Variable storing the list of devices in this laboratory
 	 */
 	private List<Device> devices = new ArrayList<Device>(4);
-}
+	
+	
+	/**************************************************
+	 * Execute
+	 **************************************************/
+	
+	/**
+	 * Execute the given recipe a given amount of time.
+	 *  
+	 * @param recipe
+	 * 		  The given recipe to execute .
+	 * @param amount
+	 * 		  The given amount .
+	 */
+	public void execute(Recipe recipe, int amount) {
+		
+	}
+	}
