@@ -103,10 +103,11 @@ public enum Unit {
 	 * 		   The index to check.
 	 * @param  state
 	 * 		   The state to check the index for.
-	 * @return False if there are units with the same state and the same index.
+	 * @return False if there are two units with the same state and the same given index.
 	 * 		   | for some unit1, unit2 in Unit.values()
 	 * 		   | if ( unit1.getState() == unit2.getState()
 	 * 		   |   && unit1.getIndex() == unit2.getIndex()
+	 *         |   && unit1.getIndex() == index )
 	 * 		   |   then result == false
 	 * 		   Otherwise, true if and only if the index is greater than zero and not above the number of values
 	 *         in this enumeration class with the given state.

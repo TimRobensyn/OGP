@@ -1,7 +1,6 @@
 package laboratory;
 
 import be.kuleuven.cs.som.annotate.*;
-import be.kuleuven.cs.som.taglet.*;
 import alchemy.*;
 
 /**
@@ -19,8 +18,14 @@ import alchemy.*;
 public abstract class TemperatureDevice extends Device {
 	
 	/**
-	 * A model constructor for this kind of device, setting a temperature
-	 * and loading an ingredient.
+	 * @param  temperature
+	 * 	       The temperature of this new temperature device.
+	 * @param  startIngredient
+	 * 		   The new alchemic ingredient to be used in this temperature device.
+	 * @effect The temperature of this temperature device is set to the given value.
+	 * 		   | setTemperature(temperature)
+	 * @effect The given start ingredient is loaded into the temperature device.
+	 * 		   | loadIngredient(startIngredient)
 	 */
 	@Model @Raw
 	public TemperatureDevice(Temperature temperature, IngredientContainer startIngredient) {
@@ -29,7 +34,10 @@ public abstract class TemperatureDevice extends Device {
 	}
 	
 	/**
-	 * A model constructor for this kind of device, setting the temperature.
+	 * @param  temperature
+	 * 	       The temperature of this new temperature device.
+	 * @effect The temperature of this temperature device is set to the given value.
+	 * 		   | setTemperature(temperature)
 	 */
 	@Model @Raw
 	public TemperatureDevice(Temperature temperature) {
