@@ -3,13 +3,16 @@ import alchemy.*;
 import static org.junit.Assert.*;
 import org.junit.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class LaboratoryTest {
 
 	public static Laboratory laboratory, laboratory_empty_allDevices, laboratory_empty, laboratory_waterStorage, laboratory_storage, laboratory_big;
 	public static Laboratory laboratoryCapacityStorageDevices, laboratoryCapacityDevices, laboratoryCapacity;
 	
-	public static CoolingBox coolingbox;
+	public static CoolingBox coolingBox;
+	public static CoolingBox staticCoolingBox;
+	public static Oven staticOven;
 	public static Oven oven;
 	public static Kettle emptyKettle;
 	public static Transmogrifier emptyTransmogrifier;
@@ -21,6 +24,8 @@ public class LaboratoryTest {
 	
 	@BeforeClass
 	public static void setUpImmutableFixture() {
+		staticCoolingBox = new CoolingBox(new Temperature(0,0));
+		staticOven = new Oven(new Temperature(0,0));
 		emptyKettle = new Kettle();
 		emptyTransmogrifier = new Transmogrifier();
 		emptyStorage = new ArrayList<AlchemicIngredient>();
@@ -29,7 +34,7 @@ public class LaboratoryTest {
 		water = new AlchemicIngredient(10);
 		bigIngredient = new AlchemicIngredient(15000);
 		
-		laboratory_empty_allDevices = new Laboratory(100, coolingbox, oven, emptyKettle, emptyTransmogrifier);
+		laboratory_empty_allDevices = new Laboratory(100, staticCoolingBox, staticOven, emptyKettle, emptyTransmogrifier);
 		laboratory_empty = new Laboratory(100);
 		
 		waterContainer = new IngredientContainer(water, Unit.VIAL_LIQUID);
@@ -38,7 +43,7 @@ public class LaboratoryTest {
 	
 	@Before
 	public void setUpFixture() {
-		coolingbox = new CoolingBox(new Temperature(0,0));
+		coolingBox = new CoolingBox(new Temperature(0,0));
 		oven = new Oven(new Temperature(0,0));
 		ingredientTypeLiquid = new IngredientType("ingredientTypeLiquid", State.LIQUID, new Temperature(0,15));
 		ingredientLiquid = new AlchemicIngredient(ingredientTypeLiquid,15);
@@ -52,16 +57,16 @@ public class LaboratoryTest {
 		storage.add(ingredientPowder);
 		laboratory_waterStorage = new Laboratory(100, waterStorage, null, null, null, null);
 		laboratory_storage = new Laboratory(100, storage, null, null, emptyKettle, null);
-		laboratory_big = new Laboratory(5000, bigStorage, coolingbox, oven, emptyKettle, emptyTransmogrifier);
+		laboratory_big = new Laboratory(5000, bigStorage, coolingBox, oven, emptyKettle, emptyTransmogrifier);
 	}
 	
 	@Test
 	public void testConstructorFull_Legal() {
-		laboratoryCapacityStorageDevices = new Laboratory(100, waterStorage, coolingbox, oven, emptyKettle, emptyTransmogrifier);
+		laboratoryCapacityStorageDevices = new Laboratory(100, waterStorage, coolingBox, oven, emptyKettle, emptyTransmogrifier);
 		
 		assertEquals(100, laboratory.getCapacity());
 		assertEquals(waterStorage, laboratory.getStorage());
-		assertEquals(coolingbox, laboratory.getCoolingbox());
+		assertEquals(coolingBox, laboratory.getCoolingbox());
 		assertEquals(oven, laboratory.getOven());
 		assertEquals(emptyKettle, laboratory.getKettle());
 		assertEquals(emptyTransmogrifier, laboratory.getTransmogrifier());
@@ -69,11 +74,11 @@ public class LaboratoryTest {
 	
 	@Test
 	public void testConstructorCapacityDevices_Legal() {
-		laboratoryCapacityDevices = new Laboratory(100, coolingbox, oven, emptyKettle, emptyTransmogrifier);
+		laboratoryCapacityDevices = new Laboratory(100, coolingBox, oven, emptyKettle, emptyTransmogrifier);
 		
 		assertEquals(100, laboratory_empty_allDevices.getCapacity());
 		assertEquals(new ArrayList<AlchemicIngredient>(), laboratory_empty_allDevices.getStorage());
-		assertEquals(coolingbox, laboratory_empty_allDevices.getCoolingbox());
+		assertEquals(coolingBox, laboratory_empty_allDevices.getCoolingbox());
 		assertEquals(oven, laboratory_empty_allDevices.getOven());
 		assertEquals(emptyKettle, laboratory_empty_allDevices.getKettle());
 		assertEquals(emptyTransmogrifier, laboratory_empty_allDevices.getTransmogrifier());
@@ -229,13 +234,13 @@ public class LaboratoryTest {
 	
 	@Test
 	public void testGetDevices() {
-		ArrayList<Device> devices = new ArrayList<Device>();
-		devices.add(coolingbox);
+		List<Device> devices = new ArrayList<Device>();
+		devices.add(coolingBox);
 		devices.add(oven);
 		devices.add(emptyKettle);
 		devices.add(emptyTransmogrifier);
 		
-		ArrayList<Device> requestedDevices = laboratory_big.getDevices();
+		List<Device> requestedDevices = laboratory_big.getDevices();
 		assertEquals(requestedDevices, devices);
 	}
 	
@@ -247,7 +252,7 @@ public class LaboratoryTest {
 	
 	@Test
 	public void testGetDeviceAt() {
-		assertEquals(coolingbox, laboratory_big.getDeviceAt(1));
+		assertEquals(coolingBox, laboratory_big.getDeviceAt(1));
 		assertEquals(oven, laboratory_big.getDeviceAt(2));
 		assertEquals(emptyKettle, laboratory_big.getDeviceAt(3));
 		assertEquals(emptyTransmogrifier, laboratory_big.getDeviceAt(4));
@@ -255,7 +260,7 @@ public class LaboratoryTest {
 	
 	@Test
 	public void testIsValidDeviceAt_LegalCase() { //TODO NOT VALID IF ALREADY IN ANOTHER LAB
-		assertTrue(Laboratory.isValidDeviceAt(coolingbox, 1));
+		assertTrue(Laboratory.isValidDeviceAt(coolingBox, 1));
 		assertTrue(Laboratory.isValidDeviceAt(oven, 2));
 		assertTrue(Laboratory.isValidDeviceAt(emptyKettle, 3));
 		assertTrue(Laboratory.isValidDeviceAt(emptyTransmogrifier, 4));
@@ -264,9 +269,9 @@ public class LaboratoryTest {
 	
 	@Test
 	public void testIsValidDeviceAt_IllegalCase() { //TODO TEST NOT VALID IF ALREADY IN ANOTHER LAB
-		assertFalse(Laboratory.isValidDeviceAt(coolingbox, 2));
-		assertFalse(Laboratory.isValidDeviceAt(coolingbox, 3));
-		assertFalse(Laboratory.isValidDeviceAt(coolingbox, 4));
+		assertFalse(Laboratory.isValidDeviceAt(coolingBox, 2));
+		assertFalse(Laboratory.isValidDeviceAt(coolingBox, 3));
+		assertFalse(Laboratory.isValidDeviceAt(coolingBox, 4));
 		
 		assertFalse(Laboratory.isValidDeviceAt(oven, 1));
 		assertFalse(Laboratory.isValidDeviceAt(oven, 3));
@@ -293,19 +298,19 @@ public class LaboratoryTest {
 	
 	@Test
 	public void testAddAsDevice_LegalCase() {
-		laboratory_empty.addAsDevice(coolingbox);
-		assertEquals(laboratory_empty.getCoolingbox(), coolingbox);
-		assertEquals(laboratory_empty.getDeviceAt(1), coolingbox);
+		laboratory_empty.addAsDevice(coolingBox);
+		assertEquals(laboratory_empty.getCoolingbox(), coolingBox);
+		assertEquals(laboratory_empty.getDeviceAt(1), coolingBox);
 	}
 	
 	@Test (expected = CapacityException.class)
 	public void testAddAsDevice_IllegalCase() {
-		laboratory_big.addAsDevice(coolingbox);
+		laboratory_big.addAsDevice(coolingBox);
 	}
 	
 	@Test
 	public void testRemoveAsDevice() {
-		laboratory_big.removeAsDevice(coolingbox);
+		laboratory_big.removeAsDevice(coolingBox);
 		assertEquals(null, laboratory_big.getDeviceAt(1));
 	}
 	

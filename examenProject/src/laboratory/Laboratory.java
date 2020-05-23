@@ -1,6 +1,8 @@
 package laboratory;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import alchemy.*;
 import be.kuleuven.cs.som.annotate.*;
 
@@ -29,7 +31,7 @@ public class Laboratory {
 	 * @param capacity
 	 * 	      The given capacity in storerooms.
 	 * @param storage
-	 * 		  The given ArrayList with the storage in this laboratory.
+	 * 		  The given List with the storage in this laboratory.
 	 * @param coolingbox
 	 * 	      The cooling box in this laboratory.
 	 * @param oven
@@ -52,13 +54,16 @@ public class Laboratory {
 	@Raw
 	public Laboratory(int capacity, ArrayList<AlchemicIngredient> storage, CoolingBox coolingbox,
 			Oven oven, Kettle kettle, Transmogrifier transmogrifier) throws CapacityException {
+
 		if(!isValidCapacity(capacity)) {
 			throw new CapacityException(this, "The given capacity is invalid.");
 		}
 		this.capacity = capacity;
 		setStorage(storage);
 		
-		addAsDevice(coolingbox);
+		this.devices = new ArrayList<Device>(10);
+		
+		//addAsDevice(coolingbox);
 		addAsDevice(oven);
 		addAsDevice(kettle);
 		addAsDevice(transmogrifier);
@@ -72,7 +77,7 @@ public class Laboratory {
 	 * 		  | getCapacity() == capacity
 	 * @effect The new laboratory is initialized with the given capacity.
 	 * 		   It's storage is empty and the devices are set to null.
-	 * 		   | this(capacity, new ArrayList<AlchemicIngredient>(), null, null, null, null)
+	 * 		   | this(capacity, new List<AlchemicIngredient>(), null, null, null, null)
 	 */
 	@Raw
 	public Laboratory(int capacity) {
@@ -137,7 +142,7 @@ public class Laboratory {
 	 * Return the storage of this laboratory.
 	 */
 	@Basic
-	public ArrayList<AlchemicIngredient> getStorage(){
+	public List<AlchemicIngredient> getStorage(){
 		return this.storage;
 	}
 	
@@ -148,7 +153,7 @@ public class Laboratory {
 	 * 		  The given storage list.
 	 */
 	@Raw
-	private void setStorage(ArrayList<AlchemicIngredient> storage) {
+	private void setStorage(List<AlchemicIngredient> storage) {
 		this.storage = storage;
 	}
 	
@@ -355,7 +360,7 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Return an object array with the inventory of this laboratory. 
+	 * Return an two dimensional object array with the inventory of this laboratory. 
 	 * The first row contains the full names of the ingredients, the second row contains their quantity.
 	 */
 	public Object[][] getInventory() {
@@ -372,7 +377,7 @@ public class Laboratory {
 	/**
 	 * Variable storing the contents of this laboratory in drops or pinches
 	 */
-	private ArrayList<AlchemicIngredient> storage = new ArrayList<AlchemicIngredient>();
+	private List<AlchemicIngredient> storage = new ArrayList<AlchemicIngredient>();
 	
 	/**************************************************
 	 * DEVICES
@@ -382,7 +387,7 @@ public class Laboratory {
 	 * Return the list of devices in this laboratory
 	 */
 	@Basic
-	public ArrayList<Device> getDevices(){
+	public List<Device> getDevices(){
 		return this.devices;
 	}
 	
@@ -407,7 +412,7 @@ public class Laboratory {
 	 */
 	@Basic @Raw
 	public Device getDeviceAt(int index) {
-		return getDevices().get(index-1);
+		return this.devices.get(index-1);
 	}
 	
 	/**
@@ -508,7 +513,7 @@ public class Laboratory {
 	 * If the given device is not in the device list nothing happens.
 	 */
 	public void removeAsDevice(Device device) {
-			getDevices().remove(device);
+		getDevices().remove(device);
 	}
 	
 	/**
@@ -604,5 +609,5 @@ public class Laboratory {
 	/**
 	 * Variable storing the list of devices in this laboratory
 	 */
-	private ArrayList<Device> devices = new ArrayList<Device>();
+	private List<Device> devices = new ArrayList<Device>(4);
 }
