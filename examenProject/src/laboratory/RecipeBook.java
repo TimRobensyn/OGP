@@ -43,7 +43,7 @@ public class RecipeBook {
 	public RecipeBook(int nbPages, List<Recipe> recipes) throws IllegalArgumentException{
 		if ((nbPages<1) || (nbPages>Long.MAX_VALUE))
 			throw new IllegalArgumentException("Invalid number of pages");
-		this.NbPages = nbPages;
+		this.nbPages = nbPages;
 		for (Recipe recipe:recipes) {
 			addAsRecipe(recipe);
 		}
@@ -56,13 +56,13 @@ public class RecipeBook {
 	 */
 	@Basic @Raw
 	public int getNbPages() {
-		return this.NbPages;
+		return this.nbPages;
 	}
 	
 	/**
 	 * A variable for the amount of pages in this book.
 	 */
-	private final int NbPages;
+	private final int nbPages;
 	
 	
 	/**
