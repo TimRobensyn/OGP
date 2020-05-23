@@ -98,7 +98,7 @@ public class IngredientContainer {
 	}
 	
 	/**
-	 * Return the capacity of this container measured in the smallest unit of the same state. //TODO?
+	 * Return the capacity of this container measured in the smallest unit of the same state.
 	 */
 	@Immutable
 	public int getAbsoluteCapacity() {
