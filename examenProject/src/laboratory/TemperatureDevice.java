@@ -7,10 +7,13 @@ import alchemy.*;
 /**
  * A subclass of Device for devices with a temperature and limited capacity.
  * 
- * @invar	
+ * @invar	The temperature of this temperature device is a valid temperature.
+ * 			| Temperature.isValidTemperature(getTemperature())
  * 
  * @version	1.0
  * @author	Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
+ * 
+ * @note    The start ingredient and processed ingredient have no restrictions imposed on them.
  */
 
 public abstract class TemperatureDevice extends Device {
@@ -33,6 +36,11 @@ public abstract class TemperatureDevice extends Device {
 		setTemperature(temperature);
 	}
 	
+	
+	/**************************************************
+	 * Ingredient
+	 **************************************************/
+	
 	/**
 	 * Return the loaded ingredient in this device.
 	 */
@@ -49,7 +57,7 @@ public abstract class TemperatureDevice extends Device {
 	}
 	
 	/**
-	 * A variable for the loaded ingredient in the device
+	 * A variable containing the loaded ingredient of this temperature device.
 	 */
 	private AlchemicIngredient startIngredient = null;
 	
@@ -76,8 +84,8 @@ public abstract class TemperatureDevice extends Device {
 	/**
 	 * Loads the ingredients in a given container into this temperature device
 	 * 
-	 * @param container
-	 * 		  The given container to be loaded in the device.
+	 * @param  container
+	 * 		   The given container to be loaded in the device.
 	 * @throws CapacityException
 	 * 		   This device is full.
 	 * 		   | (getStartIngredient() != null)
@@ -94,7 +102,17 @@ public abstract class TemperatureDevice extends Device {
 	/**
 	 * Empties the device and creates a new container containing the processed ingredient of this device. 
 	 * The container is the smallest container that can contain the processed ingredient.
-	 * HELP IK NIET WEET WAT MET DEZE COMMENTAAR TE DOEN MAN
+	 * 
+	 * @return If the processed ingredient of this temperature device is not effective, return null.
+	 * 		   | if (getProcessedIngredient() == null)
+	 * 		   |   result == null
+	 * 		   Otherwise, return the smallest possible ingredient container that can containt the processed ingredient.
+	 * 		   | outputIngredient == getProcessedIngredient()
+	 *         | result == new IngredientContainer(outputIngredient,
+			   |           Unit.getContainer(outputIngredient.getState(), outputIngredient.getQuantity()))
+	 * @effect If the processed ingredient of this temperature device is effective, the processed ingredient
+	 * 		   is set to null.
+	 * 		   | setProcessedIngredient(null)
 	 */
 	@Override
 	public final IngredientContainer emptyDevice() {
@@ -107,8 +125,12 @@ public abstract class TemperatureDevice extends Device {
 		return outputContainer;
 	}
 	
+	/**************************************************
+	 * Temperature
+	 **************************************************/
+	
 	/**
-	 * Return the temperature of this device in an array of two long values
+	 * Return the temperature of this device in an array of two long values.
 	 */
 	public long[] getTemperature() {
 		return getTemperatureObject().getTemperature();
@@ -128,7 +150,8 @@ public abstract class TemperatureDevice extends Device {
 	 * 			The new temperature for the device.
 	 * @post	If the given temperature is valid, the temperature of
 	 * 			this device is set to the given temperature.
-	 * 			//TODO moet er hier nog iets formeeels bij? Tis denk ik totaal te programmeren
+	 * 			| if (Temperature.isValidTemperature(newTemperature))
+	 * 		    |   then new.getTemperature() == newTemperature
 	 */
 	public final void setTemperature(Temperature newTemperature) {
 		if (Temperature.isValidTemperature(newTemperature)) {
@@ -141,6 +164,9 @@ public abstract class TemperatureDevice extends Device {
 	 */
 	private Temperature temperature;
 	
+	/**************************************************
+	 * Process
+	 **************************************************/
 	
 	@Override
 	public abstract void process();
