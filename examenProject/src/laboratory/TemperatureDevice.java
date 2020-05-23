@@ -87,7 +87,7 @@ public abstract class TemperatureDevice extends Device {
 		if(getStartIngredient() != null) {
 			throw new CapacityException(this, container, "Device has already been loaded.");
 		}
-		setStartIngredient(container.getIngredient());
+		setStartIngredient(container.getContents());
 		container = null;
 	}
 
