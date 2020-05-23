@@ -52,7 +52,7 @@ public class Laboratory {
 	 * 		   | !isValidCapacity(capacity)
 	 */
 	@Raw
-	public Laboratory(int capacity, ArrayList<AlchemicIngredient> storage, CoolingBox coolingbox,
+	public Laboratory(int capacity, List<AlchemicIngredient> storage, CoolingBox coolingbox,
 			Oven oven, Kettle kettle, Transmogrifier transmogrifier) throws CapacityException {
 
 		if(!isValidCapacity(capacity)) {
@@ -61,10 +61,16 @@ public class Laboratory {
 		this.capacity = capacity;
 		setStorage(storage);
 		
-		addAsDevice(coolingbox);
-		addAsDevice(oven);
-		addAsDevice(kettle);
-		addAsDevice(transmogrifier);
+		//TODO
+		devices.add(coolingbox);
+		devices.add(oven);
+		devices.add(kettle);
+		devices.add(transmogrifier);
+		
+		//addAsDevice(coolingbox);
+		//addAsDevice(oven);
+		//addAsDevice(kettle);
+		//addAsDevice(transmogrifier);
 	}
 	
 	/**
@@ -420,8 +426,9 @@ public class Laboratory {
 	 * 	      The given device
 	 * @param index
 	 * 		  The given index
-	 * @return True if and only if the device is a cooling box and the index is 1, the device is an oven and the index is 2,
-	 * 		   the device is a kettle and the index is 3 or the device is a transmogrifier and the index is 4
+	 * @return True if and only if the device is not in another laboratory yet and the device is a cooling box 
+	 * 		   and the index is 1, the device is an oven and the index is 2, the device is a kettle and the index
+	 *         is 3 or the device is a transmogrifier and the index is 4
 	 *         | if(device.getClass() == CoolingBox.class)
 	 *		   |	result == (index == 1)
 	 *		   | else if(device.getClass() == Oven.class)
@@ -433,14 +440,18 @@ public class Laboratory {
 	 *		   | else 
 	 *		   |	result == false
 	 */
-	public static boolean isValidDeviceAt(Device device, int index) {
-		if(device.getClass() == CoolingBox.class) {
+	public boolean isValidDeviceAt(Device device, int index) {
+		if((device != null) && (device.getLaboratory() != this) && (device.getLaboratory() != null)) {
+			return false;
+		} else if((device == null) && (getDeviceAt(index) == null)){
+			return true;
+		} else if(((device.getClass() == CoolingBox.class)) && ((getDeviceAt(1) == null) || (getDeviceAt(1) == device))) {
 			return(index == 1);
-		} else if(device.getClass() == Oven.class) {
+		} else if(((device.getClass() == Oven.class)) && ((getDeviceAt(2) == null) || (getDeviceAt(2) == device))) {
 			return(index == 2);
-		} else if(device.getClass() == Kettle.class) {
+		} else if(((device.getClass() == Kettle.class)) && ((getDeviceAt(3) == null) || (getDeviceAt(3) == device))) {
 			return(index == 3);
-		} else if(device.getClass() == Transmogrifier.class) {
+		} else if(((device.getClass() == Transmogrifier.class)) && ((getDeviceAt(4) == null) || (getDeviceAt(4) == device))) {
 			return(index == 4);
 		} else {
 			return false;
@@ -490,19 +501,22 @@ public class Laboratory {
 	 */
 	@Raw
 	public void addAsDevice(Device device) throws CapacityException {
-		if((device.getClass() == CoolingBox.class) && (getDeviceAt(1) == null)) {
-			getDevices().add(0, device);
+		if(isValidDeviceAt(device,1)) {
+			getDevices().set(0, device);
 		}
-		else if((device.getClass() == Oven.class) && (getDeviceAt(2) == null)) {
-			getDevices().add(1, device);
+		else if(isValidDeviceAt(device,2)) {
+			getDevices().set(1, device);
 		}
-		else if((device.getClass() == Kettle.class) && (getDeviceAt(3) == null)) {
-			getDevices().add(2, device);
+		else if(isValidDeviceAt(device,3)) {
+			getDevices().set(2, device);
 		}
-		else if((device.getClass() == Transmogrifier.class) && (getDeviceAt(4) == null)) {
-			getDevices().add(3, device);
+		else if(isValidDeviceAt(device,4)) {
+			getDevices().set(3, device);
 		} else {
 			throw new CapacityException(device,this,"This laboratory cannot accept this device.");
+		}
+		if(device != null) {
+			device.setLaboratory(this);
 		}
 	}
 	
@@ -511,7 +525,8 @@ public class Laboratory {
 	 * If the given device is not in the device list nothing happens.
 	 */
 	public void removeAsDevice(Device device) {
-			getDevices().remove(device);
+		device.setLaboratory(null);
+		getDevices().remove(device);
 	}
 	
 	/**
@@ -607,5 +622,5 @@ public class Laboratory {
 	/**
 	 * Variable storing the list of devices in this laboratory
 	 */
-	private List<Device> devices = new ArrayList<Device>();
+	private List<Device> devices = new ArrayList<Device>(4);
 }

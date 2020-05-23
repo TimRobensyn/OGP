@@ -1,5 +1,6 @@
 package laboratory;
 
+import be.kuleuven.cs.som.annotate.*;
 //import be.kuleuven.cs.som.*;
 import alchemy.*;
 
@@ -46,5 +47,46 @@ public abstract class Device {
 	 * 			//TODO Formal specs
 	 */
 	public abstract void process() throws CapacityException;
+	
+	/**
+	 * Return the laboratory this device is in.
+	 */
+	@Basic
+	public Laboratory getLaboratory() {
+		return this.laboratory;
+	}
+	
+	/**
+	 * Set the laboratory this device is in to the given laboratory
+	 * 
+	 * @param laboratory
+	 * 		  The given laboratory
+	 */
+	public void setLaboratory(Laboratory laboratory) {
+		this.laboratory = laboratory;
+	}
+	
+	/**
+	 * Check whether this device can be in the given laboratory.
+	 * @param laboratory
+	 * 		  The given laboratory
+	 * @return True if and only if this device is not in another laboratory than the given laboratory
+	 */
+	public boolean canHaveAsLaboratory(Laboratory laboratory) {
+		return((getLaboratory() == laboratory) || (getLaboratory() == null));
+	}
+	
+	/**
+	 * Check whether the laboratory this device is in is proper
+	 * @note This method is for good coding practices
+	 */
+	//public boolean hasProperLaboratory() {
+	//return(?);
+	//}
+	
+	/**
+	 * Variable storing the laboratory this device is in.
+	 */
+	private Laboratory laboratory = null;
 
 }
