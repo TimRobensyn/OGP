@@ -3,7 +3,12 @@ package alchemy;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * An class of ingredient containers involving a capacity type and contents in spoons.
+ * An class of ingredient containers involving a capacity unit and alchemic ingredient as contents of it.
+ * 
+ * @invar   The capacity of a container must be valid for any container.
+ * 			| isValidCapacity(getCapacity())
+ * @invar   Each container can have its contents as its contents.
+ * 			| isValidContents(getContents())
  * 
  * @version	1.0
  * @author	Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
@@ -15,30 +20,33 @@ public class IngredientContainer {
 	/**
 	 * Initialize this container with the given capacity and contents.
 	 * 
-	 * @param 	capacity
-	 * 		 	The capacity of this container.
-	 * @param	contents
-	 * 			The contents in this container.
-	 * @pre		//TODO
+	 * @param  capacity
+	 * 		   The capacity of this container.
+	 * @param  contents
+	 * 		   The contents in this container.
+	 * @pre	   The given capacity unit can be used as a container.
+	 *         | isValidCapacity(capacity)
+	 * @post   The capacity of this container is equal to the given capacity.
+	 * 		   | new.getCapacity() == capacity
+	 * @effect The given contents are set as the contents of this container.
+	 * 		   | setContents(contents)
 	 */
 	@Raw
 	public IngredientContainer(AlchemicIngredient contents, Unit capacity) {
-		setContents(contents);
-		assert (capacity.isContainer()):
+		assert (isValidCapacity(capacity)):
 			"This unit cannot be used as a container.";
-		assert (contents.getQuantity()<=capacity.getAbsoluteCapacity()):
-			"This container is not big enough for this ingredient.";
-		assert (contents.getState()==capacity.getState()):
-			"This container can't contain ingredients with this state.";
 		this.capacity = capacity;
+		
+		setContents(contents);
 	}
 	
 	/**
 	 * Initialize this empty container with the given capacity.
 	 * 
-	 * @param 	capacity
-	 * 		 	The capacity of this container.
-	 * @pre		//TODO
+	 * @param  capacity
+	 * 		   The capacity of this container.
+     * @effect This container is initialized with the given capacity. It has non-effective contents.
+     * 		   | this(null, capacity)
 	 */
 	@Raw
 	public IngredientContainer(Unit capacity) {
@@ -52,30 +60,53 @@ public class IngredientContainer {
 	/**
 	 * Returns the alchemic ingredient of this container.
 	 */
-	@Raw @Basic
-	public AlchemicIngredient getIngredient() {
+	@Basic
+	public AlchemicIngredient getContents() {
 		return this.contents;
 	}
 
 	/**
 	 * Returns the quantity of the content in this container.
 	 */
-	@Raw
 	public int getContentQuantity() {
-		return getIngredient().getQuantity();
+		return getContents().getQuantity();
 	}
 	
 	/**
-	 * Set the contents off this container to the given contents
+	 * Set the contents off this container to the given contents.
+	 * 
 	 * @param contents
 	 * 		  The given contents
-	 * @pre  The given contents is not less than 0 or greater than the capacity of this container
-	 *		 | (contents >= 0) && (contents <= this.getCapacity()) //TODO
+	 * @pre   The given contents is not less than 0 or greater than the capacity of this container
+	 *		  | (contents >= 0) && (contents <= this.getCapacity()) //TODO
 	 */
+	@Raw
 	public void setContents(AlchemicIngredient contents) {
-		assert((contents.getQuantity() >= 0) && (contents.getQuantity() <= getAbsoluteCapacity())) :
-			"Precondition: Contents is not less than 0 or more than the container's capacity";
+		assert(isValidContents(contents)) :
+			"Precondition: The contents are valid for this container.";
 		this.contents = contents;
+	}
+	
+	/**
+	 * Check whether the given alchemic ingredients as contents is valid.
+	 * 
+	 * @param  contents
+	 * 		   The contents to check.
+	 * @return True if and only if the contents are not effective or the given contents has a quantity not 
+	 * 		   below zero, above the absolute capacity of this container and the state of the given contents
+	 * 		   is equal to that of the capacity of this container.
+	 *         | result == ( contents==null
+	 *         |           || (contents.getQuantity()>=0
+	 *         |     		  && contents.getQuantity()<=getAbsoluteCapacity()
+	 *		   |              && contents.getState()==getCapacity().getState()) )
+	 */
+	@Raw
+	public boolean isValidContents(AlchemicIngredient contents) {
+		if (contents == null)
+			return true;
+		return ( contents.getQuantity()>=0
+			   && contents.getQuantity()<=getAbsoluteCapacity()
+			   && contents.getState()==getCapacity().getState());
 	}
 	
 	/**
@@ -92,15 +123,28 @@ public class IngredientContainer {
 	/**
 	 * Return the capacity of this container.
 	 */
-	@Raw @Basic @Immutable
+	@Basic @Raw @Immutable
 	public Unit getCapacity() {
 		return this.capacity;
 	}
 	
 	/**
+	 * Check whether the given capacity is valid for any ingredient container.
+	 * 
+	 * @param  capacity
+	 * 		   The capacity to check.
+	 * @return True if and only if the given capacity can be used as an container.
+	 * 		   | result == capacity.isContainer()
+	 */
+	@Raw
+	public static boolean isValidCapacity(Unit capacity) {
+		return capacity.isContainer();
+	}
+	
+	/**
 	 * Return the capacity of this container measured in the smallest unit of the same state.
 	 */
-	@Immutable
+	@Raw @Immutable
 	public int getAbsoluteCapacity() {
 		return getCapacity().getAbsoluteCapacity();
 	}
