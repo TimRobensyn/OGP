@@ -61,16 +61,25 @@ public class Laboratory {
 		this.capacity = capacity;
 		setStorage(storage);
 		
+
 		//TODO
-		devices.add(coolingbox);
-		devices.add(oven);
-		devices.add(kettle);
-		devices.add(transmogrifier);
+		//devices.add(coolingbox);
+		//devices.add(oven);
+		//devices.add(kettle);
+		//devices.add(transmogrifier);
 		
 		//addAsDevice(coolingbox);
 		//addAsDevice(oven);
 		//addAsDevice(kettle);
 		//addAsDevice(transmogrifier);
+
+		this.devices = new ArrayList<Device>(10);
+		
+		//addAsDevice(coolingbox);
+		addAsDevice(oven);
+		addAsDevice(kettle);
+		addAsDevice(transmogrifier);
+
 	}
 	
 	/**
@@ -261,7 +270,7 @@ public class Laboratory {
 		}
 
 		makeStandardTemp(container);
-		AlchemicIngredient ingredient = container.getIngredient();
+		AlchemicIngredient ingredient = container.getContents();
 
 		for(AlchemicIngredient storedIngredient : storage) {
 			if(storedIngredient.getType().equals(ingredient.getType())) {
@@ -416,7 +425,7 @@ public class Laboratory {
 	 */
 	@Basic @Raw
 	public Device getDeviceAt(int index) {
-		return getDevices().get(index-1);
+		return this.devices.get(index-1);
 	}
 	
 	/**
@@ -603,16 +612,16 @@ public class Laboratory {
 	 *         |	getOven().process()
 	 */
 	private void makeStandardTemp(IngredientContainer container) {
-		long tempDiff = Temperature.temperatureDifference(container.getIngredient().getStandardTemperatureObject(), container.getIngredient().getTemperatureObject());
+		long tempDiff = Temperature.temperatureDifference(container.getContents().getStandardTemperatureObject(), container.getIngredient().getTemperatureObject());
 		if(tempDiff != 0) {
 			if(tempDiff > 0) {
-				getOven().setTemperature(new Temperature ((long) (container.getIngredient().getStandardTemperatureObject().getColdness()*1.05d),
-						(long) (container.getIngredient().getStandardTemperatureObject().getHotness()*1.05d)));
+				getOven().setTemperature(new Temperature ((long) (container.getContents().getStandardTemperatureObject().getColdness()*1.05d),
+						(long) (container.getContents().getStandardTemperatureObject().getHotness()*1.05d)));
 				getOven().loadIngredient(container);
 				getOven().process();
 				container = getOven().emptyDevice();
 			}
-			getCoolingbox().setTemperature(container.getIngredient().getStandardTemperatureObject());
+			getCoolingbox().setTemperature(container.getContents().getStandardTemperatureObject());
 			getCoolingbox().loadIngredient(container);
 			getCoolingbox().process();
 			container = getCoolingbox().emptyDevice();
