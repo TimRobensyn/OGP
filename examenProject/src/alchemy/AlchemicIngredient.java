@@ -5,6 +5,13 @@ import be.kuleuven.cs.som.annotate.*;
 /**
  * A class of alchemic ingredients involving a name, temperature, type, quantity and a liquid or powder state.
  * 
+ * @invar    The quantity of each alchemic ingredient must be a valid quantity for any ingredient.
+ * 			 | isValidQuantity(getQuantity())
+ * @invar    The temperature of each alchemic ingredient must be a valid temperature.
+ * 			 | Temperature.isValidTemperature(getTemperature())
+ * @invar    The type of each alchemic ingredient must be a valid type for any ingredient.
+ * 			 | isValidType(getType())
+ * 
  * @version  1.0
  * @author   Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  */
@@ -21,6 +28,10 @@ public class AlchemicIngredient {
 	 *        The ingredient type of the new alchemic ingredient.
 	 * @param quantity
 	 *        The quantity (in drops or pinches according to state) of the new alchemic ingredient.
+	 * @pre   The quantity must be valid.
+	 * 		  | isValidQuantity(quantity)
+	 * @pre   The type must be valid.
+	 * 		  | isValidType(type)
 	 * @post  The type of this alchemic ingredient is equal to the given type.
 	 *        | getType() == type
 	 * @post  The quantity of this alchemic ingredient is equal to the given quantity.
@@ -33,7 +44,7 @@ public class AlchemicIngredient {
 	public AlchemicIngredient(IngredientType type, int quantity) {
 		assert(isValidQuantity(quantity)):
 			"Quantity is not valid";
-		assert(type!=null):
+		assert(isValidType(type)):
 			"IngredientType is not valid";
 		this.type = type;
 		this.quantity = quantity;
@@ -68,6 +79,18 @@ public class AlchemicIngredient {
 	@Basic @Immutable
 	public IngredientType getType() {
 		return this.type;
+	}
+	
+	/**
+	 * Check whether the given type is valid.
+	 * 
+	 * @param  type
+	 * 		   The type to check.
+	 * @return True if and only if the type is effective.
+	 * 		   | result == (type!=null)
+	 */
+	public boolean isValidType(IngredientType type) {
+		return (type!=null);
 	}
 	
 	/**
@@ -152,7 +175,7 @@ public class AlchemicIngredient {
 	 */
 	public static boolean isValidQuantity(int quantity) {
 		return ((quantity >= 0) && (quantity <= Long.MAX_VALUE));
-	} //TODO net gemigreerd van Quantity naar hier, check voor de zekerheid.
+	}
 	
 	/**
 	 * A variable referencing the quantity of this alchemic ingredient in number of drops or 
