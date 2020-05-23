@@ -136,15 +136,6 @@ public abstract class TemperatureDevice extends Device {
 		}
 	}
 	
-//	/**
-//	 * Set the temperature of this device using an array of long values.
-//	 * @param	newTemperature
-//	 * 			The new temperature for the device
-//	 */
-//	public final void setTemperature(long[] newTemperature) {
-//			setTemperature(new Temperature(newTemperature));
-//	}
-	
 	/**
 	 * A variable for the temperature of this temperature device.
 	 */

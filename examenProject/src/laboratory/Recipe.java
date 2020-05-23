@@ -3,6 +3,7 @@ package laboratory;
 import be.kuleuven.cs.som.annotate.*;
 import alchemy.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class defining a recipe using a list of processes (add, heat, cool and mix)
@@ -21,20 +22,20 @@ import java.util.ArrayList;
 public class Recipe {
 
 	/**
-	 * Initialize a recipe with an array of processes and an array of ingredients.
+	 * Initialize a recipe with an List of processes and an List of ingredients.
 	 * 
 	 * @param	processes
-	 * 			The array list of processes to be given to the new recipe.
+	 * 			The list of processes to be given to the new recipe.
 	 * @param	ingredients
-	 * 			The array of ingredients to be given to the new recipe.
+	 * 			The list of ingredients to be given to the new recipe.
 	 * @post	If the given processes list does not end with a mix process, it is added at the end of the list.
 	 * 			Else, nothing is added. Either way, the given processes list (with an extra element or not) is set as 
 	 * 			the processes list of this recipe.
 	 *          | if (processes.get(processes.size()-1) != Process.mix)
 	 *		    |    then addProcessAt(Process.mix,processes.size())
 	 *			| new.getProcesses() = processes
-	 * @post	The new array of ingredients of this new recipe is equal
-	 * 			to the given array of ingredients.
+	 * @post	The new list of ingredients of this new recipe is equal
+	 * 			to the given list of ingredients.
 	 * 			| new.getIngredients() == ingredients
 	 * @throws 	IllegalArgumentException
 	 * 			The amount of add processes in the given processes list is not equal to the 
@@ -42,7 +43,7 @@ public class Recipe {
 	 * 			| (getNbOfAdd() != ingredients.size())
 	 */
 	@Raw
-	public Recipe(ArrayList<Process> processes, ArrayList<AlchemicIngredient> ingredients) throws IllegalArgumentException{
+	public Recipe(List<Process> processes, List<AlchemicIngredient> ingredients) throws IllegalArgumentException{
 		if (processes.get(processes.size()-1) != Process.mix)
 			addProcessAt(Process.mix,processes.size());
 		this.processes = processes;
@@ -56,9 +57,9 @@ public class Recipe {
 	 * Initialize a recipe with empty processes and ingredients lists.
 	 * 
 	 * @post The processes list of this recipe is empty.
-	 * 	     | getProcesses = new ArrayList<Process>()
+	 * 	     | new.getProcesses.empty()
 	 * @post The ingredients list of this recipe is empty.
-	 * 	 	 | getIngredients = new ArrayList<AlchemicIngredient>()
+	 * 	 	 | new.getIngredients.empty()
 	 */
 	@Raw
 	public Recipe() {
@@ -68,31 +69,17 @@ public class Recipe {
 	 * Processes
 	 **********************************************************/
 	
-	
+
 	/**
-	 * Variable referencing the ArrayList with the ordered processes to execute in this recipe.
-	 * 
-	 * @invar The list of processes is effective.
-	 *        | processes != null
-	 * @invar Each item in the processes list is effective.
-	 *        | for each item in processes:
-	 *        |   item != null
-	 * @invar The list of processes ends with a mix process.
-	 *        | processes.get(processes.size()-1) == Process.mix
-	 */
-	private ArrayList<Process> processes = new ArrayList<Process>();
-	
-	
-	/**
-	 * Get the array containing the processes of this recipe.
+	 * Get the list containing the processes of this recipe.
 	 */
 	@Basic
-	public ArrayList<Process> getProcesses(){
+	public List<Process> getProcesses(){
 		return this.processes;
 	}
 	
 	/**
-	 * Return the number of processes in the process list of thsi recipe.
+	 * Return the number of processes in the process list of this recipe.
 	 */
 	@Basic
 	public int getNbProcesses() {
@@ -135,12 +122,12 @@ public class Recipe {
 	 * 		   The process to check.
 	 * @param  index
 	 * 		   The index to check.
-	 * @return False, if the given index is lesser than zero, or it exceeds the number
+	 * @return False, if the given index is less than zero, or it exceeds the number
 	 *         of processes.
 	 *         | if ((index<0)
 	 *         |    || (index > getNbProcesses())
 	 *         |   then result == false
-	 *         Otherwise, true if and only if the index is not at the end of the list or if it is, if the given
+	 *         Otherwise, true if and only if the index is not at the end of the list or if it is, the given
 	 * 		   process is 'mix'.
 	 * 		   | else if (index == getNbProcesses()-1)
 	 * 		   |   then result == (process==Process.mix)
@@ -200,20 +187,15 @@ public class Recipe {
 	 *         | if !(index==getNbProcesses() && process!=Process.mix)
 	 *         |   then for each I in index..getNbProcesses()
 	 *         |          new.getProcessAt(I+1) == getProcessAt(I)
-	 * @throws IllegalArgumentException
-	 * 		   This recipe cannot have the given process at the given index.
-	 *         | !canHaveAsProcessAt(process,index)
 	 */
 	@Raw
-	public void addProcessAt(Process process, int index) throws IllegalArgumentException {
-		if (!canHaveAsProcessAt(process,index))
-			throw new IllegalArgumentException("Invalid process for this index.");
+	public void addProcessAt(Process process, int index) {
 		if (index==getNbProcesses() && process!=Process.mix) {
-			processes.add(index,Process.mix);
-			processes.add(index,process);
+			getProcesses().add(index,Process.mix);
+			getProcesses().add(index,process);
 		}
 		else{
-			processes.add(index,process);
+			getProcesses().add(index,process);
 		}
 	}
 	
@@ -229,15 +211,28 @@ public class Recipe {
 	 *         | for each I in index+1..getNbProcesses()
 	 *         |   (new.getProcessAt(I-1) == this.getProcessAt(I))
 	 * @throws IndexOutOfBoundsException
-	 *         The given index is lesser than zero or above or equal to the index of the last element
+	 *         The given index is less than zero or above or equal to the index of the last element
 	 *         in the list (we do not want to remove Process.mix at the end of the list).
 	 *         (index<0 || index>=getNbProcesses()-1)
 	 */
 	public void removeProcessAt(int index) throws IndexOutOfBoundsException {
 		if (index<0 || index>=getNbProcesses()-1)
 			throw new IndexOutOfBoundsException("The index is not valid.");
-		processes.remove(index);
+		getProcesses().remove(index);
 	}
+	
+	/**
+	 * Variable referencing the List with the ordered processes to execute in this recipe.
+	 * 
+	 * @invar The list of processes is effective.
+	 *        | processes != null
+	 * @invar Each item in the processes list is effective.
+	 *        | for each item in processes:
+	 *        |   item != null
+	 * @invar The list of processes ends with a mix process.
+	 *        | processes.get(processes.size()-1) == Process.mix
+	 */
+	private List<Process> processes = new ArrayList<Process>();
 
 
 	
@@ -246,10 +241,10 @@ public class Recipe {
 	 **********************************************************/
 	
 	/**
-	 * Get the (ordered) array of ingredients of this recipe. 
+	 * Get the (ordered) list of ingredients of this recipe. 
 	 */
-	@Basic
-	public ArrayList<AlchemicIngredient> getIngredients() {
+	@Basic @Raw
+	public List<AlchemicIngredient> getIngredients() {
 		return this.ingredients;
 	}
 	
@@ -298,7 +293,7 @@ public class Recipe {
 	//TODO: addIngredientAt, removeIngredientAt
 	
 	/**
-	 * An array containing the alchemic ingredients needed by the processes of this recipe.
+	 * A List containing the alchemic ingredients needed by the processes of this recipe.
 	 * 
 	 * @invar The list of alchemic ingredients is effective.
 	 *        | processes != null
@@ -307,6 +302,6 @@ public class Recipe {
 	 *        |   item != null
 	 * @note  There are no extra restrictions on a single ingredient in the list.
 	 */
-	private ArrayList<AlchemicIngredient> ingredients = new ArrayList<AlchemicIngredient>();
+	private List<AlchemicIngredient> ingredients = new ArrayList<AlchemicIngredient>();
 
 }

@@ -2,6 +2,7 @@ package laboratory;
 
 import be.kuleuven.cs.som.annotate.*;
 import java.util.ArrayList;
+import java.util.List;
 
 import alchemy.*;
 
@@ -32,14 +33,14 @@ public abstract class BottomlessDevice extends Device {
 	public BottomlessDevice() {}
 	
 	/**
-	 * Return the arraylist containing the start ingredients.
+	 * Return the list containing the start ingredients.
 	 */
-	public ArrayList<AlchemicIngredient> getStartIngredients() {
+	public List<AlchemicIngredient> getStartIngredients() {
 		return this.startIngredients;
 	}
 	
 	/**
-	 * Clear the startIngredients arrayList.
+	 * Clear the startIngredients list.
 	 */
 	protected void clearStartIngredients() {
 		getStartIngredients().clear();
@@ -48,19 +49,19 @@ public abstract class BottomlessDevice extends Device {
 	/**
 	 * A variable for the loaded ingredients in the device
 	 */
-	private ArrayList<AlchemicIngredient> startIngredients = new ArrayList<AlchemicIngredient>();
+	private List<AlchemicIngredient> startIngredients = new ArrayList<AlchemicIngredient>();
 	
 	/**
-	 * Return the arrayList with the processedIngredients.
+	 * Return the list with the processedIngredients.
 	 */
 	@Basic
-	protected ArrayList<AlchemicIngredient> getProcessedIngredients() {
+	protected List<AlchemicIngredient> getProcessedIngredients() {
 		return this.processedIngredients;
 	}
 	
 	
 	/**
-	 * A protected method for adding processed Ingredients to the processed ingredients ArrayList. 
+	 * A protected method for adding processed Ingredients to the processed ingredients list. 
 	 */
 	protected void addProcessedIngredient(AlchemicIngredient ingredient) {
 		getProcessedIngredients().add(ingredient);
@@ -69,7 +70,7 @@ public abstract class BottomlessDevice extends Device {
 	/**
 	 * A variable for the processed ingredients still in the device
 	 */
-	private ArrayList<AlchemicIngredient> processedIngredients = new ArrayList<AlchemicIngredient>();
+	private List<AlchemicIngredient> processedIngredients = new ArrayList<AlchemicIngredient>();
 
 	/**
 	 * Loads a new ingredient into this device

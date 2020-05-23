@@ -35,9 +35,9 @@ public class CapacityTest {
 		Temperature standardTemperature = new Temperature(-50,0);
 		IngredientType newType = new IngredientType("Ice",State.POWDER,standardTemperature);
 		AlchemicIngredient newIngredient = new AlchemicIngredient(newType,300);
-		Recipe newRecipe = new Recipe(new String[] {"add","cool","add","heat","mix"},
-				new AlchemicIngredient[] {newIngredient, new AlchemicIngredient(5)});
-		System.out.println(newRecipe);
+//		Recipe newRecipe = new Recipe(new String[] {"add","cool","add","heat","mix"},
+//				new AlchemicIngredient[] {newIngredient, new AlchemicIngredient(5)});
+//		System.out.println(newRecipe);
 	}
 
 }

@@ -3,6 +3,8 @@ package laboratory;
 import alchemy.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
 import be.kuleuven.cs.som.*;
 
 //TODO DOCUMENTATIE
@@ -36,8 +38,8 @@ public class Kettle extends BottomlessDevice {
 			throw new CapacityException(this,"This kettle has no ingredients to work with.");
 		}
 		
-		ArrayList<String> newNameList = new ArrayList<>(0);
-		ArrayList<AlchemicIngredient> closestToWater = new ArrayList<>(0);
+		List<String> newNameList = new ArrayList<>(0);
+		List<AlchemicIngredient> closestToWater = new ArrayList<>(0);
 		Temperature waterTemperature = new Temperature(0L,20L);
 		long diffClosest = Math.abs(Temperature.temperatureDifference(getStartIngredients().get(0).getStandardTemperatureObject(),waterTemperature));
 		int quantityOfLiquids=0;
