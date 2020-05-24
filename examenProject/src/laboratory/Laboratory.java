@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.ArrayList;
 
 import alchemy.*;
 import be.kuleuven.cs.som.annotate.*;
@@ -364,7 +365,7 @@ public class Laboratory {
 				throw new CapacityException(this, "Invalid quantity");
 			this.storage.put(type, quantity);
 		}
-		//TODO
+
 	}
 	
 	/**
@@ -454,7 +455,6 @@ public class Laboratory {
 					&& hasAsDevice(CoolingBox.class)))
 				throw new CapacityException(this,"This laboratory doesn't have the necessary devices "
 						+ "to bring this ingredient to its standard temperature for storage.");
-		//TODO splits dit nog op
 		if (hasAsIngredientType(ingredient.getType()))
 			if (! hasAsDevice(Kettle.class))
 				throw new CapacityException(this,"This laboratory doesn't have the necessary devices "
@@ -630,19 +630,24 @@ public class Laboratory {
 	 * devices.
 	 * 
 	 * @return	True if and only if this laboratory can have each of
-	 * 			its devices as a device, and if each of these devices
-	 * 			reference this laboratory as their laboratory.
+	 * 			its devices as a device, if each of these devices
+	 * 			reference this laboratory as their laboratory and this laboratory does not have
+	 *          the same type of device more than once in it.
 	 * 			| for each device in Devices:
-	 * 			|	  if((!isValidDevice(device)) && (device.getLaboratory() == this))
-	 * 			|     then result == false
+	 * 			|	  if ((!isValidDevice(device)) && (device.getLaboratory() == this)
+	 *          |          || this.hasAsDevice(device.getClass())
+	 * 			|     	then result == false
 	 * 			| result == true
 	 */
 	@Raw
 	public boolean hasProperDevices() {
+		ArrayList<Class<?>> classesSoFar = new ArrayList<Class<?>>();
 		for (Device device:this.devices) {
-			if (! (isValidDevice(device)
-					&& device.getLaboratory() == this))
+			if (!(isValidDevice(device)
+				  && device.getLaboratory()==this)
+			   || classesSoFar.contains(device.getClass()))
 				return false;
+			classesSoFar.add(device.getClass());
 		}
 		return true;
 	}
@@ -665,15 +670,17 @@ public class Laboratory {
 	 * 			| ! isValidDevice(device)
 	 * @throws	IllegalArgumentException
 	 * 			The given device is already attached to some
-	 * 			laboratory.
-	 * 			| (device != null)
-	 * 			|	&& (device.getLaboratory() != null))
+	 * 			laboratory or it already has a device of this kind.
+	 * 			| ( device.getLaboratory()!=null
+	 * 			|  || hasAsDevice(device.getClass())
 	 */
 	public void addAsDevice(Device device) throws IllegalArgumentException{
 		if (!isValidDevice(device))
 			throw new IllegalArgumentException("Device invalid");
 		if (device.getLaboratory()!=null)
 			throw new IllegalArgumentException("Device is already in another laboratory");
+		if (hasAsDevice(device.getClass()))
+			throw new IllegalArgumentException("This laboratory already has a device of this type.");
 		this.devices.add(device);
 		device.setLaboratory(this);
 	}
