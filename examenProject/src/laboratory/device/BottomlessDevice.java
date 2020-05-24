@@ -10,6 +10,10 @@ import alchemy.*;
  * An abstract subclass of Device for devices that can hold a limitless
  * amount of ingredients.
  * 
+ * @invar   The start ingredients of a bottomless device must be proper start ingredients
+ * 			for any bottomless device.
+ * 			| hasProperStartIngredients()
+ * 
  * @version	1.0
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  */
@@ -57,13 +61,80 @@ public abstract class BottomlessDevice extends Device {
 	 */
 	@Basic
 	public int getNbStartIngredients() {
-		return startIngredients.size();
+		return getStartIngredients().size();
+	}
+	
+	/**
+	 * Return the alchemic ingredient at the given index of the start ingredients list.
+	 * 
+	 * @param  index
+	 * 		   The index of the wanted alchemic ingredients.
+	 * @return The alchemic ingredient of the start ingredients list of this bottomless device at the given index.
+	 *         | return getStartIngredients().get(index-1)
+	 * @throws IndexOutOfBoundsException
+	 * 		   The given index is lesser than or equal to zero or greater than the size of 
+	 * 		   the start ingredients list.
+	 *         | (index<=0 || index>getNbStartIngredients())
+	 */
+	public AlchemicIngredient getStartIngredientAt(int index) throws IndexOutOfBoundsException {
+		return getStartIngredients().get(index-1);
+	}
+	
+	/**
+	 * Check whether the given ingredient is a valid ingredient for any bottomless device.
+	 * 
+	 * @param  ingredient
+	 * 		   The ingredient to check.
+	 * @return True if and only if the ingredient is effective.
+	 * 		   | result == (ingredient!=null)
+	 */
+	public static boolean isValidStartIngredient(AlchemicIngredient ingredient) {
+		return (ingredient!=null);
+	}
+	
+	/**
+	 * Check whether the given bottomless device has proper start ingredients associated with it.
+	 * 
+	 * @param  bottomlessDevice
+	 * 		   The bottomless device to check.
+	 * @return True if and only if the start ingredients list of this bottomless device is effective
+	 * 		   and the ingredients in the list are valid for any bottomless device.
+	 * 		   | result == 
+	 *         |   bottomlessDevice.getProcesses()!=null
+	 *  	   |   && for each ingredient in bottomlessDevice.getStartIngredients()
+	 *         |         isValidStartIngredient(recipe.getProcessAt(i),i)
+	 */
+	public static boolean hasProperStartIngredients(BottomlessDevice bottomlessDevice) {
+		for (AlchemicIngredient ingredient: bottomlessDevice.getStartIngredients()) {
+			if (!BottomlessDevice.isValidStartIngredient(ingredient))
+				return false;
+		}
+		return (bottomlessDevice.getStartIngredients()!=null);
 	}
 	
 	
+	/**
+	 * Add a given ingredient to the list of start ingredients.
+	 * 
+	 * @post If the given ingredient is valid, the number of start ingredients associated with 
+	 *       this bottomless device is incremented by one.
+	 *       | if (isValidStartIngredient(ingredient))
+	 * 		 |   then new.getNbStartIngredients() == getNbStartIngredients()+1
+	 * @post If the given ingredient is valid, this bottomless device has the given ingredient at the end
+	 * 		 of its start ingredients list.
+	 *       | if (isValidStartIngredient(ingredient))
+	 *       |   then new.getStartIngredientAt(getNbStartIngredients()+1) == ingredient
+	 */
+	private void addAsStartIngredient(AlchemicIngredient ingredient) {
+		if (isValidStartIngredient(ingredient))
+			startIngredients.add(ingredient);
+	}
 	
 	/**
 	 * Clear the startIngredients list.
+	 * 
+	 * @post The start ingredients list of this bottomless device is empty.
+	 * 		 | new.getNbStartIngredients() == 0
 	 * 
 	 * @note There is no dire need for a method that removes one ingredient, as this is not how the device is
 	 * 		 supposed to work, namely removing all start ingredients after they are processed.
@@ -120,16 +191,16 @@ public abstract class BottomlessDevice extends Device {
 	/**
 	 * Loads a new ingredient in a container into this device.
 	 * 
-	 * @param container
-	 * 		  The given container containing the ingredient that will be loaded into this device.
-	 * @post  The ingredient in the given container gets added to the start ingredients of this device 
-	 *        and the container gets deleted.
-	 * 		  | this.getStartIngredients().add(container.getContents())
-	 * 		  | container = null
+	 * @param  container
+	 * 		   The given container containing the ingredient that will be loaded into this device.
+	 * @post   The container gets deleted.
+	 * 		   | container = null
+	 * @effect The contents of the given container are added as start ingredient.
+	 * 		   | addAsStartIngredient(container.getContents())
 	 */
 	@Override @Raw
 	public final void loadIngredient(IngredientContainer container) {
-		this.getStartIngredients().add(container.getContents());
+		addAsStartIngredient(container.getContents());
 		container = null;
 	}
 
