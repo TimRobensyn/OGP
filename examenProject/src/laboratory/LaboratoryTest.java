@@ -51,9 +51,13 @@ public class LaboratoryTest {
 		devices_full.add(kettle_full);
 		devices_full.add(transmogrifier_full);
 		
+<<<<<<< HEAD
 		laboratory_empty = new Laboratory(5);
 		laboratory_full = new Laboratory(1,storage_full,devices_full);
 		
+=======
+	
+>>>>>>> branch 'master' of https://github.com/TimRobensyn/OGP
 		water = new AlchemicIngredient(24);
 		crumbs = new AlchemicIngredient(new IngredientType("Crumbs",State.POWDER,
 				new Temperature(0,40)),30);
@@ -68,174 +72,59 @@ public class LaboratoryTest {
 		kettle = new Kettle();
 		transmogrifier = new Transmogrifier();
 		
+		coolingBox_empty = new CoolingBox(new Temperature(0,0));
+		
 		devices = new HashSet<Device>();
 		devices.add(coolingBox);
 		devices.add(oven);
 		devices.add(kettle);
 		devices.add(transmogrifier);
 		
+		laboratory_empty = new Laboratory(5);
 		laboratory = new Laboratory(5,storage,devices);
-		
-		coolingBox_empty = new CoolingBox(new Temperature(0,0));
-//		laboratory_empty = new Laboratory(100);
-//		laboratory = new Laboratory(1000, storage, devices);
-//		basicLiquidContainer = new IngredientContainer(Unit.BARREL_LIQUID);
-//		
-
-
-//		
-//		laboratory_waterStorage = new Laboratory(100, waterStorage);
-
-		
-//		laboratory_big = new Laboratory(5000, bigStorage);
-//		
-//		laboratory_empty_allDevices = new Laboratory(100, allDevices);
+		laboratory_full = new Laboratory(1,storage_full,devices_full);
 	}
 	
+	@Test
+	public void testConstructorFull_Legal() {
+		laboratoryCapacityStorageDevices = new Laboratory(100,storage,devices);
+
+		assertEquals(100, laboratoryCapacityStorageDevices.getCapacity());
+		for (IngredientType type:storage.keySet()) {
+			assertTrue(laboratoryCapacityStorageDevices.hasAsIngredientType(type));
+			assertEquals(laboratoryCapacityStorageDevices.getQuantityOf(type),
+					storage.get(type).intValue());
+		}
+		for (Device device:devices) {
+			assertTrue(laboratoryCapacityStorageDevices.hasAsDevice(device));
+		}
+
+	}
 	
-//	
-//	@Test
-//	public void testConstructorFull_Legal() {
-//		laboratoryCapacityStorageDevices = new Laboratory(100,storage,devices);
-//
-//		assertEquals(100, laboratoryCapacityStorageDevices.getCapacity());
-//		for (IngredientType type:storage.keySet()) {
-//			assertTrue(laboratoryCapacityStorageDevices.hasAsIngredientType(type));
-//			assertEquals(laboratoryCapacityStorageDevices.getQuantityOf(type),
-//					storage.get(type).intValue());
-//		}
-//		for (Device device:devices) {
-//			assertTrue(laboratoryCapacityStorageDevices.hasAsDevice(device));
-//		}
-//
-//	}
-//	
-//	@Test
-//	public void testConstructorCapacityDevices_Legal() {
-//		laboratoryCapacityDevices = new Laboratory(100, devices);
-//
-//		assertEquals(100, laboratoryCapacityDevices.getCapacity());
-//		assertEquals(0, laboratoryCapacityDevices.getInventory()[0].length);
-//		for (Device device:devices) {
-//			assertTrue(laboratoryCapacityDevices.hasAsDevice(device));
-//		}
-//	}
-//	
-//	@Test
-//	public void testConstructorCapacity_Legal() {
-//		laboratoryCapacity = new Laboratory(100);
-//		
-//		assertEquals(100, laboratoryCapacity.getCapacity());
-//		assertEquals(0, laboratoryCapacity.getInventory()[0].length);
-//		assertFalse(laboratoryCapacity.hasAsDevice(CoolingBox.class));
-//		assertFalse(laboratoryCapacity.hasAsDevice(Oven.class));
-//		assertFalse(laboratoryCapacity.hasAsDevice(Kettle.class));
-//		assertFalse(laboratoryCapacity.hasAsDevice(Transmogrifier.class));
-//	}
-//	
-//	@Test (expected = CapacityException.class)
-//	public void testConstructor_Illegal_invalidCapacity() {
-//		laboratory = new Laboratory(-1);
-//	}
-//	
-//	@Test
-//	public void testIsValidCapacity_LegalCase() {
-//		assertTrue(Laboratory.isValidCapacity(10));
-//	}
-//	
-//	@Test
-//	public void testIsValidCapacity_IllegalCase() {
-//		assertFalse(Laboratory.isValidCapacity(-1));
-//		assertFalse(Laboratory.isValidCapacity(Integer.MAX_VALUE + 1));
-//	}
-//	
-//	@Test
-//	public void testGetUsedCapacity() {
-//		assertEquals(0,laboratory_empty.getUsedCapacity(),0.00001);
-//		assertEquals(8.0,laboratory.getUsedCapacity(),0.00001);
-//	}
-//
-//	
-//	@Test
-//	public void testGetQuantityOf() {
-//		assertEquals(24, laboratory.getQuantityOf(water.getType()));
-//		assertEquals(30, laboratory.getQuantityOf(crumbs.getType()));
-//	}
-//	
-//	@Test (expected = CapacityException.class)
-//	public void testGetQuantityOf_IllegalCase() {
-//		laboratory_empty.getQuantityOf(water.getType());
-//	}
-//	
-//	@Test
-//	public void testAddIngredientType() {
-//		assertFalse(laboratory_empty.hasAsIngredientType(water.getType()));
-//		laboratory.addIngredientType(water.getType(),water.getQuantity());
-//		assertTrue(laboratory_empty.hasAsIngredientType(water.getType()));
-//	}
-//	
-//	@Test
-//	public void testRemoveIngredientType() {
-//		assertTrue(laboratory.hasAsIngredientType(water.getType()));
-//		laboratory.removeIngredientType(water.getType());
-//		assertFalse(laboratory.hasAsIngredientType(water.getType()));
-//	}
-//	
-//	@Test
-//	public void testStore_legalCase_NewIngredientType() {
-//		IngredientContainer container = new IngredientContainer(coke,Unit.getContainer(
-//				coke.getState(), coke.getQuantity()));
-//		laboratory.store(container);
-//		assertTrue(laboratory.hasAsIngredientType(coke.getType()));
-//		assertEquals(null,container); //TODO terminatie werkt niet
-//	}
-//	
-//	@Test
-//	public void testStore_LegalCase_OldIngredientType() {
-//		IngredientContainer container = new IngredientContainer(water, Unit.getContainer(
-//				water.getState(), water.getQuantity()));
-//
-//		laboratory.store(container);
-//		assertTrue(laboratory.hasAsIngredientType(water.getType()));
-//		assertEquals(48,laboratory.getQuantityOf(water.getType()));
-//		assertEquals(null,container); //TODO terminatie werkt niet
-//	}
-//	
-//	@Test (expected = CapacityException.class)
-//	public void testStore_IllegalCase_InvalidCapacity() {
-//		AlchemicIngredient ingredient = new AlchemicIngredient(1);
-//		IngredientContainer container = new IngredientContainer(ingredient, Unit.getBiggestContainer(State.LIQUID));
-//		for (Object name: laboratory_full.getInventory()[0])
-//			System.out.println(name.toString());
-//		laboratory_full.store(container);
-//		for (Object name: laboratory_full.getInventory()[0])
-//			System.out.println(name.toString());
-//	}
-//	
-//	@Test
-//	public void testRequestNameAmount_LegalCase_NoLeftovers() {
-//		assertTrue(laboratory.hasAsIngredientType(crumbs.getType()));
-//		IngredientContainer ingredientContainer = laboratory.request("Crumbs");
-//		assertFalse(laboratory.hasAsIngredientType(crumbs.getType()));
-//		assertEquals(crumbs.getType(),ingredientContainer.getContents().getType());
-//	}
-//	
-//	@Test
-//	public void vergelijkTypes() {
-//		assertEquals(new IngredientType("Water",State.LIQUID,new Temperature(0,20)),water.getType());
-//	}
+	@Test
+	public void testConstructorCapacityDevices_Legal() {
+		laboratoryCapacityDevices = new Laboratory(100, devices);
+
+		assertEquals(100, laboratoryCapacityDevices.getCapacity());
+		assertEquals(0, laboratoryCapacityDevices.getInventory()[0].length);
+		for (Device device:devices) {
+			assertTrue(laboratoryCapacityDevices.hasAsDevice(device));
+		}
+	}
 	
-//	@Test
-//	public void testRequestNameAmount_LegalCase_Leftovers() {
-//		IngredientContainer ingredientContainer = laboratory.request("ingredientTypeLiquid", 10);
-//		
-//		assertEquals(ingredientTypeLiquid, ingredientContainer.getContents().getType());
-//		assertEquals(10, ingredientContainer.getContents().getQuantity());
-//		assertEquals(ingredientTypeLiquid, laboratory_storage.getIngredientAt(2).getType());
-//		assertEquals(5, laboratory_storage.getIngredientAt(1).getQuantity());
-//		assertEquals(ingredientPowder, laboratory_storage.getIngredientAt(1));
-//	}
+	@Test
+	public void testConstructorCapacity_Legal() {
+		laboratoryCapacity = new Laboratory(100);
+		
+		assertEquals(100, laboratoryCapacity.getCapacity());
+		assertEquals(0, laboratoryCapacity.getInventory()[0].length);
+		assertFalse(laboratoryCapacity.hasAsDevice(CoolingBox.class));
+		assertFalse(laboratoryCapacity.hasAsDevice(Oven.class));
+		assertFalse(laboratoryCapacity.hasAsDevice(Kettle.class));
+		assertFalse(laboratoryCapacity.hasAsDevice(Transmogrifier.class));
+	}
 	
+<<<<<<< HEAD
 //	@Test (expected = CapacityException.class)
 //	public void testRequestNameAmount_IllegalCase_IngredientNotFound() {
 //		laboratory_storage.request("water",10);
@@ -285,6 +174,155 @@ public class LaboratoryTest {
 		assertTrue(laboratory.hasProperDevices());
 	}
 	
+=======
+	@Test (expected = CapacityException.class)
+	public void testConstructor_Illegal_invalidCapacity() {
+		laboratory = new Laboratory(-1);
+	}
+	
+	@Test
+	public void testIsValidCapacity_LegalCase() {
+		assertTrue(Laboratory.isValidCapacity(10));
+	}
+	
+	@Test
+	public void testIsValidCapacity_IllegalCase() {
+		assertFalse(Laboratory.isValidCapacity(-1));
+		assertFalse(Laboratory.isValidCapacity(Integer.MAX_VALUE + 1));
+	}
+	
+	@Test
+	public void testGetUsedCapacity() {
+		assertEquals(0,laboratory_empty.getUsedCapacity(),0.00001);
+		assertEquals(8.0,laboratory.getUsedCapacity(),0.00001);
+	}
+
+	
+	@Test
+	public void testGetQuantityOf() {
+		assertEquals(24, laboratory.getQuantityOf(water.getType()));
+		assertEquals(30, laboratory.getQuantityOf(crumbs.getType()));
+	}
+	
+	@Test (expected = CapacityException.class)
+	public void testGetQuantityOf_IllegalCase() {
+		laboratory_empty.getQuantityOf(water.getType());
+	}
+	
+	@Test
+	public void testStore_legalCase_NewIngredientType() {
+		IngredientContainer container = new IngredientContainer(coke,Unit.getContainer(
+				coke.getState(), coke.getQuantity()));
+		laboratory.store(container);
+		assertTrue(laboratory.hasAsIngredientType(coke.getType()));
+		assertEquals(null,container); //TODO terminatie werkt niet
+	}
+	
+	@Test
+	public void testStore_LegalCase_OldIngredientType() {
+		IngredientContainer container = new IngredientContainer(water, Unit.getContainer(
+				water.getState(), water.getQuantity()));
+
+		laboratory.store(container);
+		assertTrue(laboratory.hasAsIngredientType(water.getType()));
+		assertEquals(48,laboratory.getQuantityOf(water.getType()));
+		assertEquals(null,container); //TODO terminatie werkt niet
+	}
+	
+
+
+	@Test (expected = CapacityException.class)
+	public void testStore_IllegalCase_InvalidCapacity() {
+		AlchemicIngredient ingredient = new AlchemicIngredient(1);
+		IngredientContainer container = new IngredientContainer(ingredient, Unit.getBiggestContainer(State.LIQUID));
+		for (Object name: laboratory_full.getInventory()[0])
+			System.out.println(name.toString());
+		laboratory_full.store(container);
+		for (Object name: laboratory_full.getInventory()[0])
+			System.out.println(name.toString());
+	}
+
+	
+	@Test
+	public void testRequestNameAmount_LegalCase_NoLeftovers() {
+		assertTrue(laboratory.hasAsIngredientType(crumbs.getType()));
+		IngredientContainer ingredientContainer = laboratory.request("Crumbs",40);
+		assertFalse(laboratory.hasAsIngredientType(crumbs.getType()));
+		assertEquals(crumbs.getType(),ingredientContainer.getContents().getType());
+	}
+	
+	@Test
+	public void compareIngredientTypes() {
+		assertEquals(new IngredientType("Water",State.LIQUID,new Temperature(0,20)),water.getType());
+	}
+	
+	@Test
+	public void vergelijkTypes() {
+		assertEquals(new IngredientType("Water",State.LIQUID,new Temperature(0,20)),water.getType());
+	}
+
+	
+	@Test
+	public void testRequestNameAmount_LegalCase_Leftovers() {
+		IngredientContainer ingredientContainer = laboratory.request("Crumbs", 10);
+		
+		assertTrue(laboratory.hasAsIngredientType(crumbs.getType()));
+		assertEquals(10, ingredientContainer.getContents().getQuantity());
+		assertEquals(20, laboratory.getQuantityOf(ingredientContainer.getContents().getType()));
+	}
+	
+	@Test (expected = CapacityException.class)
+	public void testRequestNameAmount_IllegalCase_IngredientNotFound() {
+		laboratory.request("water",10);
+	}
+	
+	@Test (expected = CapacityException.class)
+	public void testRequestNameAmount_IllegalCase_NotEnoughIngredient() {
+		laboratory.request("Crumb", 31);
+	}
+	
+	@Test (expected = CapacityException.class)
+	public void testRequestNameAmount_IllegalCase_AmountTooBig() {
+		laboratory_full.request("Water", 50401);
+	}
+	
+	@Test
+	public void testRequestName_LegalCase() {
+		IngredientContainer container = laboratory.request("Water");
+		
+		assertEquals(container.getCapacity(), Unit.BARREL_LIQUID);
+		assertEquals(container.getContents().getType(), water.getType());
+		assertEquals(container.getContentQuantity(), Unit.BARREL_LIQUID);
+	}
+	
+	@Test (expected = CapacityException.class)
+	public void testRequestName_IllegalCase_IngredientNotFound() {
+		laboratory.request("Water");
+	}
+	
+//	@Test //TODO
+//	public void testGetInventory() {
+//		
+//	}
+
+
+//	
+//	@Test (expected = CapacityException.class) //TODO
+//	public void testIsValidDeviceAt_IllegalCase_DeviceInOtherLab() {
+//		
+//	}
+//	
+//	@Test //TODO
+//	public void testHasProperDevices_LegalCase() {
+//		
+//	}
+//	
+//	@Test //TODO
+//	public void testHasProperDevices_IllegalCase() {
+//		
+//	}
+//	
+>>>>>>> branch 'master' of https://github.com/TimRobensyn/OGP
 	@Test
 	public void testAddAsDevice_LegalCase() {
 		laboratory_empty.addAsDevice(coolingBox_empty);
@@ -334,6 +372,7 @@ public class LaboratoryTest {
 		assertFalse(laboratory.hasAsDevice(kettle));
 		assertFalse(laboratory.hasAsDevice(transmogrifier));
 	}
+<<<<<<< HEAD
 	
 	@Test
 	public void testTerminate() {
@@ -346,4 +385,7 @@ public class LaboratoryTest {
 		public void tearDownFixture() {
 			laboratory.terminate();
 		}
+=======
+
+>>>>>>> branch 'master' of https://github.com/TimRobensyn/OGP
 }
