@@ -788,5 +788,5 @@ public class Laboratory {
 	/**
 	 * A variable for the termination of this laboratory.
 	 */
-	private boolean isTerminated = true;
+	private boolean isTerminated = false;
 }
