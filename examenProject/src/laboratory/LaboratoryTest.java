@@ -53,13 +53,14 @@ public class LaboratoryTest {
 		devices.add(transmogrifier);
 		
 		laboratory_empty = new Laboratory(5);
-		laboratory = new Laboratory(5,storage,devices);
+		
 		laboratory_full = new Laboratory(1,storage_full,devices);
 		
 	}
 	
 	@Before
 	public void setUpFixture() {
+		laboratory = new Laboratory(5,storage,devices);
 //		laboratory_empty = new Laboratory(100);
 //		laboratory = new Laboratory(1000, storage, devices);
 //		basicLiquidContainer = new IngredientContainer(Unit.BARREL_LIQUID);
@@ -73,6 +74,11 @@ public class LaboratoryTest {
 //		laboratory_big = new Laboratory(5000, bigStorage);
 //		
 //		laboratory_empty_allDevices = new Laboratory(100, allDevices);
+	}
+	
+	@After
+	public void tearDownFixture() {
+		laboratory.terminate();
 	}
 	
 	@Test
@@ -143,7 +149,7 @@ public class LaboratoryTest {
 		assertEquals(30, laboratory.getQuantityOf(crumbs.getType()));
 	}
 	
-	@Test (expected = IllegalArgumentException.class)
+	@Test (expected = CapacityException.class)
 	public void testGetQuantityOf_IllegalCase() {
 		laboratory_empty.getQuantityOf(water.getType());
 	}
@@ -193,17 +199,17 @@ public class LaboratoryTest {
 			System.out.println(name.toString());
 	}
 	
-//	@Test
-//	public void testRequestNameAmount_LegalCase_NoLeftovers() {
-//		IngredientContainer ingredientContainer = laboratory_storage.request("ingredientTypeLiquid", 15);
-//		
-//		assertEquals(ingredientLiquid, ingredientContainer.getContents());
-//		assertEquals(ingredientPowder, laboratory_storage.getIngredientAt(1));
-//	}
-//	
+	@Test
+	public void testRequestNameAmount_LegalCase_NoLeftovers() {
+		assertTrue(laboratory.hasAsIngredientType(crumbs.getType()));
+		IngredientContainer ingredientContainer = laboratory.request("Crumbs");
+		assertFalse(laboratory.hasAsIngredientType(crumbs.getType()));
+		assertEquals(crumbs.getType(),ingredientContainer.getContents().getType());
+	}
+	
 //	@Test
 //	public void testRequestNameAmount_LegalCase_Leftovers() {
-//		IngredientContainer ingredientContainer = laboratory_storage.request("ingredientTypeLiquid", 10);
+//		IngredientContainer ingredientContainer = laboratory.request("ingredientTypeLiquid", 10);
 //		
 //		assertEquals(ingredientTypeLiquid, ingredientContainer.getContents().getType());
 //		assertEquals(10, ingredientContainer.getContents().getQuantity());
@@ -211,7 +217,7 @@ public class LaboratoryTest {
 //		assertEquals(5, laboratory_storage.getIngredientAt(1).getQuantity());
 //		assertEquals(ingredientPowder, laboratory_storage.getIngredientAt(1));
 //	}
-//	
+	
 //	@Test (expected = CapacityException.class)
 //	public void testRequestNameAmount_IllegalCase_IngredientNotFound() {
 //		laboratory_storage.request("water",10);

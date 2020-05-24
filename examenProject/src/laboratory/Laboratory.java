@@ -765,11 +765,12 @@ public class Laboratory {
 	 */
 	@Basic @Raw
 	public void terminate() {
-		
+		Set<Device> toRemove = new HashSet<Device>();
 		for (Device device: this.devices) {
 			device.setLaboratory(null);
-			removeAsDevice(device);
+			toRemove.add(device);
 		}
+		this.devices.removeAll(toRemove);
 		this.isTerminated = true;
 	}
 	
