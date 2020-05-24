@@ -5,7 +5,6 @@ import temperature.Temperature;
 
 import static org.junit.Assert.*;
 import org.junit.*;
-import java.util.ArrayList;
 
 /**
  * A class for testing all devices.
@@ -98,7 +97,8 @@ public class DeviceTest {
 		assertEquals(coolingBox.getStartIngredient(),null);
 				
 		// The temperature of the processed ingredient is still its own.
-		assertEquals(0,Temperature.compareTemperature(tempIngredient1, coolingBox.getProcessedIngredient().getTemperatureObject()));
+		assertEquals(0,Temperature.compareTemperature(tempIngredient1, 
+				                                      coolingBox.getProcessedIngredient().getTemperatureObject()));
 	}
 	
 	@Test
@@ -110,7 +110,8 @@ public class DeviceTest {
 		assertEquals(coolingBox.getStartIngredient(),null);
 				
 		// The temperature of the processed ingredient is the same as of the cooling box.
-		assertEquals(0,Temperature.compareTemperature(tempCoolingBox, coolingBox.getProcessedIngredient().getTemperatureObject()));
+		assertEquals(0,Temperature.compareTemperature(tempCoolingBox, 
+				                                      coolingBox.getProcessedIngredient().getTemperatureObject()));
 	}
 	
 	@Test
