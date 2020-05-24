@@ -76,6 +76,7 @@ public class IngredientType {
 	 *        | else
 	 *        |    then new.getStandardTemperature() == {0,20}
 	 */
+	@Raw
 	public IngredientType(String[] simpleNames, String specialName, State state, Temperature standardTemperature) {
 		
 		if ( !areValidSimpleNames(simpleNames)
@@ -109,6 +110,7 @@ public class IngredientType {
 	 *         temperature object, the new ingredient type has no special name.
 	 *         | this(simpleNames,null,state,standardTemperature.getTemperature())
 	 */
+	@Raw
 	public IngredientType(String[] simpleNames, State state, Temperature standardTemperature) {
 		this(simpleNames, null, state, standardTemperature);
 	}
@@ -127,6 +129,7 @@ public class IngredientType {
 	 *         namely the given name, state and temperature object, the new ingredient type has no special name.
 	 *         | this(new String[] {name},state,standardTemperature)
 	 */
+	@Raw
 	public IngredientType(String name, State state, Temperature standardTemperature) {
 		this(new String[] {name}, state, standardTemperature);
 	}
@@ -143,6 +146,7 @@ public class IngredientType {
 	 *         It has liquid as its state.
 	 *         | this(name, State.LIQUID, standardTemperature)       
 	 */
+	@Raw
 	public IngredientType(String name, Temperature standardTemperature) {
 		this(name, State.LIQUID, standardTemperature);
 	}
@@ -194,6 +198,7 @@ public class IngredientType {
 	 * 
 	 * @note   This checker is equivalent with canHaveAsSimpleName for the array of simple names.         
 	 */
+	@Raw
 	public static boolean isValidSimpleName(String name){
 		
 		//Naam is niet null of leeg.
@@ -251,6 +256,7 @@ public class IngredientType {
 	 *          |      && simpleNames[I].compareTo(simpleNames[I+1]) < 1)
 	 *          |      then result == false	
 	 */
+	@Raw
 	public static boolean areValidSimpleNames(String[] simpleNames) {
 		//At least one name is needed
 		if (simpleNames.length<1) return false;
@@ -288,7 +294,7 @@ public class IngredientType {
 	 * 			|              getSimpleNames()[I] + ", " +
 	 * 			|          getSimpleNames()[size-2] + " and " + getSimpleNames()[size-1]
 	 */
-	@Raw
+	@Basic @Raw
 	public String getSimpleName() {
 		
 		int size = getSimpleNames().length;
@@ -321,8 +327,8 @@ public class IngredientType {
 	
 	/**
 	 * Return the special name of this name object.
-	 * @return specialName
 	 */
+	@Basic
 	public String getSpecialName() {
 		return this.specialName;
 		}
@@ -355,6 +361,7 @@ public class IngredientType {
 	 *         | result ==
 	 *         |   (isValidSimpleName(specialName) || specialName==null)
 	 */
+	@Raw
 	public static boolean isValidSpecialName(String specialName) {
 		return (isValidSimpleName(specialName) || specialName==null);
 	}
@@ -376,7 +383,7 @@ public class IngredientType {
 	 * 
 	 * @returns	The state of this ingredient type.
 	 */
-	@Basic @Raw
+	@Basic
 	public State getState() {
 		return this.state;
 	}

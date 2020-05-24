@@ -63,6 +63,9 @@ public enum Unit {
 	}
 	
 	
+	/**************************************************
+	 * Unit capacity
+	 **************************************************/
 	
 	/**
 	 * Return the capacity of this unit.
@@ -87,6 +90,11 @@ public enum Unit {
 	 * A variable containing this unit's capacity.
 	 */
 	private final int capacity;
+	
+	
+	/**************************************************
+	 * Index
+	 **************************************************/
 	
 	/**
 	 * Return the index of this unit.
@@ -137,6 +145,11 @@ public enum Unit {
 	 * A variable containing this unit's index relative to the other units with the same state.
 	 */
 	private final int index;
+	
+	
+	/**************************************************
+	 * State
+	 **************************************************/
 	
 	/**
 	 * Return the state of this unit.

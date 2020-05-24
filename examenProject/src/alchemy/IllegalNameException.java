@@ -9,7 +9,7 @@ import be.kuleuven.cs.som.annotate.*;
 public class IllegalNameException extends RuntimeException{
 	
 	/**
-	 * Required because this class inherits from Exception
+	 * Required because this class inherits from Exception.
 	 */
 	private static final long serialVersionUID = 1L;
 	
@@ -34,7 +34,7 @@ public class IllegalNameException extends RuntimeException{
 	/**
 	 * Return the illegal name which caused this exception.
 	 */
-	@Raw @Immutable @Basic
+	@Basic @Raw @Immutable
 	public String getName() {
 		return name;
 	}

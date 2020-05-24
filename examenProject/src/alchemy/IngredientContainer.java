@@ -146,7 +146,7 @@ public class IngredientContainer {
 	 */
 	@Raw @Immutable
 	public int getAbsoluteCapacity() {
-		return getCapacity().getAbsoluteCapacity();
+		return capacity.getAbsoluteCapacity();
 	}
 
 	/**
