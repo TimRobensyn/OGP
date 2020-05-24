@@ -1,9 +1,7 @@
 package laboratory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,7 +9,6 @@ import alchemy.*;
 import be.kuleuven.cs.som.annotate.*;
 import laboratory.device.*;
 import recipe.Recipe;
-import temperature.Temperature;
 
 /**
  * A class describing a laboratory for storing and handling alchemic ingredients and devices.
@@ -28,6 +25,8 @@ import temperature.Temperature;
  */
 
 public class Laboratory {
+	
+	//TODO Constructoren doc, kijk doc na voor andere functies, maak eventueel meer functies private
 	
 	/**************************************************
 	 * CONSTRUCTORS
@@ -59,13 +58,13 @@ public class Laboratory {
 	 * 		   | !isValidCapacity(capacity)
 	 */
 	@Raw
-	public Laboratory(int capacity, List<AlchemicIngredient> storage, Set<Device> devices)
-			throws CapacityException {
+	public Laboratory(int capacity, Map<IngredientType,Integer> storage, Set<Device> devices)
+			throws CapacityException, IllegalArgumentException{
 		if(!isValidCapacity(capacity)) {
 			throw new CapacityException(this, "The given capacity is invalid.");
 		}
 		this.capacity = capacity;
-		setStorage(storage);
+		this.storage = storage;
 		this.devices = new HashSet<Device>();
 		this.devices.addAll(devices);
 	}
@@ -73,22 +72,16 @@ public class Laboratory {
 	/**
 	 * Initialize a new laboratory with the given capacity and devices with an empty storage
 	 * 
-	 * @param capacity
-	 * 		  The given capacity
-	 * @param coolingbox
-	 * 		  The given coolingbox
-	 * @param oven
-	 * 		  The given oven
-	 * @param kettle
-	 * 		  The given kettle
-	 * @param transmogrifier
-	 * 		  The given transmogrifier
+	 * @param 	capacity
+	 * 			The given capacity
+	 * @param	devices
+	 * 			The set of devices to be added in this new laboratory.
 	 * @effect The new laboratory has the given capacity and devices and an empty storage
-	 * 		   | this(capacity, new ArrayList<AlchemicIngredient>(), coolingbox, oven, kettle, transmogrifier)
+	 * 		   | this(capacity,new HashMap<IngredientType,Integer>(),devices)
 	 */
 	@Raw
 	public Laboratory(int capacity, Set<Device> devices) {
-		this(capacity,new ArrayList<AlchemicIngredient>(),devices);
+		this(capacity,new HashMap<IngredientType,Integer>(),devices);
 	}
 	
 	/**
@@ -99,11 +92,11 @@ public class Laboratory {
 	 * 		  | getCapacity() == capacity
 	 * @effect The new laboratory is initialized with the given capacity.
 	 * 		   It's storage is empty and the devices are set to null.
-	 * 		   | this(capacity, new List<AlchemicIngredient>(), null, null, null, null)
+	 * 		   | this(capacity, new HashMap<IngredientType,Integer>(), new HashSet<Device>())
 	 */
 	@Raw
 	public Laboratory(int capacity) {
-		this(capacity, new ArrayList<AlchemicIngredient>(), new HashSet<Device>());
+		this(capacity, new HashMap<IngredientType,Integer>(), new HashSet<Device>());
 	}
 	
 	/**************************************************
@@ -119,7 +112,7 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Return the total capacity in spoons.
+	 * Return the total capacity in spoons. //TODO help formaliseren
 	 */
 	public int getCapacityInSpoons() {
 		return (getCapacity()*Unit.STOREROOM_LIQUID.getAbsoluteCapacity())
@@ -149,44 +142,24 @@ public class Laboratory {
 	
 	/**
 	 * Get the quantity of the given ingredient type.
+	 * 
+	 * @throws	IllegalArgumentException
+	 * 			The given type is not found in this laboratory's storage.
+	 * 			| ! hasAsIngredientType(type)
 	 */
 	@Basic @Raw
-	public int getQuantityOf(IngredientType type) {
+	public int getQuantityOf(IngredientType type) throws IllegalArgumentException{
+		if (!hasAsIngredientType(type))
+			throw new IllegalArgumentException("Type not found.");
 		return this.storage.get(type);
 	}
 	
 	/**
-	 * Check whether this class contains the given ingredient type.
+	 * Return the number of ingredients in this laboratory.
 	 */
-	@Basic @Raw
-	public boolean hasAsIngredientType(IngredientType type) {
-		return this.storage.containsKey(type);
-	}
-	
-	/**
-	 * Check whether the given ingredient type is a valid type.
-	 * 
-	 * @param	type
-	 * 			The ingredient type to check.
-	 * @return	True if the given type is effective.
-	 * 			| (type!=null)
-	 */
-	@Raw
-	public boolean isValidIngredientType(IngredientType type) {
-		return (type!=null);
-	}
-	
-	/**
-	 * Check whether the given ingredient type has a valid quantity.
-	 * 
-	 * @param	type
-	 * 			The type to check the quantity of.
-	 * @return	True if the quantity of the given type is bigger
-	 * 			than zero.
-	 */
-	@Raw
-	public boolean canHaveAsQuantity(IngredientType type) {
-		return (getQuantityOf(type)>0);
+	@Basic
+	public int getNbIngredients() {
+		return this.storage.size();
 	}
 	
 	/**
@@ -206,129 +179,196 @@ public class Laboratory {
 	}
 	
 	/**
+	 * Check whether this class contains the given ingredient type.
+	 */
+	@Basic @Raw
+	public boolean hasAsIngredientType(IngredientType type) {
+		return this.storage.containsKey(type);
+	}
+	
+	/**
+	 * Check whether the given ingredient type is a valid type.
+	 * 
+	 * @param	type
+	 * 			The ingredient type to check.
+	 * @return	True if the given type is effective.
+	 * 			| (type!=null)
+	 */
+	@Raw
+	public static boolean isValidIngredientType(IngredientType type) {
+		return (type!=null);
+	}
+	
+	/**
+	 * Check whether the given quantity is a valid quantity for the given
+	 * quantity.
+	 * 
+	 * @param	type
+	 * 			The type to check the quantity of.
+	 * @param	quantity
+	 * 			The quantity for this type to check.
+	 * @return	True if the quantity of the given type is bigger
+	 * 			than zero and if the capacity of this laboratory isn't
+	 * 			exceeded after adding the given quantity.
+	 * 			| (quantity>0)
+	 * 			|	&& (Sum(getQuantityOf(other types)) + quantity) <= getCapacityInSpoons()
+	 */
+	@Raw
+	public boolean canHaveAsQuantity(IngredientType type,int quantity) {
+		if (quantity<=0) return false;
+		double usedCapacity = 0;
+		for (IngredientType storedType:this.storage.keySet()) {
+			if (storedType!=type) {
+				if (storedType.getState()==State.LIQUID)
+					usedCapacity += getQuantityOf(storedType)/Unit.SPOON_LIQUID.getCapacity();
+				else
+					usedCapacity += getQuantityOf(storedType)/Unit.SPOON_POWDER.getCapacity();
+			}
+			else {
+				if (storedType.getState()==State.LIQUID)
+					usedCapacity += quantity/Unit.SPOON_LIQUID.getCapacity();
+				else
+					usedCapacity += quantity/Unit.SPOON_POWDER.getCapacity();
+			}
+		}
+		if (usedCapacity>getCapacityInSpoons()) return false;
+		return true;
+	}
+	
+	/**
 	 * Check whether the storage of this laboratory is a valid
 	 * storage for this laboratory.
 	 * 
-	 * @return	True if and only if all the stored ingredients and their
-	 * 			quantities are valid ingredients and quantities,
+	 * @return	True if and only if the storage is effective, 
+	 * 			if all the stored ingredients and their quantities are valid
+	 * 			ingredients and quantities,
 	 * 			and if the total capacity taken by the ingredient's quantities
-	 * 			is less than the available capacity of the laboratorium.
+	 * 			is less than the available capacity of the laboratory.
 	 * 			| for each type in Storage:
 	 * 			|	((!isValidIngredientType(type))
 	 * 			|	  ||(!canHaveAsQuantity(type)))
-	 * 			| && (getUsedCapacity()>getCapacityInSpoons()
 	 */
 	public boolean hasProperStorage() {
 		for (IngredientType type:this.storage.keySet()) {
 			if (!isValidIngredientType(type)) return false;
-			if (!canHaveAsQuantity(type)) return false;
+			if (!canHaveAsQuantity(type,getQuantityOf(type))) return false;
 		}
-		if (getUsedCapacity()>getCapacityInSpoons())
-			return false;
 		return true;
 	}
 	
-	//TODO fix storage
+	/**
+	 * Change the quantity of an ingredient type in the storage of this
+	 * laboratory.
+	 * 
+	 * @param	type
+	 * 			The ingredient type to change the quantity of.
+	 * @param	newQuantity
+	 * 			The new quantity to be given to this ingredient type.
+	 * @post	The quantity of this ingredient type is set to the given
+	 * 			quantity.
+	 * @throws	IllegalArgumentException
+	 * 			The given type is not found in this laboratory's storage.
+	 * 			| ! hasAsIngredientType(type)
+	 */
+	private void setIngredientQuantity(IngredientType type,int newQuantity) throws IllegalArgumentException{
+		if (!hasAsIngredientType(type))
+			throw new IllegalArgumentException("Type not found.");
+		if (!canHaveAsQuantity(type,newQuantity))
+			throw new IllegalArgumentException("This type cannot have the given quantity.");
+		this.storage.put(type, newQuantity);
+		
+	}
+	
+	/**
+	 * Add an ingredient type with an associated quantity to this
+	 * laboratory's storage or add a given quantity to an ingredient type
+	 * in this storage.
+	 * 
+	 * @param	type
+	 * 			The ingredient type to be added.
+	 * @param	quantity
+	 * 			The quantity of the ingredient type to be added.
+	 * @post	This laboratory's storage contains the given type as key
+	 * 			and the old quantity incremented with the given quantity as its value.
+	 * 			| hasAsIngredientType(type)
+	 * 			|	&& new.getQuantityOf(type)==old.getQuantityOf(type)+quantity
+	 */
+	public void addIngredientType(IngredientType type, int quantity) {
+		if (!canHaveAsQuantity(type, quantity))
+			throw new IllegalArgumentException("Invalid quantity");
+		if (hasAsIngredientType(type)) {
+			setIngredientQuantity(type,getQuantityOf(type)+quantity);
+		}
+		else {
+			this.storage.put(type, quantity);
+		}
+		//TODO
+	}
+	
+	/**
+	 * Remove a given amount of a given ingredient type from this
+	 * laboratory's storage.
+	 * 
+	 * @param	type
+	 * 			The ingredient type to remove.
+	 * @param	quantity
+	 * 			The quantity of the ingredient type to be removed.
+	 * @post	If the new quantity is 0, the ingredient type is removed
+	 * 			from the storage.
+	 * 			| if getQuantity0f(type)==quantity
+	 * 			|	then (!new.hasIngredientType())
+	 * 			If there is some quantity left, the new quantity of the
+	 * 			ingredient type in this storage is the old quantity
+	 * 			decremented with the given quantity.
+	 * 			| if getQuantityOf(type)>quantity
+	 * 			|	then (new.getQuantityOf(type)==old.getQuantityOf(type)-quantity)
+	 * @throws	IllegalArgumentException
+	 * 			The given quantity is greater than the quantity of the given type.
+	 * 			| getQuantityOf(type)<quantity
+	 */
+	public void removeIngredientType(IngredientType type, int quantity) throws IllegalArgumentException{
+		if (getQuantityOf(type)==quantity) {
+			this.storage.remove(type);
+		}
+		else if (getQuantityOf(type)>quantity) {
+			this.storage.put(type, getQuantityOf(type)-quantity);
+		}
+		else
+			throw new IllegalArgumentException("Tried to remove too much of an ingredient");
+	}
+	
+	/**
+	 * Remove a given ingredient type from this laboratory's storage.
+	 * 
+	 * @param	type
+	 * 			The ingredient type to remove.
+	 * @post	This laboratory's storage contains the g //TODO
+	 */
+	public void removeIngredientType(IngredientType type) throws IllegalArgumentException{
+		removeIngredientType(type,getQuantityOf(type));
+	}
 	
 	/**
 	 * A map containing the ingredient types of this laboratory as keys
 	 * and their quantities as values.
+	 * 
+	 * @invar	The map is effective.
+	 * 			| storage != null
+	 * @invar	All the ingredient types and their quantities are valid for this
+	 * 			laboratory.
+	 * 			| for each type in storage:
+	 * 			| 	(isValidIngredientType())
+	 * 			|	  && (canHaveAsQuantity(getQuantityOf(type)))
+	 * @invar	The capacity taken up by all the ingredients does not exceed
+	 * 			the capacity of this laboratory.
+	 * 			| getUsedCapacity()<=getCapacityInSpoons()
 	 */
 	private Map<IngredientType,Integer> storage = new HashMap<IngredientType,Integer>();
 	
 	
-
 	/**
-	 * Return the storage of this laboratory.
-	 */
-	@Basic
-	public List<AlchemicIngredient> getStorage(){
-		return this.storage;
-	}
-	
-	/**
-	 * Set the storage list of this laboratory to the given storage list.
-	 * 
-	 * @param storage
-	 * 		  The given storage list.
-	 */
-	@Raw
-	private void setStorage(List<AlchemicIngredient> storage) {
-		this.storage = storage;
-	}
-	
-	/**
-	 * Return the quantity that is contained in this laboratory.
-	 */
-	public int getStorageQuantity() {
-		int quantity = 0;
-		for(AlchemicIngredient ingredient : storage) {
-			quantity = quantity + ingredient.getQuantity();
-		}
-		return quantity;
-	}
-	
-	/**
-	 * Return the number of ingredients in this laboratory.
-	 */
-	@Basic
-	public int getNbIngredients() {
-		return getStorage().size();
-	}
-	
-	/**
-	 * Get the ingredient in this laboratory's storage at the given index.
-	 * 
-	 * @param index
-	 * 		  The given index.
-	 */
-	@Basic
-	public AlchemicIngredient getIngredientAt(int index) {
-		return getStorage().get(index-1);
-	}
-	
-	/**
-	 * Add an ingredient to this laboratory's storage.
-	 * 
-	 * @param ingredient
-	 * 		  The given ingredient.
-	 */
-	public void addAsIngredient(AlchemicIngredient ingredient) {
-		getStorage().add(ingredient);
-	}
-	
-	/**
-	 * Remove an ingredient from this laboratory's storage.
-	 * @param ingredient
-	 */
-	public void removeAsIngredient(AlchemicIngredient ingredient) {
-		getStorage().remove(ingredient);
-	}
-	
-	/**
-	 * Check if this laboratory has proper ingredients.
-	 * 
-	 * @return True if and only if this laboratory's storage does not contain two of the same ingredient types.
-	 * 		   | for each I in 0..getNbIngredient()-2:
-	 * 		   |   for each J in I..getNbIngredient()-1:
-	 * 		   |     if(getIngredientAt(I).getType().equals(getIngredientAt(J).getType()))
-	 * 		   |       return false
-	 *         | return true
-	 */
-	public boolean hasProperIngredients() {
-		boolean bool = true;
-		for(int i=0; i <= getNbIngredients()-2; i++) {
-			for(int j = i+1; j <= getNbIngredients()-1; j++) {
-				if(getIngredientAt(i+1).getType() == getIngredientAt(j+1).getType()) {
-					bool = false;
-				}
-			}
-		}
-		return bool;
-	}
-
-	/**
-	 * Store the ingredient contained by the given container in this laboratory. The old container gets deleted.
+	 * Store the ingredient contained by the given container in this laboratory.
+	 * The old container is destroyed.
 	 * 
 	 * @param	container
 	 * 			The given container.
@@ -352,22 +392,18 @@ public class Laboratory {
 	 *			|   getKettle()
 	 */
 	public void store(IngredientContainer container) throws CapacityException {
-		if(getStorageQuantity() + container.getContentQuantity() > this.capacity) {
-			throw new CapacityException(container, this, "Not enough storage left");
-		}
-
-		makeStandardTemp(container);
 		AlchemicIngredient ingredient = container.getContents();
-
-		for(AlchemicIngredient storedIngredient : storage) {
-			if(storedIngredient.getType().equals(ingredient.getType())) {
-				getDevice(Kettle.class);
-				ingredient = new AlchemicIngredient(ingredient.getType(), ingredient.getQuantity() + storedIngredient.getQuantity()); 
-				removeAsIngredient(storedIngredient);
-				break;
-			}
-		}
-		addAsIngredient(ingredient);
+		if ( !ingredient.getTemperatureObject().equals(ingredient.getStandardTemperatureObject()))
+			if (! ((hasAsDevice(Oven.class))
+					&& hasAsDevice(CoolingBox.class)))
+				throw new CapacityException(this,"This laboratory doesn't have the necessary devices "
+						+ "to bring this ingredient to its standard temperature for storage.");
+		//TODO splits dit nog op
+		if (hasAsIngredientType(ingredient.getType()))
+			if (! hasAsDevice(Kettle.class))
+				throw new CapacityException(this,"This laboratory doesn't have the necessary devices "
+						+ "to mix this ingredient with the stored ingredient.");
+		addIngredientType(ingredient.getType(),ingredient.getQuantity());
 		container = null;
 	}
 	
@@ -393,30 +429,25 @@ public class Laboratory {
 	 * 			| storedIngredient.getQuantity() < amount
 	 * @throws	CapacityException
 	 * 			This laboratory does not contain an ingredient with the given name.
-	 * 			| !((storedIngredient.getType().getSimpleName() == name) ||
-	 * 			|  (storedIngredient.getType().getSpecialName() == name))
+	 * 			| !((type.getSimpleName() == name) ||
+	 * 			|  (type.getSpecialName() == name))
 	 */
 	public IngredientContainer request(String name, int amount) throws CapacityException{
-		for(AlchemicIngredient storedIngredient : storage) {
-			if((storedIngredient.getType().getSimpleName().equals(name)) || (storedIngredient.getType().getSpecialName().equals(name))){
+		for(IngredientType type : this.storage.keySet()) {
+			if((type.getSimpleName().equals(name)) || (type.getSpecialName().equals(name))){
 				
-				if(storedIngredient.getQuantity() < amount) {
+				if(getQuantityOf(type) < amount) {
 					throw new CapacityException(this, "Not enough of this ingredient.");
 				}
 				
-				if (Unit.getBiggestContainer(storedIngredient.getState()).getAbsoluteCapacity() < amount) {
+				if (Unit.getBiggestContainer(type.getState()).getAbsoluteCapacity() < amount) {
 					throw new CapacityException(this, "No container for an amount this big.");
 				}
 				
-				AlchemicIngredient newIngredient = new AlchemicIngredient(storedIngredient.getType(), amount);
-				Unit newContainer = Unit.getContainer(storedIngredient.getState(), amount);
+				AlchemicIngredient newIngredient = new AlchemicIngredient(type, amount);
+				Unit newContainer = Unit.getContainer(type.getState(), amount);
 				
-				if(storedIngredient.getQuantity()-amount > 0) {
-					AlchemicIngredient newStoredIngredient = new AlchemicIngredient(storedIngredient.getType(), storedIngredient.getQuantity()-amount);
-					addAsIngredient(newStoredIngredient);
-				}
-				
-				removeAsIngredient(storedIngredient);
+				removeIngredientType(type,amount);
 				return new IngredientContainer(newIngredient, newContainer);
 			}
 		}
@@ -440,20 +471,22 @@ public class Laboratory {
 	 *         | if(newContainer == null)
 	 */
 	public IngredientContainer request(String name) throws CapacityException{
-		for(AlchemicIngredient storedIngredient : storage) {
-			if((storedIngredient.getType().getSimpleName() == name) || (storedIngredient.getType().getSpecialName() == name)){
+		for(IngredientType type : this.storage.keySet()) {
+			if((type.getSimpleName().equals(name)) || (type.getSpecialName().equals(name))){
 				
-				if (Unit.getBiggestContainer(storedIngredient.getState()).getAbsoluteCapacity() < storedIngredient.getQuantity()) {
-					Unit newContainer = Unit.getBiggestContainer(storedIngredient.getState());
-					AlchemicIngredient newIngredient = new AlchemicIngredient(storedIngredient.getType(),
-							Unit.getBiggestContainer(storedIngredient.getState()).getAbsoluteCapacity());
+				if (Unit.getBiggestContainer( type.getState() ).getAbsoluteCapacity() < getQuantityOf(type)) {
+					Unit newContainer = Unit.getBiggestContainer(type.getState());
+					AlchemicIngredient newIngredient = new AlchemicIngredient(type,
+							Unit.getBiggestContainer(type.getState()).getAbsoluteCapacity());
+					removeIngredientType(type);
 					return new IngredientContainer(newIngredient,newContainer);					
 				}
-				
-				Unit newContainer = Unit.getContainer(storedIngredient.getState(), storedIngredient.getQuantity());
-				AlchemicIngredient newIngredient = storedIngredient;
-				removeAsIngredient(storedIngredient);
-				return new IngredientContainer(newIngredient, newContainer);
+				else {				
+					Unit newContainer = Unit.getContainer(type.getState(), getQuantityOf(type));
+					AlchemicIngredient newIngredient = new AlchemicIngredient(type, getQuantityOf(type));
+					removeIngredientType(type);
+					return new IngredientContainer(newIngredient, newContainer);
+				}
 			}
 		}
 		throw new CapacityException(this, "Ingredient not found.");
@@ -461,30 +494,25 @@ public class Laboratory {
 	
 	/**
 	 * Return an two dimensional object array with the inventory of this laboratory. 
-	 * The first row contains the full names of the ingredients, the second row contains their quantity.
+	 * The first row contains the simple name of the ingredients, the second row contains their quantity.
 	 */
 	public Object[][] getInventory() {
 		Object[][] inventory = new Object[2][getNbIngredients()];
-		int index = 0;
-		while(index < getNbIngredients()) {
-			inventory[0][index] = getIngredientAt(index+1).getFullName();
-			inventory[1][index] = getIngredientAt(index+1).getQuantity();
+		IngredientType[] inventoryTypes = (IngredientType[]) this.storage.keySet().toArray();
+		for (int i = 0; i<inventoryTypes.length;i++) {
+			inventory[0][i] = inventoryTypes[i].getSimpleName();
+			inventory[1][i] = getQuantityOf(inventoryTypes[i]);
 		}
 		return inventory;
 	}
-	
-//	
-//	/**
-//	 * Variable storing the contents of this laboratory in drops or pinches
-//	 */
-//	private List<AlchemicIngredient> storage = new ArrayList<AlchemicIngredient>();
+
 	
 	/**************************************************
 	 * DEVICES
 	 **************************************************/
 	
 	/**
-	 * Check whether the given device is in the set or not.
+	 * Check whether the given device can be found in this laboratory.
 	 * 
 	 * @param	device
 	 * 			The device to be checked.
@@ -492,6 +520,22 @@ public class Laboratory {
 	@Basic @Raw
 	public boolean hasAsDevice(Device device) {
 		return this.devices.contains(device);
+	}
+	
+	/**
+	 * Check whether the given kind of device can be found in this
+	 * laboratory.
+	 * 
+	 * @param	deviceClass
+	 * 			The class of the devices to check.
+	 */
+	public boolean hasAsDevice(Class<?> deviceClass) {
+		for (Device device:this.devices) {
+			if (device.getClass()==(deviceClass.asSubclass(Device.class))) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -581,7 +625,7 @@ public class Laboratory {
 	}
 	
 	/**
-	 * Return the of this laboratory.
+	 * Return the of this laboratory. //TODO
 	 * 
 	 * @throws CapacityException
 	 * 		   This laboratory does not contain a cooling box
@@ -605,54 +649,13 @@ public class Laboratory {
 	 * 			a device that is an acceptable device for
 	 * 			this laboratory.
 	 * 			| for each device in devices:
-	 * 			| 	canHaveAsDevice(device)
+	 * 			| 	isValidDevice(device)
 	 * @invar	Each device in the set of devices references
 	 * 			this laboratory as its laboratory.
 	 * 			| for each device in devices:
 	 * 			|	(devices.getLaboratory() == this)
 	 */
 	private Set<Device> devices = new HashSet<Device>();
-	
-	/**
-	 * Heat or cool the given ingredient to it's standard temperature using the oven or cooling box in this laboratory
-	 * If the ingredient is already at it's standard temperature nothing needs to happen
-	 * 
-	 * @param ingredient
-	 * 		  The given ingredient
-	 * @effect If the ingredient is hotter than it's standard temperature it gets cooled to it's standard temperature
-	 *         | if(temperatureDifference(ingredient.getStandardTemperature(), ingredient.getTemperature()) < 0)
-	 *         | 	getCoolingbox().setTemperature(ingredient.getStandardTemperature())
-	 *         | 	getCoolingbox().loadIngredient(ingredient)
-	 *         | 	getCoolingbox().process()
-	 *         If the ingredient is colder than it's standard temperature it gets heated to 5% above it's standard temperature and then gets cooled down
-	 *         | if(temperatureDifference(ingredient.getStandardTemperature(), ingredient.getTemperature()) > 0)
-	 *         | 	getOven().setTemperature(Temperature (container.getIngredient().getStandardTemperatureObject().getColdness()*1.05, container.getIngredient().getStandardTemperatureObject().getHotness()*1.05)
-	 *         |	getOven().loadIngredient(ingredient)
-	 *         |	getOven().process()
-	 */
-	private void makeStandardTemp(IngredientContainer container) {
-		long tempDiff = Temperature.temperatureDifference(container.getContents().getStandardTemperatureObject(), container.getContents().getTemperatureObject());
-		if(tempDiff != 0) {
-			if(tempDiff > 0) {
-				Oven oven = (Oven) (getDevice(Oven.class));
-				oven.setTemperature(new Temperature ((long) (container.getContents().getStandardTemperatureObject().getColdness()*1.05d),
-						(long) (container.getContents().getStandardTemperatureObject().getHotness()*1.05d)));
-				oven.loadIngredient(container);
-				oven.process();
-				container = oven.emptyDevice();
-			}
-			CoolingBox coolingBox = (CoolingBox) getDevice(CoolingBox.class);
-			coolingBox.setTemperature(container.getContents().getStandardTemperatureObject());
-			coolingBox.loadIngredient(container);
-			coolingBox.process();
-			container = coolingBox.emptyDevice();
-		}
-	}
-
-	/**
-	 * Variable storing the list of devices in this laboratory
-	 */
-	//private List<Device> devices = new ArrayList<Device>(4);
 	
 	
 	/**************************************************
@@ -670,6 +673,7 @@ public class Laboratory {
 	public void execute(Recipe recipe, int amount) {
 		
 	}
+	
 	
 	/**************************************************
 	 * Termination
