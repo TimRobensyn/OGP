@@ -49,7 +49,7 @@ public class AlchemicIngredient {
 			"IngredientType is not valid";
 		this.type = type;
 		this.quantity = quantity;
-		this.temperature = type.getStandardTemperatureObject();
+		this.temperature = new Temperature(type.getStandardTemperature());
 	}
 
 	/**

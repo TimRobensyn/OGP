@@ -81,8 +81,17 @@ public abstract class TemperatureDevice extends Device {
 	
 	/**
 	 * Set the processedIngredient variable to the given Alchemic Ingredient.
+	 * 
+	 * @post   The processed ingredient of this temperature device is equal to the given ingredient.
+	 * 		   | new.getProcessedIngredient() == ingredient
+	 * @throws IllegalArgumentException 
+	 *  	   This temperature is not empty and the given ingredient is effective.
+	 *  	   | (getProcessedIngredient()!=null && ingredient!=null)
 	 */
-	protected void setProcessedIngredient(AlchemicIngredient ingredient) {
+	protected void setProcessedIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException {
+		if (getProcessedIngredient()!=null && ingredient!=null)
+			throw new IllegalArgumentException("This temperature device must be emptied, before processing a new "
+					                           + "ingredient.");
 		this.processedIngredient = ingredient;
 	}
 	
