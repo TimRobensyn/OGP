@@ -538,7 +538,7 @@ public class Laboratory {
 	 */
 	public IngredientContainer request(String name) throws CapacityException{
 		for(IngredientType type : this.storage.keySet()) {
-			if((type.getSimpleName().equals(name)) || (type.getSpecialName().equals(name))){
+			if((type.getSimpleName().equals(name)) || (type.getSpecialName()==(name))){
 				
 				if (Unit.getBiggestContainer( type.getState() ).getAbsoluteCapacity() < getQuantityOf(type)) {
 					Unit newContainer = Unit.getBiggestContainer(type.getState());
