@@ -33,7 +33,7 @@ public abstract class BottomlessDevice extends Device {
 	 * 		   |   loadIngredient(container)
 	 */
 	@Model @Raw
-	public BottomlessDevice(IngredientContainer[] ingredientArray) {
+	protected BottomlessDevice(IngredientContainer[] ingredientArray) {
 		for (IngredientContainer container: ingredientArray) {
 			loadIngredient(container);
 		}
@@ -43,7 +43,7 @@ public abstract class BottomlessDevice extends Device {
 	 * Initialize a new, empty bottomless device.
 	 */
 	@Model @Raw
-	public BottomlessDevice() {}
+	protected BottomlessDevice() {}
 	
 	
 	/**************************************************
@@ -288,7 +288,7 @@ public abstract class BottomlessDevice extends Device {
 	 * 		   | addAsStartIngredient(container.getContents())
 	 */
 	@Override @Raw
-	public final void loadIngredient(IngredientContainer container) {
+	public void loadIngredient(IngredientContainer container) {
 		addAsStartIngredient(container.getContents());
 		container = null;
 	}
@@ -304,7 +304,7 @@ public abstract class BottomlessDevice extends Device {
 	 * 		   | removeProcessedIngredientAt(1);
 	 */
 	@Override
-	public final IngredientContainer emptyDevice() {
+	public IngredientContainer emptyDevice() {
 		AlchemicIngredient outputIngredient = getProcessedIngredientAt(1);
 		IngredientContainer outputContainer = new IngredientContainer(outputIngredient,
 				Unit.getContainer(outputIngredient.getState(), outputIngredient.getQuantity()));
