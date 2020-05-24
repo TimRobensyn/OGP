@@ -39,15 +39,15 @@ public class Transmogrifier extends BottomlessDevice {
 	}
 
 	/**
-	 * Change the state of all the start ingredients and put them in the processed ingredients arrayList.
+	 * Assuming there are only two states, change the state of all the start ingredients and put them in the processed ingredients arrayList.
      *
-	 * @post A new ingredient type is created with the same simple names, the new state and the same standard temperature.
-	 *       A new alchemic ingredient is created with the new ingredient type and a new quantity. The new quantity is the
-	 *       quantity of the ingredient converted to the other state rounded down to an integer.
-	 *       | newType = new IngredientType(ingredient.getType().getSimpleNames(), newState, ingredient.getStandardTemperatureObject())
-	 *       | newQuantity = Math.floor(ingredient.getQuantity()*Unit.getRatio(newState, oldState))
-	 *       | newIngredient = new AlchemicIngredient(newType, newQuantity)
-	 * @effect The new ingredient gets added to the processed ingredients list and the start ingredients are deleted
+	 * @post   A new ingredient type is created with the same simple names, the new state and the same standard temperature.
+	 *         A new alchemic ingredient is created with the new ingredient type and a new quantity. The new quantity is the
+	 *         quantity of the ingredient converted to the other state rounded down to an integer.
+	 *         | newType = new IngredientType(ingredient.getType().getSimpleNames(), newState, ingredient.getStandardTemperatureObject())
+	 *         | newQuantity = Math.floor(ingredient.getQuantity()*Unit.getRatio(newState, oldState))
+	 *         | newIngredient = new AlchemicIngredient(newType, newQuantity)
+	 * @effect The new ingredient gets added to the processed ingredients list and the start ingredients are deleted.
 	 *         | addProcessedIngredient(newIngredient)
 	 *         | clearStartIngredients()
 	 */
