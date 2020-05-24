@@ -88,6 +88,21 @@ public class Laboratory {
 		this(capacity, new HashMap<IngredientType,Integer>(), new HashSet<Device>());
 	}
 	
+	/**
+	 * Initialize a new laboratory with the given capacity and devices with an empty storage
+	 * 
+	 * @param 	capacity
+	 * 			The given capacity
+	 * @param	devices //TODO klopt nog niet
+	 * 			The set of devices to be added in this new laboratory.
+	 * @effect The new laboratory has the given capacity and devices and an empty storage
+	 * 		   | this(capacity,new HashMap<IngredientType,Integer>(),devices)
+	 */
+	@Raw
+	public Laboratory(int capacity, Map<IngredientType,Integer> storage) {
+		this(capacity,storage,new HashSet<Device>());
+	}
+	
 	/**************************************************
 	 * CAPACITY
 	 **************************************************/
@@ -516,8 +531,8 @@ public class Laboratory {
 	 * The first row contains the simple name of the ingredients, the second row contains their quantity.
 	 */
 	public Object[][] getInventory() {
-		Object[][] inventory = new Object[2][getNbIngredients()];
-		IngredientType[] inventoryTypes = (IngredientType[]) this.storage.keySet().toArray();
+		IngredientType[] inventoryTypes = this.storage.keySet().toArray(new IngredientType[0]);
+		Object[][] inventory = new Object[2][inventoryTypes.length];
 		for (int i = 0; i<inventoryTypes.length;i++) {
 			inventory[0][i] = inventoryTypes[i].getSimpleName();
 			inventory[1][i] = getQuantityOf(inventoryTypes[i]);
@@ -726,7 +741,7 @@ public class Laboratory {
 			device.setLaboratory(null);
 			removeAsDevice(device);
 		}
-		this.terminated = true;
+		this.isTerminated = true;
 	}
 	
 	/**
@@ -734,11 +749,11 @@ public class Laboratory {
 	 */
 	@Basic
 	public boolean isTerminated() {
-		return this.terminated;
+		return this.isTerminated;
 	}
 	
 	/**
 	 * A variable for the termination of this laboratory.
 	 */
-	private boolean terminated = true;
+	private boolean isTerminated = true;
 }

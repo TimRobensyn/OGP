@@ -2,7 +2,6 @@ package laboratory.device;
 
 import be.kuleuven.cs.som.annotate.*;
 import java.util.ArrayList;
-import java.util.List;
 
 import alchemy.*;
 
@@ -33,7 +32,7 @@ public abstract class BottomlessDevice extends Device {
 	 * 		   |   loadIngredient(container)
 	 */
 	@Model @Raw
-	public BottomlessDevice(IngredientContainer[] ingredientArray) {
+	protected BottomlessDevice(IngredientContainer[] ingredientArray) {
 		for (IngredientContainer container: ingredientArray) {
 			loadIngredient(container);
 		}
@@ -43,7 +42,7 @@ public abstract class BottomlessDevice extends Device {
 	 * Initialize a new, empty bottomless device.
 	 */
 	@Model @Raw
-	public BottomlessDevice() {}
+	protected BottomlessDevice() {}
 	
 	
 	/**************************************************
@@ -55,7 +54,7 @@ public abstract class BottomlessDevice extends Device {
 	 * Return the list containing the start ingredients.
 	 */
 	@Basic @Raw
-	public List<AlchemicIngredient> getStartIngredients() {
+	public ArrayList<AlchemicIngredient> getStartIngredients() {
 		return this.startIngredients;
 	}
 	
@@ -154,7 +153,7 @@ public abstract class BottomlessDevice extends Device {
 	 * 		  | for each ingredient in startIngredients:
 	 * 		  |    ingredient != null
 	 */
-	private List<AlchemicIngredient> startIngredients = new ArrayList<AlchemicIngredient>();
+	private ArrayList<AlchemicIngredient> startIngredients = new ArrayList<AlchemicIngredient>();
 	
 	
 	/**************************************************
@@ -165,7 +164,7 @@ public abstract class BottomlessDevice extends Device {
 	 * Return the list with the processedIngredients.
 	 */
 	@Basic
-	protected List<AlchemicIngredient> getProcessedIngredients() {
+	protected ArrayList<AlchemicIngredient> getProcessedIngredients() {
 		return this.processedIngredients;
 	}
 	
@@ -211,11 +210,11 @@ public abstract class BottomlessDevice extends Device {
 	 * @return True if and only if the processed ingredients list of this bottomless device is effective
 	 * 		   and the ingredients in the list are valid for any bottomless device.
 	 * 		   | result == 
-	 *         |   getStartIngredients()!=null
-	 *  	   |   && for each ingredient in getStartIngredients()
-	 *         |         isValidStartIngredient(ingredient)
+	 *         |   getProcessedIngredients()!=null
+	 *  	   |   && for each ingredient in getProcessedIngredients()
+	 *         |         isValidProcessedIngredient(ingredient)
 	 */
-	public boolean hasProperProcessIngredients() {
+	public boolean hasProperProcessedIngredients() {
 		for (AlchemicIngredient ingredient: getProcessedIngredients()) {
 			if (!BottomlessDevice.isValidProcessedIngredient(ingredient))
 				return false;
@@ -270,7 +269,7 @@ public abstract class BottomlessDevice extends Device {
 	/**
 	 * A variable for the processed ingredients still in the device
 	 */
-	private List<AlchemicIngredient> processedIngredients = new ArrayList<AlchemicIngredient>();
+	private ArrayList<AlchemicIngredient> processedIngredients = new ArrayList<AlchemicIngredient>();
 
 	
 	/**************************************************
@@ -288,7 +287,7 @@ public abstract class BottomlessDevice extends Device {
 	 * 		   | addAsStartIngredient(container.getContents())
 	 */
 	@Override @Raw
-	public final void loadIngredient(IngredientContainer container) {
+	public void loadIngredient(IngredientContainer container) {
 		addAsStartIngredient(container.getContents());
 		container = null;
 	}
@@ -304,7 +303,7 @@ public abstract class BottomlessDevice extends Device {
 	 * 		   | removeProcessedIngredientAt(1);
 	 */
 	@Override
-	public final IngredientContainer emptyDevice() {
+	public IngredientContainer emptyDevice() {
 		AlchemicIngredient outputIngredient = getProcessedIngredientAt(1);
 		IngredientContainer outputContainer = new IngredientContainer(outputIngredient,
 				Unit.getContainer(outputIngredient.getState(), outputIngredient.getQuantity()));

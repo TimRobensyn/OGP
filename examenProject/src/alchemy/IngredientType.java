@@ -257,11 +257,13 @@ public class IngredientType {
 		
 		for (int i = 0; i<simpleNames.length; i++) {
 			//Each name is valid
+			String name = simpleNames[i];
+			
 			if (!isValidSimpleName(simpleNames[i])) 
 				return false;
 			//The array is alphabetically ordered with no duplicates.
 			if (i!=simpleNames.length-1
-			 && simpleNames[i].compareTo(simpleNames[i+1]) < 1)
+			 && simpleNames[i].compareTo(simpleNames[i+1]) > 1)
 				return false;
 		}
 		

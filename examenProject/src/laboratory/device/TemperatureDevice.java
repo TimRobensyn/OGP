@@ -30,7 +30,7 @@ public abstract class TemperatureDevice extends Device {
 	 * 		   | loadIngredient(startIngredient)
 	 */
 	@Model @Raw
-	public TemperatureDevice(Temperature temperature, IngredientContainer startIngredient) {
+	protected TemperatureDevice(Temperature temperature, IngredientContainer startIngredient) {
 		setTemperature(temperature);
 		loadIngredient(startIngredient);
 	}
@@ -42,7 +42,7 @@ public abstract class TemperatureDevice extends Device {
 	 * 		   | setTemperature(temperature)
 	 */
 	@Model @Raw
-	public TemperatureDevice(Temperature temperature) {
+	protected TemperatureDevice(Temperature temperature) {
 		setTemperature(temperature);
 	}
 	
@@ -81,8 +81,17 @@ public abstract class TemperatureDevice extends Device {
 	
 	/**
 	 * Set the processedIngredient variable to the given Alchemic Ingredient.
+	 * 
+	 * @post   The processed ingredient of this temperature device is equal to the given ingredient.
+	 * 		   | new.getProcessedIngredient() == ingredient
+	 * @throws IllegalArgumentException 
+	 *  	   This temperature is not empty and the given ingredient is effective.
+	 *  	   | (getProcessedIngredient()!=null && ingredient!=null)
 	 */
-	protected void setProcessedIngredient(AlchemicIngredient ingredient) {
+	protected void setProcessedIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException {
+		if (getProcessedIngredient()!=null && ingredient!=null)
+			throw new IllegalArgumentException("This temperature device must be emptied, before processing a new "
+					                           + "ingredient.");
 		this.processedIngredient = ingredient;
 	}
 	
@@ -105,7 +114,7 @@ public abstract class TemperatureDevice extends Device {
 	 * 		   | (getStartIngredient() != null)
 	 */
 	@Override @Raw
-	public final void loadIngredient(IngredientContainer container) throws CapacityException{
+	public void loadIngredient(IngredientContainer container) throws CapacityException{
 		if(getStartIngredient() != null) {
 			throw new CapacityException(this, container, "Device has already been loaded.");
 		}
@@ -129,7 +138,7 @@ public abstract class TemperatureDevice extends Device {
 	 * 		   | setProcessedIngredient(null)
 	 */
 	@Override
-	public final IngredientContainer emptyDevice() {
+	public IngredientContainer emptyDevice() {
 		AlchemicIngredient outputIngredient = getProcessedIngredient();
 		if (outputIngredient == null)
 			return null;
