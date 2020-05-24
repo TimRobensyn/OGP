@@ -62,7 +62,7 @@ public abstract class Device {
 	
 	/**
 	 * Set the laboratory this device is in to the given laboratory
-	 * 
+	 * .
 	 * @param laboratory
 	 * 		  The given laboratory
 	 * @post  The laboratory of this device is equal to the given laboratory.
@@ -87,6 +87,7 @@ public abstract class Device {
 	 * Check whether the laboratory this device is in is proper.
 	 * 
 	 * @result True if and only if this laboratory has this device as one of its devices.
+	 * 		   | result == getLaboratory().hasAsDevice(this)
 	 */
 	public boolean hasProperLaboratory() {
 		return(getLaboratory().hasAsDevice(this));

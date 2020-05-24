@@ -45,14 +45,16 @@ public class CoolingBox extends TemperatureDevice {
 	 * Cool the loaded ingredient in this cooling device and put it in the processedIngredient variable.
 	 * 
 	 * @post If the temperature of the loaded ingredient is higher than the temperature of the cooling box,
-	 * 		 change its temperature to the temperature of the cooling box. Else, nothing has changed.
+	 * 		 change its temperature to the temperature of the cooling box. Else, the start ingredient's temperature
+	 * 		 is not changed. Either way, the processed ingredient of this cooling box is set to the start ingredient,
+	 * 		 whereafter the start ingredient is set to null.
 	 * 		 | if (Temperature.compareTemperature(getStartIngredient().getTemperatureObject(),
 	 * 		 |	                                  getTemperatureObject())==-1)
-	 * 		 |     then (new.getProcessedIngredient().getTemperatureObject() == getTemperatureObject()
-	 * 		 |			&& new.getStartIngredient() == null)
-	 * 		 | else
-	 * 		 |   (new.getProcessedIngredient() == old.getStartIngredient()
-	 * 		 |	 && new.getStartIngredient() == null)
+	 * 		 |     then Temperature.compareTemperature(this.getTemperatureObject(), 
+	 *       |                      new.getProcessedIngredient().getTemperatureObject()) == 0
+	 * 		 |
+	 * 		 | new.getProcessedIngredient() == old.getStartIngredient()
+	 * 		 | new.getStartIngredient() == null
 	 */
 	@Override
 	public void process() {

@@ -53,20 +53,25 @@ public class Oven extends TemperatureDevice {
 	 * 		 |     then (new.getProcessedIngredient().getTemperature() < getTemperature()*1.05
 	 *       |          && new.getProcessedIngredient().getTemperature() < getTemperature()*0.95
 	 * 		 |			&& new.getStartIngredient() == null)
-	 * 		 | else
-	 * 		 |   (new.getProcessedIngredient() == getStartIngredient()
-	 * 		 |	 && new.getStartIngredient() == null)
+	 * 		 | 
+	 * 		 | new.getProcessedIngredient() == getStartIngredient()
+	 * 		 | new.getStartIngredient() == null
 	 */
 	@Override
-	public void process() {
-		double randomness = 0.95d + (Math.random()*0.1d);
-		Temperature newTemperature = new Temperature((long) (getTemperatureObject().getColdness()*randomness),
-													 (long) (getTemperatureObject().getHotness()*randomness));
-		
-		long difference = Temperature.temperatureDifference(newTemperature, getStartIngredient().getTemperatureObject());
+	public void process() {		
+		long difference = Temperature.temperatureDifference(this.getTemperatureObject(), 
+															getStartIngredient().getTemperatureObject());
 		
 		if (difference>0) {
-			getStartIngredient().heat((long) (difference));
+			double randomness = 0.95d + (Math.random()*0.1d);
+			Temperature newTemperature = new Temperature((long) (getTemperatureObject().getColdness()*randomness),
+														 (long) (getTemperatureObject().getHotness()*randomness));
+			long amountToHeat = Temperature.temperatureDifference(newTemperature, getStartIngredient().getTemperatureObject());
+			
+			// If, by chance, the difference was greater than zero, but the randomness of the oven made amountToHeat
+			// negative, the heat function won't do anything. Still, it is guaranteed that after the process the
+			// temperature of the processed ingredient is within a range of 5 percent of the cooling box.
+			getStartIngredient().heat(amountToHeat);
 		}
 		
 		setProcessedIngredient(getStartIngredient());

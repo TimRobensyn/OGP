@@ -4,6 +4,9 @@ import alchemy.*;
 import temperature.Temperature;
 
 import static org.junit.Assert.*;
+
+import java.util.Arrays;
+
 import org.junit.*;
 
 /**
@@ -79,6 +82,60 @@ public class DeviceTest {
 		assertEquals(0,Temperature.compareTemperature(new Temperature(0,0), coolingBox.getTemperatureObject()));
 	}
 	
+	@Test
+	public void testCoolingBoxProcess_coldIngredient() {
+		// This container has an ingredient that is already colder than the cooling box.
+		coolingBox.loadIngredient(container1);
+		coolingBox.process();
+		assertEquals(coolingBox.getProcessedIngredient(),ingredient1);
+		assertEquals(coolingBox.getStartIngredient(),null);
+				
+		// The temperature of the processed ingredient is still its own.
+		assertEquals(0,Temperature.compareTemperature(tempIngredient1, coolingBox.getProcessedIngredient().getTemperatureObject()));
+	}
+	
+	@Test
+	public void testCoolingBoxProcess_hotIngredient() {
+		// This container has an ingredient that is hotter than the cooling box.
+		coolingBox.loadIngredient(container2);
+		coolingBox.process();
+		assertEquals(coolingBox.getProcessedIngredient(),ingredient2);
+		assertEquals(coolingBox.getStartIngredient(),null);
+				
+		// The temperature of the processed ingredient is the same as of the cooling box.
+		assertEquals(0,Temperature.compareTemperature(tempCoolingBox, coolingBox.getProcessedIngredient().getTemperatureObject()));
+	}
+	
+	@Test
+	public void testOvenProcess_hotIngredient() {
+		// This container has an ingredient that is already hotter than the oven.
+		oven.loadIngredient(container2);
+		oven.process();
+		assertEquals(oven.getProcessedIngredient(),ingredient2);
+		assertEquals(oven.getStartIngredient(),null);
+				
+		// The temperature of the processed ingredient is still its own.
+		assertEquals(0,Temperature.compareTemperature(tempIngredient2, 
+				                                      oven.getProcessedIngredient().getTemperatureObject()));
+	}
 	
 	
+	@Test
+	public void testOvenProcess_coldIngredient() {
+		// This container has an ingredient that is cooler than the oven.
+		oven.loadIngredient(container1);
+		oven.process();
+		assertEquals(oven.getProcessedIngredient(),ingredient1);
+		assertEquals(oven.getStartIngredient(),null);
+		
+		// The chance is small enough to assume the processed ingredient doesn't have the exact same temperature as
+		// the oven.
+		assertNotEquals(0,Temperature.compareTemperature(tempIngredient1, 
+				          oven.getProcessedIngredient().getTemperatureObject()));
+		// It is within a five percent range though.
+		assertTrue(oven.getProcessedIngredient().getTemperatureObject().getHotness()
+				   < oven.getTemperatureObject().getHotness()*1.05);
+		assertTrue(oven.getProcessedIngredient().getTemperatureObject().getHotness()
+				   > oven.getTemperatureObject().getHotness()*0.95);
+	}
 }
