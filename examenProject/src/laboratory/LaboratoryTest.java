@@ -195,8 +195,8 @@ public class LaboratoryTest {
 		for (Object name: laboratory_full.getInventory()[0])
 			System.out.println(name.toString());
 		laboratory_full.store(container);
-//		for (Object name: laboratory_full.getInventory()[0])
-//			System.out.println(name.toString());
+		for (Object name: laboratory_full.getInventory()[0])
+			System.out.println(name.toString());
 	}
 	
 	@Test

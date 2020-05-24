@@ -4,6 +4,7 @@ import be.kuleuven.cs.som.annotate.*;
 import temperature.Temperature;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A class defining the type of an alchemic ingredient with a name, a standard temperature and a state (liquid or powder).
@@ -452,12 +453,23 @@ public class IngredientType {
 	 *         |           && Temperature.compareTemperature(this.getStandardTemperatureObject(), 
 	 *         |					                         type.getStandardTemperatureObject())==0 )
 	 */
-	public boolean equals(IngredientType type) {
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+            return true;
+        if (!(o instanceof IngredientType))
+            return false;
+        IngredientType type = (IngredientType) o;
 		return (Arrays.equals(this.getSimpleNames(),type.getSimpleNames()) 
 				&& this.getSpecialName() == type.getSpecialName()
 				&& this.getState() == type.getState() 
 				&& Temperature.compareTemperature(this.getStandardTemperatureObject(), 
 						                          type.getStandardTemperatureObject())==0);
 	}
+	
+	@Override
+    public int hashCode() {
+        return Objects.hash(getSimpleNames(), getSpecialName(), getState(),getStandardTemperatureObject());
+    }
 
 }

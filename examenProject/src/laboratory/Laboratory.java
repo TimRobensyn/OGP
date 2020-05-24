@@ -207,7 +207,10 @@ public class Laboratory {
 	 */
 	@Basic @Raw
 	public boolean hasAsIngredientType(IngredientType type) {
-		return this.storage.containsKey(type);
+		for (IngredientType storedType:this.storage.keySet()) {
+			if (storedType.equals(type)) return true;
+		}
+		return false;
 	}
 	
 	/**
