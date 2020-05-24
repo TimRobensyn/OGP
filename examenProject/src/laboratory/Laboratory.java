@@ -365,7 +365,7 @@ public class Laboratory {
 				throw new CapacityException(this, "Invalid quantity");
 			this.storage.put(type, quantity);
 		}
-		//TODO
+
 	}
 	
 	/**
@@ -455,7 +455,6 @@ public class Laboratory {
 					&& hasAsDevice(CoolingBox.class)))
 				throw new CapacityException(this,"This laboratory doesn't have the necessary devices "
 						+ "to bring this ingredient to its standard temperature for storage.");
-		//TODO splits dit nog op
 		if (hasAsIngredientType(ingredient.getType()))
 			if (! hasAsDevice(Kettle.class))
 				throw new CapacityException(this,"This laboratory doesn't have the necessary devices "
