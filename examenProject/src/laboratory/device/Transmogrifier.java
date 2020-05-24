@@ -60,7 +60,7 @@ public class Transmogrifier extends BottomlessDevice {
 					newState,ingredient.getStandardTemperatureObject());
 			int newQuantity = (int) Math.floor(ingredient.getQuantity()*Unit.getRatio(newState,oldState));
 			AlchemicIngredient newIngredient = new AlchemicIngredient(newType,newQuantity);
-			addProcessedIngredient(newIngredient);
+			addAsProcessedIngredient(newIngredient);
 		}
 		clearStartIngredients();
 	}

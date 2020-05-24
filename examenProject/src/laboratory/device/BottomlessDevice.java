@@ -11,8 +11,11 @@ import alchemy.*;
  * amount of ingredients.
  * 
  * @invar   The start ingredients of a bottomless device must be proper start ingredients
- * 			for any bottomless device.
+ * 			for this bottomless device.
  * 			| hasProperStartIngredients()
+ * @invar   The processed ingredients of a bottomless device must be proper processed ingredients
+ * 			for this bottomless device.
+ * 			| hasProperProcessedIngredients()
  * 
  * @version	1.0
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
@@ -68,7 +71,7 @@ public abstract class BottomlessDevice extends Device {
 	 * Return the alchemic ingredient at the given index of the start ingredients list.
 	 * 
 	 * @param  index
-	 * 		   The index of the wanted alchemic ingredients.
+	 * 		   The index of the wanted alchemic ingredient.
 	 * @return The alchemic ingredient of the start ingredients list of this bottomless device at the given index.
 	 *         | return getStartIngredients().get(index-1)
 	 * @throws IndexOutOfBoundsException
@@ -81,7 +84,7 @@ public abstract class BottomlessDevice extends Device {
 	}
 	
 	/**
-	 * Check whether the given ingredient is a valid ingredient for any bottomless device.
+	 * Check whether the given ingredient is a valid start ingredient for any bottomless device.
 	 * 
 	 * @param  ingredient
 	 * 		   The ingredient to check.
@@ -93,23 +96,21 @@ public abstract class BottomlessDevice extends Device {
 	}
 	
 	/**
-	 * Check whether the given bottomless device has proper start ingredients associated with it.
+	 * Check whether this bottomless device has proper start ingredients associated with it.
 	 * 
-	 * @param  bottomlessDevice
-	 * 		   The bottomless device to check.
 	 * @return True if and only if the start ingredients list of this bottomless device is effective
 	 * 		   and the ingredients in the list are valid for any bottomless device.
 	 * 		   | result == 
-	 *         |   bottomlessDevice.getProcesses()!=null
-	 *  	   |   && for each ingredient in bottomlessDevice.getStartIngredients()
-	 *         |         isValidStartIngredient(recipe.getProcessAt(i),i)
+	 *         |   getStartIngredients()!=null
+	 *  	   |   && for each ingredient in getStartIngredients()
+	 *         |         isValidStartIngredient(ingredient)
 	 */
-	public static boolean hasProperStartIngredients(BottomlessDevice bottomlessDevice) {
-		for (AlchemicIngredient ingredient: bottomlessDevice.getStartIngredients()) {
+	public boolean hasProperStartIngredients() {
+		for (AlchemicIngredient ingredient: getStartIngredients()) {
 			if (!BottomlessDevice.isValidStartIngredient(ingredient))
 				return false;
 		}
-		return (bottomlessDevice.getStartIngredients()!=null);
+		return (getStartIngredients()!=null);
 	}
 	
 	
@@ -125,6 +126,7 @@ public abstract class BottomlessDevice extends Device {
 	 *       | if (isValidStartIngredient(ingredient))
 	 *       |   then new.getStartIngredientAt(getNbStartIngredients()+1) == ingredient
 	 */
+	@Raw
 	private void addAsStartIngredient(AlchemicIngredient ingredient) {
 		if (isValidStartIngredient(ingredient))
 			startIngredients.add(ingredient);
@@ -167,15 +169,102 @@ public abstract class BottomlessDevice extends Device {
 		return this.processedIngredients;
 	}
 	
+	/**
+	 * Return the amount of processed ingredients in this bottomless device.
+	 */
+	@Basic
+	public int getNbProcessedIngredients() {
+		return getProcessedIngredients().size();
+	}
+	
+	/**
+	 * Return the alchemic ingredient at the given index of the processed ingredients list.
+	 * 
+	 * @param  index
+	 * 		   The index of the wanted alchemic ingredient.
+	 * @return The alchemic ingredient of the processed ingredients list of this bottomless device at the given index.
+	 *         | return getStartIngredients().get(index-1)
+	 * @throws IndexOutOfBoundsException
+	 * 		   The given index is lesser than or equal to zero or greater than the size of 
+	 * 		   the processed ingredients list.
+	 *         | (index<=0 || index>getNbStartIngredients())
+	 */
+	public AlchemicIngredient getProcessedIngredientAt(int index) throws IndexOutOfBoundsException {
+		return getProcessedIngredients().get(index-1);
+	}
+	
+	/**
+	 * Check whether the given ingredient is a valid processed ingredient for any bottomless device.
+	 * 
+	 * @param  ingredient
+	 * 		   The ingredient to check.
+	 * @return True if and only if the ingredient is effective.
+	 * 		   | result == (ingredient!=null)
+	 */
+	public static boolean isValidProcessedIngredient(AlchemicIngredient ingredient) {
+		return (ingredient!=null);
+	}
+	
+	/**
+	 * Check whether this bottomless device has proper processed ingredients associated with it.
+	 * 
+	 * @return True if and only if the processed ingredients list of this bottomless device is effective
+	 * 		   and the ingredients in the list are valid for any bottomless device.
+	 * 		   | result == 
+	 *         |   getStartIngredients()!=null
+	 *  	   |   && for each ingredient in getStartIngredients()
+	 *         |         isValidStartIngredient(ingredient)
+	 */
+	public boolean hasProperProcessIngredients() {
+		for (AlchemicIngredient ingredient: getProcessedIngredients()) {
+			if (!BottomlessDevice.isValidProcessedIngredient(ingredient))
+				return false;
+		}
+		return (getProcessedIngredients()!=null);
+	}
+	
 	
 	/**
 	 * A protected method for adding processed Ingredients to the processed ingredients list. 
 	 * 
 	 * @param ingredient
 	 * 	      The given ingredient that needs to be added to the processed ingredients list.
+	 * @post  If the given ingredient is valid, the number of processed ingredients associated with 
+	 *        this bottomless device is incremented by one.
+	 *        | if (isValidProcessedIngredient(ingredient))
+	 * 		  |   then new.getNbProcessedIngredients() == getNbProcessedIngredients()+1
+	 * @post  If the given ingredient is valid, this bottomless device has the given ingredient at the end
+	 * 		  of its processed ingredients list.
+	 *        | if (isValidProcessedIngredient(ingredient))
+	 *        |   then new.getProcessedIngredientAt(getNbProcessedIngredients()+1) == ingredient
 	 */
-	protected void addProcessedIngredient(AlchemicIngredient ingredient) {
-		getProcessedIngredients().add(ingredient);
+	protected void addAsProcessedIngredient(AlchemicIngredient ingredient) {
+		if (isValidProcessedIngredient(ingredient))
+			getProcessedIngredients().add(ingredient);
+	}
+	
+	/**
+	 * Remove the processed ingredient for this bottomless device at the given index.
+	 * 
+	 * @param index
+	 *        The index of the processed ingredient to be removed.
+	 * @post  If the given index is one, this bottomless device no longer has the processed ingredient 
+	 *        at the given index as one of its processed ingredients.
+	 *        | if (index==1)
+	 *        |   then !new.getProcessedIngredientAt(index)==getProcessedIngredient(index)
+	 * @post  If the given index is one, the number of processed ingredients associated with this bottomless device 
+	 * 		  is decremented by 1.
+	 * 		  | if (index==1)
+	 *        |   then new.getNbProcessedIngredients() == this.getNbProcessedIngredients()-1
+	 * @post  If the given index is one, all processed ingredients associated with this bottomless device at 
+	 *        an index exceeding the given index, are registered as processed ingredient at one index lower.
+	 *        | if (index==1)
+	 *        |   then for each I in index+1..getNbProcessedIngredients()
+	 *        |          (new.getProcessedIngredientAt(I-1) == this.getProcessedIngredientAt(I))
+	 */
+	private void removeProcessedIngredientAt(int index) {
+		if (index==1)
+			processedIngredients.remove(index-1);
 	}
 	
 	/**
@@ -207,24 +296,19 @@ public abstract class BottomlessDevice extends Device {
 	/**
 	 * Empties the first ingredient from this device into a new container. 
 	 * This container is the smallest container that can contain the ingredient.
-	 * 
-	 * @effect If the outputIngredient is null, null gets returned.
-	 * 		   | if(outputIngredient == null)
-	 * 		   |   return null
+	 *
 	 * @effect A new container is created containing the outputIngredient and the outputIngredient gets removed from the
 	 * 		   processed ingredients list. This container is the smallest container that can contain the outputIngredient.
 	 * 		   | outputContainer = new IngredientContainer(outputIngredient, 
 	 * 		   |                   Unit.getContainer(outputIngredient.getState(), outputIngredient.getQuantity()))
-	 * 		   | getProcessedIngredients().remove(0)
+	 * 		   | removeProcessedIngredientAt(1);
 	 */
 	@Override
 	public final IngredientContainer emptyDevice() {
-		AlchemicIngredient outputIngredient = getProcessedIngredients().get(0);
-		if (outputIngredient == null)
-			return null;
+		AlchemicIngredient outputIngredient = getProcessedIngredientAt(1);
 		IngredientContainer outputContainer = new IngredientContainer(outputIngredient,
 				Unit.getContainer(outputIngredient.getState(), outputIngredient.getQuantity()));
-		getProcessedIngredients().remove(0);
+		removeProcessedIngredientAt(1);
 		return outputContainer;
 	}
 	
