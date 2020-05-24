@@ -274,7 +274,7 @@ public enum Unit {
 				if (unit.getState()==secondState) secondCapacity = unit.getAbsoluteCapacity();
 			}
 		}
-		return firstCapacity/secondCapacity;
+		return (double) firstCapacity/secondCapacity;
 	}
 
 }
