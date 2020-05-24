@@ -92,10 +92,14 @@ public abstract class TemperatureDevice extends Device {
 	private AlchemicIngredient processedIngredient = null;
 	
 	/**
-	 * Loads the ingredients in a given container into this temperature device
+	 * Loads the ingredients in a given container into this temperature device.
 	 * 
 	 * @param  container
 	 * 		   The given container to be loaded in the device.
+	 * @post   The ingredient in the given container is set as the start ingredient of this device 
+	 *         and the container gets deleted.
+	 * 		   | new.getStartIngredient() == container.getContents()
+	 * 		   | container = null
 	 * @throws CapacityException
 	 * 		   This device is full.
 	 * 		   | (getStartIngredient() != null)

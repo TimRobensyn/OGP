@@ -166,18 +166,19 @@ public class Recipe {
 	 * 
 	 * @param  recipe
 	 * 		   The recipe to check.
-	 * @return True if and only if the given recipe can have each item at its index.
-	 *  	   | result ==
-	 *  	   |   for each I in 1..getNbProcesses()
+	 * @return True if and only if the given recipe can have each item at its index and its processes list
+	 * 		   is effective.
+	 *  	   | result == recipe.getProcesses()!=null &&
+	 *  	   |   for each I in 1..recipe.getNbProcesses()
 	 *         |      canHaveAsProcessAt(recipe.getProcessAt(i),i)
 	 */
 	@Raw
-	public boolean hasProperProcesses(Recipe recipe) {
+	public boolean hasProperProcesses() {
 		for (int i=1; i<=getNbProcesses(); i++) {
-			if (!canHaveAsProcessAt(recipe.getProcessAt(i),i))
+			if (!canHaveAsProcessAt(getProcessAt(i),i))
 				return false;
 		}
-		return true;
+		return (getProcesses()!=null);
 	}
 	
 	/**
@@ -290,23 +291,21 @@ public class Recipe {
 	/**
 	 * Check whether this recipe has proper ingredients associated with it.
 	 * 
-	 * @param	recipe
-	 * 			The recipe to check.
-	 * @return  True if and only if the given recipe can have each item at its index and the amount of 
+	 * @return  True if and only if this recipe can have each item at its index and the amount of 
 	 *          ingredients in this recipe is equal to or greater than the amount of the add processes 
-	 *          in the process list of the given recipe.
+	 *          in the process list of therecipe.
 	 *  	    | result ==
 	 *  		|   ( getNbIngredients()>=getNbOfAdd()
 	 *  	    |   && for each ingredient in ingredients
 	 *          |         canHaveAsIngredient(ingredient) )
 	 */
 	@Raw
-	public boolean hasProperIngredients(Recipe recipe) {
-		for (AlchemicIngredient ingredient: recipe.getIngredients()) {
+	public boolean hasProperIngredients() {
+		for (AlchemicIngredient ingredient: getIngredients()) {
 			if (!canHaveAsIngredient(ingredient))
 				return false;
 		}
-		return (recipe.getNbIngredients()==recipe.getNbOfAdd());
+		return (getNbIngredients()==getNbOfAdd());
 	}
 	
 	/**

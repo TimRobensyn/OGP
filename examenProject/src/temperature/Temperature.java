@@ -280,7 +280,7 @@ public class Temperature {
 	 */
 	public static int compareTemperature(Temperature temp1, Temperature temp2) {
 		long firstComparable = -temp1.getColdness()+temp1.getHotness();
-		long secondComparable = -temp1.getColdness()+temp2.getHotness();
+		long secondComparable = -temp2.getColdness()+temp2.getHotness();
 		if (firstComparable<secondComparable) return -1;
 		else if (firstComparable>secondComparable) return 1;
 		else return 0;

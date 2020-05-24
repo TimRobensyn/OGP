@@ -238,6 +238,6 @@ public class Kettle extends BottomlessDevice {
 		}
 		
 		clearStartIngredients();
-		addProcessedIngredient(newIngredient);
+		addAsProcessedIngredient(newIngredient);
 	}
 }
