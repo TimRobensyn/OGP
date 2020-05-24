@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public enum Unit {
 	DROP_LIQUID(1,1,State.LIQUID,false),
 	SPOON_LIQUID(8,2,State.LIQUID,true),
-	VIAL_LIQUID(5,2,State.LIQUID,true),
+	VIAL_LIQUID(5,3,State.LIQUID,true),
 	BOTTLE_LIQUID(3,4,State.LIQUID,true),
 	JUG_LIQUID(7,5,State.LIQUID,true),
 	BARREL_LIQUID(12,6,State.LIQUID,true),
@@ -182,7 +182,7 @@ public enum Unit {
 		for (Unit unit: Unit.values()) {
 			if ( unit.getState()==this.getState()
 		      && unit.getIndex()<=this.getIndex() ){
-				result *= this.getCapacity();
+				result *= unit.getCapacity();
 			}
 		}
 		return result;
@@ -274,7 +274,7 @@ public enum Unit {
 				if (unit.getState()==secondState) secondCapacity = unit.getAbsoluteCapacity();
 			}
 		}
-		return firstCapacity/secondCapacity;
+		return (double) firstCapacity/secondCapacity;
 	}
 
 }
