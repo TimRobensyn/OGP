@@ -40,5 +40,10 @@ public class CapacityTest {
 //				new AlchemicIngredient[] {newIngredient, new AlchemicIngredient(5)});
 //		System.out.println(newRecipe);
 	}
+	
+	@Test
+	public void bullShit() {
+		
+	}
 
 }

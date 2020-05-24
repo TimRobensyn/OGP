@@ -5,96 +5,69 @@ import temperature.Temperature;
 
 import static org.junit.Assert.*;
 import org.junit.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class LaboratoryTest {
 
-	public static Laboratory laboratory_empty_allDevices, laboratory_empty, laboratory_waterStorage, laboratory_storage, laboratory_big;
-	public static Laboratory laboratory, laboratoryCapacityStorageDevices, laboratoryCapacityDevices, laboratoryCapacity;
+	public static AlchemicIngredient water, water_full, crumbs;
 	
-
-	public static CoolingBox basicCoolingBox, allCoolingBox, storageCoolingBox;
-	public static Oven basicOven, allOven, storageOven;
-	public static Kettle basicKettle, allKettle, storageKettle;
-	public static Transmogrifier basicTransmogrifier, allTransmogrifier;
-	public static Set<Device> basicDevices, allDevices, storageDevices;
-
+	public static Map<IngredientType,Integer> storage,storage_full;
+	
 	public static CoolingBox coolingBox;
-	public static CoolingBox staticCoolingBox;
-	public static Oven staticOven;
 	public static Oven oven;
-	public static Kettle emptyKettle;
-	public static Transmogrifier emptyTransmogrifier;
+	public static Kettle kettle;
+	public static Transmogrifier transmogrifier;
+	
+	public static Set<Device> devices;
+	
+	public static Laboratory laboratory_empty,laboratory,laboratory_full;
+	
+	public static Laboratory laboratoryCapacityStorageDevices, laboratoryCapacityStorage,
+							 laboratoryCapacityDevices, laboratoryCapacity;
 
-	
-	public static IngredientType ingredientTypeLiquid, ingredientTypePowder;
-	public static AlchemicIngredient water;
-	public static AlchemicIngredient basicWater, ingredientLiquid, ingredientPowder, bigIngredient;
-	public static Map<IngredientType,Integer> waterStorage, emptyStorage, storage, basicStorage, bigStorage;
-	public static IngredientContainer waterContainer, basicLiquidContainer;
-	
 	@BeforeClass
 	public static void setUpImmutableFixture() {
-		basicCoolingBox = new CoolingBox(new Temperature(0,0));
-		basicOven = new Oven(new Temperature(0,0));
-		basicKettle = new Kettle();
-//		basicTransmogrifier = new Transmogrifier();
-//		allCoolingBox = new CoolingBox(new Temperature(0,0));
-//		allOven = new Oven(new Temperature(0,0));
-//		allKettle = new Kettle();
-//		allTransmogrifier = new Transmogrifier();
+		water = new AlchemicIngredient(24);
+		water_full = new AlchemicIngredient(50400);
+		crumbs = new AlchemicIngredient(new IngredientType("Crumbs",State.POWDER,
+				new Temperature(0,40)),30);
+		storage = new HashMap<IngredientType,Integer>();
+		storage.put(water.getType(),water.getQuantity());
+		storage.put(crumbs.getType(), crumbs.getQuantity());
+		storage_full = new HashMap<IngredientType,Integer>();
+		storage_full.put(water_full.getType(),water_full.getQuantity());
 		
-		basicWater = new AlchemicIngredient(10);
-//		water = new AlchemicIngredient(0);
-//		bigIngredient = new AlchemicIngredient(15000);
+		coolingBox = new CoolingBox(new Temperature(0,0));
+		oven = new Oven(new Temperature(0,0));
+		kettle = new Kettle();
+		transmogrifier = new Transmogrifier();
+		devices = new HashSet<Device>();
+		devices.add(coolingBox);
+		devices.add(oven);
+		devices.add(kettle);
+		devices.add(transmogrifier);
 		
-		basicStorage	= new HashMap<IngredientType,Integer>();
-		basicStorage.put(basicWater.getType(),basicWater.getQuantity());
-//		emptyStorage	= new HashMap<IngredientType,Integer>();
-//		bigStorage		= new HashMap<IngredientType,Integer>();
-//		bigStorage.put(bigIngredient.getType(), bigIngredient.getQuantity());
-//		waterStorage	= new HashMap<IngredientType,Integer>();
-//		waterStorage.put(water.getType(),water.getQuantity());
-//		storage			= new HashMap<IngredientType,Integer>();
-//		storage.put(ingredientLiquid.getType(),ingredientLiquid.getQuantity());
-//		storage.put(ingredientPowder.getType(),ingredientPowder.getQuantity());
-
-//		waterContainer = new IngredientContainer(water, Unit.VIAL_LIQUID);
-		
-		basicDevices = new HashSet<Device>();
-		basicDevices.add(basicCoolingBox);
-		basicDevices.add(basicOven);
-		basicDevices.add(basicKettle);
-		basicDevices.add(basicTransmogrifier);
-//		storageDevices = new HashSet<Device>();
-//		storageDevices.add(storageCoolingBox);
-//		storageDevices.add(storageOven);
-//		storageDevices.add(storageKettle);
-//		allDevices = new HashSet<Device>();
-//		allDevices.add(allCoolingBox);
-//		allDevices.add(allOven);
-//		allDevices.add(allKettle);
-//		allDevices.add(allKettle);
+		laboratory_empty = new Laboratory(5);
+		laboratory = new Laboratory(5,storage,devices);
+		laboratory_full = new Laboratory(1,storage_full,devices);
 		
 	}
 	
 	@Before
 	public void setUpFixture() {
+//		laboratory_empty = new Laboratory(100);
+//		laboratory = new Laboratory(1000, storage, devices);
 //		basicLiquidContainer = new IngredientContainer(Unit.BARREL_LIQUID);
 //		
-//		ingredientTypeLiquid = new IngredientType("ingredientTypeLiquid", State.LIQUID, new Temperature(0,15));
-//		ingredientLiquid = new AlchemicIngredient(ingredientTypeLiquid,15);
-//		ingredientTypePowder = new IngredientType("ingredientTypePowder", State.POWDER, new Temperature(0,15));
-//		ingredientPowder = new AlchemicIngredient(ingredientTypePowder,15);
+
+
 //		
 //		laboratory_waterStorage = new Laboratory(100, waterStorage);
-//		laboratory_empty = new Laboratory(100);
-//		laboratory_storage = new Laboratory(1000, storage, storageDevices);
+
+		
 //		laboratory_big = new Laboratory(5000, bigStorage);
 //		
 //		laboratory_empty_allDevices = new Laboratory(100, allDevices);
@@ -102,15 +75,15 @@ public class LaboratoryTest {
 	
 	@Test
 	public void testConstructorFull_Legal() {
-		laboratoryCapacityStorageDevices = new Laboratory(100,basicStorage,basicDevices);
+		laboratoryCapacityStorageDevices = new Laboratory(100,storage,devices);
 
 		assertEquals(100, laboratoryCapacityStorageDevices.getCapacity());
-		for (IngredientType type:basicStorage.keySet()) {
+		for (IngredientType type:storage.keySet()) {
 			assertTrue(laboratoryCapacityStorageDevices.hasAsIngredientType(type));
 			assertEquals(laboratoryCapacityStorageDevices.getQuantityOf(type),
-					basicStorage.get(type).intValue());
+					storage.get(type).intValue());
 		}
-		for (Device device:basicDevices) {
+		for (Device device:devices) {
 			assertTrue(laboratoryCapacityStorageDevices.hasAsDevice(device));
 		}
 
@@ -118,11 +91,11 @@ public class LaboratoryTest {
 	
 	@Test
 	public void testConstructorCapacityDevices_Legal() {
-		laboratoryCapacityDevices = new Laboratory(100, basicDevices);
+		laboratoryCapacityDevices = new Laboratory(100, devices);
 
 		assertEquals(100, laboratoryCapacityDevices.getCapacity());
 		assertEquals(0, laboratoryCapacityDevices.getInventory()[0].length);
-		for (Device device:basicDevices) {
+		for (Device device:devices) {
 			assertTrue(laboratoryCapacityDevices.hasAsDevice(device));
 		}
 	}
@@ -133,74 +106,69 @@ public class LaboratoryTest {
 		
 		assertEquals(100, laboratoryCapacity.getCapacity());
 		assertEquals(0, laboratoryCapacity.getInventory()[0].length);
-		assertEquals(0, laboratoryCapacity.)
+		assertFalse(laboratoryCapacity.hasAsDevice(CoolingBox.class));
+		assertFalse(laboratoryCapacity.hasAsDevice(Oven.class));
+		assertFalse(laboratoryCapacity.hasAsDevice(Kettle.class));
+		assertFalse(laboratoryCapacity.hasAsDevice(Transmogrifier.class));
 	}
-//	
-//	@Test (expected = CapacityException.class)
-//	public void testConstructor_Illegal_invalidCapacity() {
-//		laboratory = new Laboratory(-1);
-//	}
-//	
-//	@Test
-//	public void testIsValidCapacity_LegalCase() {
-//		assertTrue(Laboratory.isValidCapacity(10));
-//	}
-//	
-//	@Test
-//	public void testIsValidCapacity_IllegalCase() {
-//		assertFalse(Laboratory.isValidCapacity(-1));
-//		assertFalse(Laboratory.isValidCapacity(Integer.MAX_VALUE + 1));
-//	}
-//	
-//	@Test
-//	public void testGetStorageQuantity() {
-//		assertEquals(laboratory_empty.getStorageQuantity(), 0);
-//		assertEquals(laboratory_storage.getStorageQuantity(), 30);
-//	}
-//	
-//	@Test
-//	public void testGetNbOfIngredients() {
-//		assertEquals(laboratory_storage.getNbIngredients(), 2);
-//	}
-//	
-//	@Test
-//	public void testGetIngredientAt() {
-//		assertEquals(ingredientLiquid, laboratory_storage.getIngredientAt(1));
-//		assertEquals(ingredientPowder, laboratory_storage.getIngredientAt(2));
-//	}
-//	
-//	@Test
-//	public void testAddAsIngredient() {
-//		laboratory_storage.addAsIngredient(basicWater);
-//		assertEquals(basicWater, laboratory_storage.getIngredientAt(3));
-//	}
-//	
-//	@Test
-//	public void testRemoveAsIngredient() {
-//		laboratory_storage.removeAsIngredient(ingredientLiquid);
-//		assertEquals(laboratory_storage.getIngredientAt(1), ingredientPowder);
-//	}
-//	
-//	@Test
-//	public void testHasProperIngredients_LegalCase() {
-//		assertTrue(laboratory_waterStorage.hasProperIngredients());
-//	}
-//	
-//	@Test
-//	public void testHasProperIngredients_IllegalCase() {
-//		AlchemicIngredient ingredientLiquid2 = new AlchemicIngredient(ingredientTypeLiquid, 5);
-//		laboratory_storage.addAsIngredient(ingredientLiquid2);
-//		assertFalse(laboratory_storage.hasProperIngredients());
-//	}
-//	
-//	@Test
-//	public void testStore_legalCase_NewIngredientType() {
-//		basicLiquidContainer.setContents(basicWater);
-//		laboratory_storage.store(basicLiquidContainer);
-//		assertEquals(basicWater, laboratory_storage.getIngredientAt(3));
-//		assertEquals(basicLiquidContainer, null);
-//	}
-//	
+	
+	@Test (expected = CapacityException.class)
+	public void testConstructor_Illegal_invalidCapacity() {
+		laboratory = new Laboratory(-1);
+	}
+	
+	@Test
+	public void testIsValidCapacity_LegalCase() {
+		assertTrue(Laboratory.isValidCapacity(10));
+	}
+	
+	@Test
+	public void testIsValidCapacity_IllegalCase() {
+		assertFalse(Laboratory.isValidCapacity(-1));
+		assertFalse(Laboratory.isValidCapacity(Integer.MAX_VALUE + 1));
+	}
+	
+	@Test
+	public void testGetUsedCapacity() {
+		assertEquals(0,laboratory_empty.getUsedCapacity(),0.00001);
+		assertEquals(8.0,laboratory.getUsedCapacity(),0.00001);
+	}
+
+	
+	@Test
+	public void testGetQuantityOf() {
+		assertEquals(24, laboratory.getQuantityOf(water.getType()));
+		assertEquals(30, laboratory.getQuantityOf(crumbs.getType()));
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testGetQuantityOf_IllegalCase() {
+		laboratory_empty.getQuantityOf(water.getType());
+	}
+	
+	@Test
+	public void testAddIngredientType() {
+		assertFalse(laboratory_empty.hasAsIngredientType(water.getType()));
+		laboratory.addIngredientType(water.getType(),water.getQuantity());
+		assertTrue(laboratory_empty.hasAsIngredientType(water.getType()));
+	}
+	
+	@Test
+	public void testRemoveIngredientType() {
+		assertTrue(laboratory.hasAsIngredientType(water.getType()));
+		laboratory.removeIngredientType(water.getType());
+		assertFalse(laboratory.hasAsIngredientType(water.getType()));
+	}
+	
+	@Test
+	public void testStore_legalCase_NewIngredientType() {
+		
+		basicLiquidContainer.setContents(basicWater);
+		laboratory_storage.store(basicLiquidContainer);
+		assertEquals(basicWater, laboratory_storage.getIngredientAt(3));
+		assertEquals(basicLiquidContainer, null);
+	}
+	
 //	@Test
 //	public void testStore_LegalCase_OldIngredientType() {
 //		AlchemicIngredient ingredientLiquid2 = new AlchemicIngredient(ingredientTypeLiquid, 5);
