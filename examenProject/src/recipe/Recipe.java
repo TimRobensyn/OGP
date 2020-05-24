@@ -75,7 +75,7 @@ public class Recipe {
 	/**
 	 * Get the list containing the processes of this recipe.
 	 */
-	@Basic
+	@Basic @Raw
 	public List<Process> getProcesses(){
 		return this.processes;
 	}
@@ -83,7 +83,7 @@ public class Recipe {
 	/**
 	 * Return the number of processes in the process list of this recipe.
 	 */
-	@Basic
+	@Basic @Raw
 	public int getNbProcesses() {
 		return processes.size();
 	}
@@ -211,11 +211,11 @@ public class Recipe {
 	@Raw
 	public void addProcessAt(Process process, int index) {
 		if (index==getNbProcesses() && process!=Process.mix) {
-			getProcesses().add(index,Process.mix);
-			getProcesses().add(index,process);
+			this.processes.add(index,Process.mix);
+			this.processes.add(index,process);
 		}
 		else{
-			getProcesses().add(index,process);
+			this.processes.add(index,process);
 		}
 	}
 	

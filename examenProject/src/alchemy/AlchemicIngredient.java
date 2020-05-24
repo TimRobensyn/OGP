@@ -90,6 +90,7 @@ public class AlchemicIngredient {
 	 * @return True if and only if the type is effective.
 	 * 		   | result == (type!=null)
 	 */
+	@Raw
 	public boolean isValidType(IngredientType type) {
 		return (type!=null);
 	}
@@ -97,7 +98,7 @@ public class AlchemicIngredient {
 	/**
 	 * Return the state of the type of this ingredient.
 	 */
-	@Immutable
+	@Basic @Immutable
 	public State getState() {
 		return getType().getState();
 	}
@@ -131,6 +132,7 @@ public class AlchemicIngredient {
 	 *       | else
 	 *       |    this.fullname == prefactor this.simpleNames
 	 */
+	@Basic
 	public String getFullName() {
 		String fullName = "";
 		
@@ -161,6 +163,7 @@ public class AlchemicIngredient {
 	/**
 	 * Return the quantity of this ingredient in drops or pinches (depending on the state).
 	 */
+	@Basic @Immutable
 	public int getQuantity() {
 		return this.quantity;
 	}
@@ -174,6 +177,7 @@ public class AlchemicIngredient {
 	 * 		   | result ==
 	 * 		   | 	((quantity >= 0) && (quantity <= Long.MAX_VALUE))
 	 */
+	@Raw
 	public static boolean isValidQuantity(int quantity) {
 		return ((quantity >= 0) && (quantity <= Long.MAX_VALUE));
 	}
@@ -205,6 +209,7 @@ public class AlchemicIngredient {
 	/**
 	 * Return an array of long values with the coldness and hotness of the ingredient.
 	 */
+	@Basic
 	public long[] getTemperature() {
 		return temperature.getTemperature();
 	}

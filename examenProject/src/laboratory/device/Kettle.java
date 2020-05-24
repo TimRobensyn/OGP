@@ -2,7 +2,6 @@ package laboratory.device;
 
 import alchemy.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import be.kuleuven.cs.som.annotate.*;
@@ -50,41 +49,42 @@ public class Kettle extends BottomlessDevice {
 	 * 
 	 * @post The simple names array of the processed ingredient is an array with the simple names of all the
 	 * 		 start ingredients in alphabetical order.
-	 * 		 | for(AlchemicIngredient ingredient: getStartIngredients())
-	 *       |     for(String simpleName: ingredient.getType().getSimpleName())
-	 *       |         if(!newNameList.contains(simpleName)) newNameList.add(simpleName)
+	 * 		 | for each ingredient in getStartIngredients()
+	 *       |     for each simpleName in  ingredient.getType().getSimpleNames()
+	 *       |         if(!newNameList.contains(simpleName)) 
+	 *       |            then newNameList.add(simpleName)
 	 * 		 | Collections.sort(newNameList)
-	 * 		 | String[] newSimpleNames = (String[]) newNameList.toArray();
+	 * 		 | newSimpleNames = newNameList.toArray();
 	 * 
 	 * @post The state of the processed ingredient is set to the state of the start ingredient whose standard temperature
 	 * 		 is closest to the standard temperature of water. If multiple start ingredients have a standard temperature closest
 	 * 		 to this temperature, then liquid is prioritized over powder.
 	 *       | closestToWater.add(getStartIngredient().get(0))
-	 *       | for(AlchemicIngredient ingredient : getStartIngredients())
+	 *       | for each ingredient in getStartIngredients()
 	 *       |     if(ingredient.getStandardTemperature() closer to water.getStandardTemperature())
-	 *       |		  List<AlchemicIngredient> closestToWater = new ArrayList<>()
+	 *       |		  then closestToWater = new ArrayList<>()
 	 *       |		  closestToWater.add(ingredient)
 	 *       |	   else if(ingredient.getStandardTemperature() same difference from water.getStandardTemperature())
-	 *       |		  closestToWater.add(ingredient)
+	 *       |		  then closestToWater.add(ingredient)
 	 *       | newState = State.POWDER
-	 *       | for(AlchemicIngredient ingredient : closestToWater)
+	 *       | for each ingredient in closestToWater
 	 *       |     if(ingredient.getState()==State.LIQUID)
 	 *       |        newState = State.LIQUID
 	 * 
 	 * @post If every start ingredient has the same state, the processed ingredient's quantity is equal to the sum of
 	 * 		 all the start ingredients' quantities.
-	 *       | for(AlchemicIngredient ingredient : getStartIngredients())
+	 *       | for each ingredient in getStartIngredients()
 	 *       |     quantityOfState += ingredient.getQuantity()
 	 *       | newQuantity = quantityOfState
 	 *       If not every start ingredient has the same state, all the quantities of the start ingredients that
 	 *       have a different state than the eventual processed ingredient are summed as a fraction of spoons.
 	 *       This fraction then gets rounded down to a rounded number of spoons and then gets added to the sum of all the
 	 *       quantities of the start ingredients that have the same state as the eventual processed ingredient.
-	 *       | for(AlchemicIngredient ingredient : getStartIngredients())
+	 *       | for each ingredient in getStartIngredients()
 	 *       |     if(ingredient.getState() == State.LIQUID)
-	 *       |        quantityOfLiquids += ingredient.getQuantity()
+	 *       |        then quantityOfLiquids += ingredient.getQuantity()
 	 *       |     else if(ingredient.getState() == State.Powder)
-	 *       |        quantityOfPowder += ingredient.getQuantity()
+	 *       |        then quantityOfPowder += ingredient.getQuantity()
 	 *       | oldStateToNewState = Unit.SPOON_NEWSTATE.getCapacity() * (Math.floor(quantityOfOldState*Unit.getRatio(newState, oldState)))
 	 *       | newQuantity = quantityOfNewState + oldStateToNewState
 	 * 
@@ -92,28 +92,28 @@ public class Kettle extends BottomlessDevice {
 	 * 	     with the standard temperature closest to that of water. If multiple starting ingredients are closest to this
 	 * 		 temperature, the hottest is selected.
 	 * 		 | closestToWater.add(getStartIngredient().get(0))
-	 *       | for(AlchemicIngredient ingredient : getStartIngredients())
+	 *       | for each ingredient in getStartIngredients()
 	 *       |     if(ingredient.getStandardTemperature() closer to water.getStandardTemperature())
-	 *       |		  List<AlchemicIngredient> closestToWater = new ArrayList<>()
+	 *       |		  then closestToWater = new ArrayList<>()
 	 *       |		  closestToWater.add(ingredient)
 	 *       |	   else if(ingredient.getStandardTemperature() same difference from water.getStandardTemperature())
-	 *       |		  closestToWater.add(ingredient)
+	 *       |		  then closestToWater.add(ingredient)
 	 *       | newStandardTemperature = closestToWater.get(0).getStandardTemperatureObject()
-	 *       | for(AlchemicIngredient ingredient : closestToWater)
+	 *       | for each ingredient in closestToWater
 	 *       |     if(Temperature.compareTemperature(ingredient.getStandardTemperatureObject(), newStandardTemperature) == 1)
-	 *       |		  newStandardTemperature = ingredient.getStandardTemperatureObject()
+	 *       |		  then newStandardTemperature = ingredient.getStandardTemperatureObject()
 	 * 
 	 * @post The temperature of the processed ingredient is set to the weighted average of the temperatures of the
 	 * 		 start ingredients.
-	 *       | for(AlchemicIngredient ingredient : getStartIngredients())
+	 *       | for each ingredient in getStartIngredients()
 	 *       |	   cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*Unit.SPOON_STATE.getCapacity()
 	 *       |	   cumulativeHotness += ingredient.getHotness()*ingredient.getQuantity()*Unit.SPOON_STATE.getCapacity()
 	 *       |     totalNbOfSpoons +=  ingredient.getQuantity()/Unit.SPOON_STATE.getCapacity()
 	 *       | temperature = ((-cumulativeColdness + cumulativeHotness)/totalNbOfSpoons)
 	 *       | if(temperature < 0)
-	 *       |    newTemperature = new Temperature(-temperature, 0)
+	 *       |    then newTemperature = new Temperature(-temperature, 0)
 	 *       | else if(temperature >= 0)
-	 *       |    newTemperature = new Temperature(0, temperature)
+	 *       |    then newTemperature = new Temperature(0, temperature)
 	 *       
 	 * @effect A new ingredient type is created with the new simple names, the new state and the new standard temperature
 	 *         and a new ingredient is created with the new ingredient type and the new quantity.
@@ -123,10 +123,10 @@ public class Kettle extends BottomlessDevice {
 	 *         | newIngredient = new AlchemicIngredient(newType, newQuantity)
 	 *         | difference = Temperature.temperatureDifference(newTemperature, newStandardTemperature)
 	 *         | if(difference > 0)
-	 *         |    newIngredient.heat(difference)
+	 *         |    then newIngredient.heat(difference)
 	 *         | else if (difference < 0)
-	 *         |    newIngredient.cool(-difference)
-	 *         | clearStartIngredients()
+	 *         |    then newIngredient.cool(-difference)
+	 *         | new.getNbStartIngredients() == 0
 	 *         | addProcessedIngredient(newIngredient)
 	 * 
 	 * @throws CapacityException
@@ -153,8 +153,8 @@ public class Kettle extends BottomlessDevice {
 																	  waterTemperature));
 		int quantityOfLiquids=0;
 		int quantityOfPowders=0;
-		long cumulativeColdness = 0L;
-		long cumulativeHotness = 0L;
+		double cumulativeColdness = 0L;
+		double cumulativeHotness = 0L;
 		double totalNbOfSpoons = 0L;
 		
 		for (AlchemicIngredient ingredient: getStartIngredients()) {
@@ -166,7 +166,7 @@ public class Kettle extends BottomlessDevice {
 			//State & standardTemperature
 			long diffIngredient = Math.abs(Temperature.temperatureDifference(ingredient.getStandardTemperatureObject(),
 					                                                         waterTemperature));
-			System.out.println(diffIngredient);
+			
 			if (diffIngredient<diffClosest) {
 				closestToWater.clear();
 				closestToWater.add(ingredient);
@@ -175,16 +175,18 @@ public class Kettle extends BottomlessDevice {
 			}
 			
 			//Quantity & temperature
+			
+			
 			if (ingredient.getState()==State.LIQUID) {
 				quantityOfLiquids += ingredient.getQuantity();
-				cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*Unit.SPOON_LIQUID.getCapacity();
-				cumulativeHotness += ingredient.getHotness()*ingredient.getQuantity()*Unit.SPOON_LIQUID.getCapacity();
-				totalNbOfSpoons += (double) ingredient.getQuantity()/Unit.SPOON_LIQUID.getCapacity();
+				cumulativeColdness += (double) ingredient.getColdness()*ingredient.getQuantity()/Unit.SPOON_LIQUID.getCapacity();
+				cumulativeHotness += (double) ingredient.getHotness()*ingredient.getQuantity()/Unit.SPOON_LIQUID.getCapacity();
+				totalNbOfSpoons += (double) ingredient.getQuantity()/Unit.SPOON_LIQUID.getAbsoluteCapacity();
 			} else if (ingredient.getState()==State.POWDER) {
 				quantityOfPowders += ingredient.getQuantity();
-				cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*Unit.SPOON_POWDER.getCapacity();
-				cumulativeHotness += ingredient.getHotness()*ingredient.getQuantity()*Unit.SPOON_POWDER.getCapacity();
-				totalNbOfSpoons += (double) ingredient.getQuantity()/Unit.SPOON_POWDER.getCapacity();
+				cumulativeColdness += (double) ingredient.getColdness()*ingredient.getQuantity()/Unit.SPOON_POWDER.getCapacity();
+				cumulativeHotness += (double) ingredient.getHotness()*ingredient.getQuantity()/Unit.SPOON_POWDER.getCapacity();
+				totalNbOfSpoons += (double) ingredient.getQuantity()/Unit.SPOON_POWDER.getAbsoluteCapacity();
 			}
 			
 		}
@@ -208,12 +210,10 @@ public class Kettle extends BottomlessDevice {
 		//Quantity
 		int newQuantity = 0;
 		if (newState==State.LIQUID) {
-			int powderToLiquid = Unit.SPOON_LIQUID.getCapacity()*( (int) Math.floor(quantityOfPowders*Unit.getRatio(
-																				    newState, newState.otherState())));
+			int powderToLiquid = (int) Math.floor(quantityOfPowders*Unit.getRatio(newState, newState.otherState()));
 			newQuantity = quantityOfLiquids + powderToLiquid;
 		} else if (newState==State.POWDER) {
-			int liquidToPowder = Unit.SPOON_POWDER.getCapacity()*( (int) Math.floor(quantityOfLiquids*Unit.getRatio(
-					                                                                newState, newState.otherState())));
+			int liquidToPowder = (int) Math.floor(quantityOfLiquids*Unit.getRatio(newState, newState.otherState()));
 			newQuantity = quantityOfPowders + liquidToPowder;
 		}
 		

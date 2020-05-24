@@ -7,6 +7,9 @@ import be.kuleuven.cs.som.annotate.*;
  * 
  * @invar   Each temperature must be valid as to be able to be used correctly.
  *          | isValidTemperature(this)
+ * @invar   Each temperature must have a valid coldness and hotness as its temperature values for any
+ * 			temperature.
+ *          | isValidTemperatureValue(getColdness()) && isValidTemperature(getHotness())
  * 
  * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  * @version 1.0
@@ -110,6 +113,7 @@ public class Temperature {
 	/**
 	 * Return the coldness of this Temperature object.
 	 */
+	@Basic
 	public long getColdness() {
 		return this.coldness;
 	}
@@ -139,6 +143,7 @@ public class Temperature {
 	/**
 	 * Return the hotness of this Temperature object.
 	 */
+	@Basic
 	public long getHotness() {
 		return this.hotness;
 	}
@@ -221,9 +226,6 @@ public class Temperature {
 	}
 	
 	
-	/************************************************************************
-	 * TEMPERATURE
-	 ************************************************************************/
 	
 	/**
 	 * Check whether the given temperature array is valid for all
@@ -309,7 +311,7 @@ public class Temperature {
 	/**
 	 * Get the temperature upper limit value of all temperatures.
 	 */
-	@Basic @Immutable
+	@Basic @Immutable @Raw
 	public static long getTemperatureUpperLimit() {
 		return tempUpperLimit;
 	}
