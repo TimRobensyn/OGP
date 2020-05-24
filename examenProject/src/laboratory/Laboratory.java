@@ -166,7 +166,7 @@ public class Laboratory {
 	public int getQuantityOf(IngredientType type) throws IllegalArgumentException{
 		if (!hasAsIngredientType(type))
 			throw new IllegalArgumentException("Type not found.");
-		return this.storage.get(type);
+		return this.storage.get(type).intValue();
 	}
 	
 	/**
@@ -184,10 +184,11 @@ public class Laboratory {
 	public double getUsedCapacity() {
 		double usedCapacity = 0;
 		for (IngredientType type:this.storage.keySet()) {
-			if (type.getState()==State.LIQUID)
-				usedCapacity += (getQuantityOf(type)/Unit.SPOON_LIQUID.getCapacity());
-			else if (type.getState()==State.POWDER){
-				usedCapacity += (getQuantityOf(type)/Unit.SPOON_POWDER.getCapacity());
+			if (type.getState().equals(State.LIQUID)) {
+				usedCapacity += ((double)(getQuantityOf(type))/((double)(Unit.SPOON_LIQUID.getCapacity())));
+			}
+			else if (type.getState().equals(State.POWDER)){
+				usedCapacity += ((double)(getQuantityOf(type))/((double)(Unit.SPOON_POWDER.getCapacity())));
 			}
 		}
 		return usedCapacity;
