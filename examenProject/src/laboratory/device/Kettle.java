@@ -2,8 +2,8 @@ package laboratory.device;
 
 import alchemy.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import be.kuleuven.cs.som.annotate.*;
 import laboratory.CapacityException;
@@ -12,10 +12,10 @@ import temperature.Temperature;
 /**
  * A class of kettles involving an array of ingredients that the kettle can mix.
  * 
+ * @author  Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  * @version 1.0
- * @author Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  * 
- * @note In this class we assume that there are only two possible states for an alchemic ingredient to have.
+ * @note    In this class we assume that there are only two possible states for an alchemic ingredient to have.
  */
 
 public class Kettle extends BottomlessDevice {
@@ -23,8 +23,8 @@ public class Kettle extends BottomlessDevice {
 	/**
 	 * Initialize a new kettle with the given array of ingredient containers.
 	 * 
-	 * @param ingredientArray
-	 * 		  The given array with ingredient containers that will be loaded in this kettle.
+	 * @param  ingredientArray
+	 * 		   The given array with ingredient containers that will be loaded in this kettle.
 	 * @effect This new kettle is initialized as a bottomless device with the given array of ingredient containers.
 	 * 		   | super(ingredientArray)
 	 */
@@ -50,8 +50,8 @@ public class Kettle extends BottomlessDevice {
 	 * 
 	 * @post The simple names array of the processed ingredient is an array with the simple names of all the
 	 * 		 start ingredients in alphabetical order.
-	 * 		 | for(AlchemicIngredient ingredient : getStartIngredients())
-	 *       |     for(String simpleName:ingredient.getType().getSimpleName())
+	 * 		 | for(AlchemicIngredient ingredient: getStartIngredients())
+	 *       |     for(String simpleName: ingredient.getType().getSimpleName())
 	 *       |         if(!newNameList.contains(simpleName)) newNameList.add(simpleName)
 	 * 		 | Collections.sort(newNameList)
 	 * 		 | String[] newSimpleNames = (String[]) newNameList.toArray();
@@ -145,26 +145,30 @@ public class Kettle extends BottomlessDevice {
 			throw new CapacityException(this,"This kettle has no ingredients to work with.");
 		}
 		
-		List<String> newNameList = new ArrayList<>(0);
-		List<AlchemicIngredient> closestToWater = new ArrayList<>();
-		Temperature waterTemperature = new Temperature(0L,20L);
-		long diffClosest = Math.abs(Temperature.temperatureDifference(getStartIngredients().get(0).getStandardTemperatureObject(),waterTemperature));
+		ArrayList<String> newNameList = new ArrayList<>();
+		ArrayList<AlchemicIngredient> closestToWater = new ArrayList<>();
+		final Temperature waterTemperature = new Temperature(0L,20L);
+		
+		long diffClosest = Math.abs(Temperature.temperatureDifference(getStartIngredients().get(0).getStandardTemperatureObject(),
+																	  waterTemperature));
 		int quantityOfLiquids=0;
 		int quantityOfPowders=0;
 		long cumulativeColdness = 0L;
 		long cumulativeHotness = 0L;
 		double totalNbOfSpoons = 0L;
 		
-		for (AlchemicIngredient ingredient:getStartIngredients()) {
+		for (AlchemicIngredient ingredient: getStartIngredients()) {
 			//Name
-			for (String simpleName:ingredient.getType().getSimpleNames()) {
+			for (String simpleName: ingredient.getType().getSimpleNames()) {
 				if (!newNameList.contains(simpleName)) newNameList.add(simpleName);						
 				}
 			
 			//State & standardTemperature
-			long diffIngredient = Math.abs(Temperature.temperatureDifference(ingredient.getStandardTemperatureObject(),waterTemperature));
+			long diffIngredient = Math.abs(Temperature.temperatureDifference(ingredient.getStandardTemperatureObject(),
+					                                                         waterTemperature));
+			System.out.println(diffIngredient);
 			if (diffIngredient<diffClosest) {
-				closestToWater = new ArrayList<AlchemicIngredient>();
+				closestToWater.clear();
 				closestToWater.add(ingredient);
 			} else if (diffIngredient==diffClosest) {
 				closestToWater.add(ingredient);
@@ -175,19 +179,19 @@ public class Kettle extends BottomlessDevice {
 				quantityOfLiquids += ingredient.getQuantity();
 				cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*Unit.SPOON_LIQUID.getCapacity();
 				cumulativeHotness += ingredient.getHotness()*ingredient.getQuantity()*Unit.SPOON_LIQUID.getCapacity();
-				totalNbOfSpoons += ingredient.getQuantity()/Unit.SPOON_LIQUID.getCapacity();
+				totalNbOfSpoons += (double) ingredient.getQuantity()/Unit.SPOON_LIQUID.getCapacity();
 			} else if (ingredient.getState()==State.POWDER) {
 				quantityOfPowders += ingredient.getQuantity();
 				cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*Unit.SPOON_POWDER.getCapacity();
 				cumulativeHotness += ingredient.getHotness()*ingredient.getQuantity()*Unit.SPOON_POWDER.getCapacity();
-				totalNbOfSpoons += ingredient.getQuantity()/Unit.SPOON_POWDER.getCapacity();
+				totalNbOfSpoons += (double) ingredient.getQuantity()/Unit.SPOON_POWDER.getCapacity();
 			}
 			
 		}
 		
 		//State
 		State newState = State.POWDER;
-		for (AlchemicIngredient ingredient : closestToWater) {
+		for (AlchemicIngredient ingredient: closestToWater) {
 			if (ingredient.getState()==State.LIQUID) {
 				newState = State.LIQUID;
 			}
@@ -205,11 +209,11 @@ public class Kettle extends BottomlessDevice {
 		int newQuantity = 0;
 		if (newState==State.LIQUID) {
 			int powderToLiquid = Unit.SPOON_LIQUID.getCapacity()*( (int) Math.floor(quantityOfPowders*Unit.getRatio(
-					newState, newState.otherState())));
+																				    newState, newState.otherState())));
 			newQuantity = quantityOfLiquids + powderToLiquid;
 		} else if (newState==State.POWDER) {
 			int liquidToPowder = Unit.SPOON_POWDER.getCapacity()*( (int) Math.floor(quantityOfLiquids*Unit.getRatio(
-					newState, newState.otherState())));
+					                                                                newState, newState.otherState())));
 			newQuantity = quantityOfPowders + liquidToPowder;
 		}
 		
@@ -224,8 +228,10 @@ public class Kettle extends BottomlessDevice {
 
 		//Toewijzing
 		Collections.sort(newNameList);
-		String[] newSimpleNames = (String[]) newNameList.toArray();
+		
+		String[] newSimpleNames = newNameList.toArray(new String[0]);
 		IngredientType newType = new IngredientType(newSimpleNames, newState, newStandardTemperature);
+		
 		AlchemicIngredient newIngredient = new AlchemicIngredient(newType, newQuantity);
 		
 		//Temperature
