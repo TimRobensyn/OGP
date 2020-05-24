@@ -1,6 +1,10 @@
 package alchemy;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import be.kuleuven.cs.som.annotate.*;
+import laboratory.device.Device;
 
 /**
  * A class of ingredient containers involving a capacity unit and alchemic ingredient as contents of it.
@@ -79,11 +83,15 @@ public class IngredientContainer {
 	 * 		  The given contents
 	 * @pre   This ingredient container can have the given alchemic ingredient as contents.
 	 * 		  | canHaveAsContents(contents)
+	 * @pre   The container is not terminated.
+	 * 		  | !isTerminated()
 	 */
 	@Raw
 	public void setContents(AlchemicIngredient contents) {
 		assert(canHaveAsContents(contents)) :
 			"Precondition: The contents are valid for this container.";
+		assert(!isTerminated()) :
+			"Precondition: The container is not terminated.";
 		this.contents = contents;
 	}
 	
@@ -153,4 +161,36 @@ public class IngredientContainer {
 	 * Variable storing the capacity of this container.
 	 */
 	private final Unit capacity;
+	
+	
+	/**************************************************
+	 * Termination
+	 **************************************************/
+	
+	/**
+	 * Terminate this container.
+	 * 
+	 * @post If this container has no contents, it is terminated.
+	 * 		 | if(getContents() == null)
+	 * 		 |    then new.isTerminated() == true
+	 */
+	public void terminate() {
+		if(this.getContents()==null) {
+			this.isTerminated = true;
+		}
+	}
+	
+	/**
+	 * Check whether this container is terminated.
+	 */
+	@Basic @Raw
+	public boolean isTerminated() {
+		return this.isTerminated;
+	}
+	
+	/**
+	 * A variable for the termination of this ingredient container.
+	 */
+	private boolean isTerminated = false;
+	
 }

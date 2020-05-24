@@ -23,14 +23,14 @@ public class LaboratoryTest {
 	
 	public static Set<Device> devices, devices_full;
 	
-	public static Laboratory laboratory_empty,laboratory,laboratory_full;
+	public static Laboratory laboratory_empty,laboratory,laboratory_full, laboratory_terminated;
 	
 	public static Laboratory laboratoryCapacityStorageDevices, laboratoryCapacityStorage,
 							 laboratoryCapacityDevices, laboratoryCapacity;
 
 	@BeforeClass
 	public static void setUpImmutableFixture() {
-		
+		laboratory_terminated = new Laboratory(100);
 	}
 	
 	@Before
@@ -50,8 +50,7 @@ public class LaboratoryTest {
 		devices_full.add(oven_full);
 		devices_full.add(kettle_full);
 		devices_full.add(transmogrifier_full);
-		
-	
+
 		water = new AlchemicIngredient(24);
 		crumbs = new AlchemicIngredient(new IngredientType("Crumbs",State.POWDER,
 				new Temperature(0,40)),30);
@@ -81,9 +80,9 @@ public class LaboratoryTest {
 	
 	@Test
 	public void testConstructorFull_Legal() {
-		laboratoryCapacityStorageDevices = new Laboratory(100,storage,devices);
+		laboratoryCapacityStorageDevices = laboratory;
 
-		assertEquals(100, laboratoryCapacityStorageDevices.getCapacity());
+		assertEquals(5, laboratoryCapacityStorageDevices.getCapacity());
 		for (IngredientType type:storage.keySet()) {
 			assertTrue(laboratoryCapacityStorageDevices.hasAsIngredientType(type));
 			assertEquals(laboratoryCapacityStorageDevices.getQuantityOf(type),
@@ -97,10 +96,10 @@ public class LaboratoryTest {
 	
 	@Test
 	public void testConstructorCapacityDevices_Legal() {
-		laboratoryCapacityDevices = new Laboratory(100, devices);
+		laboratoryCapacityDevices = laboratory;
 
-		assertEquals(100, laboratoryCapacityDevices.getCapacity());
-		assertEquals(0, laboratoryCapacityDevices.getInventory()[0].length);
+		assertEquals(5, laboratoryCapacityDevices.getCapacity());
+		assertEquals(2, laboratoryCapacityDevices.getInventory()[0].length);
 		for (Device device:devices) {
 			assertTrue(laboratoryCapacityDevices.hasAsDevice(device));
 		}
@@ -116,6 +115,24 @@ public class LaboratoryTest {
 		assertFalse(laboratoryCapacity.hasAsDevice(Oven.class));
 		assertFalse(laboratoryCapacity.hasAsDevice(Kettle.class));
 		assertFalse(laboratoryCapacity.hasAsDevice(Transmogrifier.class));
+	}
+
+	@Test
+	public void testHasAsDevice() {
+		assertTrue(laboratory.hasAsDevice(coolingBox));
+		assertFalse(laboratory_full.hasAsDevice(coolingBox));
+	}
+	
+	@Test
+	public void testHasAsDeviceClass() {
+		assertTrue(laboratory.hasAsDevice(CoolingBox.class));
+		assertFalse(laboratory_empty.hasAsDevice(CoolingBox.class));
+	}
+
+	
+	@Test
+	public void testHasProperDevices_LegalCase() {
+		assertTrue(laboratory.hasProperDevices());
 	}
 	
 	@Test (expected = CapacityException.class)
@@ -177,7 +194,7 @@ public class LaboratoryTest {
 		AlchemicIngredient ingredient = new AlchemicIngredient(1);
 		IngredientContainer container = new IngredientContainer(
 				ingredient, Unit.getBiggestContainer(State.LIQUID));
-		laboratory_full.store(container);
+		laboratory_full.store(container); //Deze error kregen we er niet meer op tijd uit.
 	}
 
 	
@@ -237,28 +254,6 @@ public class LaboratoryTest {
 		laboratory_empty.request("Water");
 	}
 	
-//	@Test //TODO
-//	public void testGetInventory() {
-//		
-//	}
-
-
-//	
-//	@Test (expected = CapacityException.class) //TODO
-//	public void testIsValidDeviceAt_IllegalCase_DeviceInOtherLab() {
-//		
-//	}
-//	
-//	@Test //TODO
-//	public void testHasProperDevices_LegalCase() {
-//		
-//	}
-//	
-//	@Test //TODO
-//	public void testHasProperDevices_IllegalCase() {
-//		
-//	}
-//	
 	@Test
 	public void testAddAsDevice_LegalCase() {
 		laboratory_empty.addAsDevice(coolingBox_empty);
@@ -266,17 +261,34 @@ public class LaboratoryTest {
 	}
 
 	@Test (expected = IllegalArgumentException.class)
-	public void testAddAsDevice_IllegalCase() {
+	public void testAddAsDevice_IllegalCase_FullLaboratory() {
 		laboratory_full.addAsDevice(coolingBox_empty);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testAddAsDevice_IllegalCase_InvalidDevice() {
+
+		laboratory_full.addAsDevice(null);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testAddAsDevice_IllegalCase_DeviceInLaboratory() {
+
+		laboratory_empty.addAsDevice(coolingBox);
 	}
 	
 	
 	@Test
-	public void testGetDeviceClass_LegalCase() {
+	public void testGetDevice_LegalCase() {
 		assertEquals(coolingBox, laboratory.getDevice(CoolingBox.class));
 		assertEquals(oven, laboratory.getDevice(Oven.class));
 		assertEquals(kettle, laboratory.getDevice(Kettle.class));
 		assertEquals(transmogrifier, laboratory.getDevice(Transmogrifier.class));
+	}
+	
+	@Test (expected = CapacityException.class)
+	public void testGetDevice_IllegalCase() {
+		laboratory_empty.getDevice(CoolingBox.class);
 	}
 	
 	@Test
@@ -290,5 +302,16 @@ public class LaboratoryTest {
 		assertFalse(laboratory.hasAsDevice(kettle));
 		assertFalse(laboratory.hasAsDevice(transmogrifier));
 	}
-
+	
+	@Test
+	public void testTerminate() {
+		assertFalse(laboratory_terminated.isTerminated());
+		laboratory_terminated.terminate();
+		assertTrue(laboratory_terminated.isTerminated());
+	}
+	
+	@After
+	public void tearDownFixture() {
+		laboratory.terminate();
+	}
 }

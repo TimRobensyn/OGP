@@ -60,7 +60,10 @@ public class Laboratory {
 		}
 		this.capacity = capacity;
 		this.storage = storage;
-		this.devices = devices;
+		
+		for(Device device : devices) {
+			addAsDevice(device);
+		}
 	}
 	
 	/**
@@ -773,7 +776,6 @@ public class Laboratory {
 	 *          |     device.getLaboratory() == null
 	 *          |     !hasAsDevice(device)
 	 */
-	@Basic @Raw
 	public void terminate() {
 		Set<Device> toRemove = new HashSet<Device>();
 		for (Device device: this.devices) {
@@ -787,7 +789,7 @@ public class Laboratory {
 	/**
 	 * Check whether this laboratory is terminated.
 	 */
-	@Basic
+	@Basic @Raw
 	public boolean isTerminated() {
 		return this.isTerminated;
 	}
