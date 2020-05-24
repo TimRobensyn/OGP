@@ -4,8 +4,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>369</x>
-      <y>441</y>
+      <x>396</x>
+      <y>423</y>
       <w>198</w>
       <h>279</h>
     </coordinates>
@@ -34,8 +34,8 @@ getStandardTemperatureObject()</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>648</x>
-      <y>459</y>
+      <x>675</x>
+      <y>441</y>
       <w>198</w>
       <h>270</h>
     </coordinates>
@@ -64,8 +64,8 @@ isValidStandardTemperature()
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>171</x>
-      <y>909</y>
+      <x>198</x>
+      <y>891</y>
       <w>909</w>
       <h>522</h>
     </coordinates>
@@ -77,8 +77,8 @@ bg=yellow</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>954</x>
-      <y>981</y>
+      <x>981</x>
+      <y>963</y>
       <w>99</w>
       <h>54</h>
     </coordinates>
@@ -91,8 +91,8 @@ process()</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>954</x>
-      <y>1062</y>
+      <x>981</x>
+      <y>1044</y>
       <w>99</w>
       <h>54</h>
     </coordinates>
@@ -105,8 +105,8 @@ process()</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>927</x>
-      <y>1179</y>
+      <x>954</x>
+      <y>1161</y>
       <w>99</w>
       <h>54</h>
     </coordinates>
@@ -119,8 +119,8 @@ process()</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>927</x>
-      <y>1260</y>
+      <x>954</x>
+      <y>1242</y>
       <w>99</w>
       <h>54</h>
     </coordinates>
@@ -133,48 +133,49 @@ process()</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>180</x>
-      <y>954</y>
+      <x>207</x>
+      <y>936</y>
       <w>162</w>
-      <h>423</h>
+      <h>441</h>
     </coordinates>
     <panel_attributes>Laboratory (defensief)
 --
 capacity
 storage
 devices
+isTerminated
 --
 getCapacity()
+getCapacityInSpoons()
 isValidCapacity()
-getStorage()
-getStorageQuantity()
+getQuantityOf()
 getNbIngredients()
-getIngredientAt()
-addAsIngredient()
-removeAsIngredient()
-hasProperIngredients()
+getUsedCapacity()
+hasAsIngredientType()
+isValidIngredientType()
+canHaveAsQuantity()
+hasProperStorage()
+addIngredientType()
+removeIngredientType()
 store()
 request()
 getInventory()
-getDevices()
-getNbDevices()
-getDeviceAt()
-isValidDeviceAt()
-hasProperDevice()
+hasAsDevice()
+isValidDevice()
+hasProperDevices()
 addAsDevice()
 removeAsDevice()
-getCoolingBox()
-getOven()
-getKettle()
-getTransmogrifier()
-execute(Recipe,int)</panel_attributes>
+getDevice()
+execute()
+terminate()
+isTerminated()</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>180</x>
-      <y>423</y>
+      <x>207</x>
+      <y>405</y>
       <w>153</w>
       <h>162</h>
     </coordinates>
@@ -195,8 +196,8 @@ getAbsoluteCapacity()</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>477</x>
-      <y>981</y>
+      <x>504</x>
+      <y>963</y>
       <w>207</w>
       <h>153</h>
     </coordinates>
@@ -216,8 +217,8 @@ hasProperLaboratory()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>675</x>
-      <y>981</y>
+      <x>702</x>
+      <y>963</y>
       <w>63</w>
       <h>225</h>
     </coordinates>
@@ -227,8 +228,8 @@ hasProperLaboratory()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>675</x>
-      <y>981</y>
+      <x>702</x>
+      <y>963</y>
       <w>63</w>
       <h>27</h>
     </coordinates>
@@ -238,8 +239,8 @@ hasProperLaboratory()
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>720</x>
-      <y>981</y>
+      <x>747</x>
+      <y>963</y>
       <w>162</w>
       <h>180</h>
     </coordinates>
@@ -261,8 +262,8 @@ getProcessedIngredient()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>873</x>
-      <y>981</y>
+      <x>900</x>
+      <y>963</y>
       <w>99</w>
       <h>27</h>
     </coordinates>
@@ -272,8 +273,8 @@ getProcessedIngredient()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>873</x>
-      <y>981</y>
+      <x>900</x>
+      <y>963</y>
       <w>99</w>
       <h>108</h>
     </coordinates>
@@ -283,8 +284,8 @@ getProcessedIngredient()
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>720</x>
-      <y>1179</y>
+      <x>747</x>
+      <y>1161</y>
       <w>162</w>
       <h>234</h>
     </coordinates>
@@ -311,8 +312,8 @@ emptyIngredient()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>873</x>
-      <y>1179</y>
+      <x>900</x>
+      <y>1161</y>
       <w>72</w>
       <h>27</h>
     </coordinates>
@@ -322,8 +323,8 @@ emptyIngredient()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>873</x>
-      <y>1179</y>
+      <x>900</x>
+      <y>1161</y>
       <w>72</w>
       <h>108</h>
     </coordinates>
@@ -333,8 +334,8 @@ emptyIngredient()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>558</x>
-      <y>459</y>
+      <x>585</x>
+      <y>441</y>
       <w>108</w>
       <h>27</h>
     </coordinates>
@@ -344,8 +345,8 @@ emptyIngredient()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>324</x>
-      <y>441</y>
+      <x>351</x>
+      <y>423</y>
       <w>63</w>
       <h>27</h>
     </coordinates>
@@ -355,8 +356,8 @@ emptyIngredient()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>333</x>
-      <y>990</y>
+      <x>360</x>
+      <y>972</y>
       <w>162</w>
       <h>45</h>
     </coordinates>
@@ -369,8 +370,8 @@ has &gt;</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>396</x>
-      <y>90</y>
+      <x>423</x>
+      <y>72</y>
       <w>144</w>
       <h>288</h>
     </coordinates>
@@ -400,8 +401,8 @@ removeIngredientAt()</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>189</x>
-      <y>54</y>
+      <x>216</x>
+      <y>36</y>
       <w>162</w>
       <h>261</h>
     </coordinates>
@@ -431,8 +432,8 @@ removeAsRecipe()
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>342</x>
-      <y>90</y>
+      <x>369</x>
+      <y>72</y>
       <w>72</w>
       <h>36</h>
     </coordinates>
@@ -443,8 +444,8 @@ m2=0..*</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>531</x>
-      <y>126</y>
+      <x>558</x>
+      <y>108</y>
       <w>81</w>
       <h>342</h>
     </coordinates>
@@ -454,8 +455,8 @@ m2=0..*</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>954</x>
-      <y>450</y>
+      <x>981</x>
+      <y>432</y>
       <w>243</w>
       <h>270</h>
     </coordinates>
@@ -481,8 +482,8 @@ group=1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>837</x>
-      <y>450</y>
+      <x>864</x>
+      <y>432</y>
       <w>135</w>
       <h>117</h>
     </coordinates>
@@ -492,8 +493,8 @@ group=1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>558</x>
-      <y>450</y>
+      <x>585</x>
+      <y>432</y>
       <w>414</w>
       <h>315</h>
     </coordinates>
@@ -503,8 +504,8 @@ group=1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>873</x>
-      <y>450</y>
+      <x>900</x>
+      <y>432</y>
       <w>261</w>
       <h>729</h>
     </coordinates>
@@ -514,8 +515,8 @@ group=1</panel_attributes>
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>171</x>
-      <y>396</y>
+      <x>198</x>
+      <y>378</y>
       <w>711</w>
       <h>504</h>
     </coordinates>
@@ -527,8 +528,8 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>180</x>
-      <y>639</y>
+      <x>207</x>
+      <y>621</y>
       <w>153</w>
       <h>234</h>
     </coordinates>
@@ -555,8 +556,8 @@ getRatio(State1,State2)
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>243</x>
-      <y>459</y>
+      <x>270</x>
+      <y>441</y>
       <w>126</w>
       <h>198</h>
     </coordinates>
@@ -566,8 +567,8 @@ getRatio(State1,State2)
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>171</x>
-      <y>18</y>
+      <x>198</x>
+      <y>0</y>
       <w>549</w>
       <h>369</h>
     </coordinates>
@@ -579,8 +580,8 @@ bg=red</panel_attributes>
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>468</x>
-      <y>954</y>
+      <x>495</x>
+      <y>936</y>
       <w>603</w>
       <h>468</h>
     </coordinates>
@@ -592,8 +593,8 @@ bg=blue</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>603</x>
-      <y>108</y>
+      <x>630</x>
+      <y>90</y>
       <w>108</w>
       <h>27</h>
     </coordinates>
@@ -607,8 +608,8 @@ bg=blue</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>531</x>
-      <y>99</y>
+      <x>558</x>
+      <y>81</y>
       <w>90</w>
       <h>45</h>
     </coordinates>
@@ -620,8 +621,8 @@ m1=0..*
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>918</x>
-      <y>396</y>
+      <x>945</x>
+      <y>378</y>
       <w>324</w>
       <h>342</h>
     </coordinates>
@@ -634,8 +635,8 @@ group=1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>450</x>
-      <y>711</y>
+      <x>477</x>
+      <y>693</y>
       <w>666</w>
       <h>441</h>
     </coordinates>
@@ -645,8 +646,8 @@ group=1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>450</x>
-      <y>711</y>
+      <x>477</x>
+      <y>693</y>
       <w>666</w>
       <h>441</h>
     </coordinates>
@@ -656,8 +657,8 @@ group=1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>450</x>
-      <y>711</y>
+      <x>477</x>
+      <y>693</y>
       <w>666</w>
       <h>675</h>
     </coordinates>
@@ -667,8 +668,8 @@ group=1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>450</x>
-      <y>711</y>
+      <x>477</x>
+      <y>693</y>
       <w>666</w>
       <h>675</h>
     </coordinates>
@@ -678,8 +679,8 @@ group=1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>783</x>
-      <y>423</y>
+      <x>810</x>
+      <y>405</y>
       <w>90</w>
       <h>27</h>
     </coordinates>
@@ -690,8 +691,8 @@ group=1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>837</x>
-      <y>441</y>
+      <x>864</x>
+      <y>423</y>
       <w>45</w>
       <h>108</h>
     </coordinates>
