@@ -491,7 +491,7 @@ public class Laboratory {
 	 */
 	public IngredientContainer request(String name, int amount) throws CapacityException{
 		for(IngredientType type : this.storage.keySet()) {
-			if((type.getSimpleName().equals(name)) || (type.getSpecialName().equals(name))){
+			if((type.getSimpleName().equals(name)) || (type.getSpecialName()==(name))){
 				
 				if(getQuantityOf(type) < amount) {
 					throw new CapacityException(this, "Not enough of this ingredient.");
@@ -788,5 +788,5 @@ public class Laboratory {
 	/**
 	 * A variable for the termination of this laboratory.
 	 */
-	private boolean isTerminated = true;
+	private boolean isTerminated = false;
 }
