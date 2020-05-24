@@ -19,15 +19,15 @@ public abstract class BottomlessDevice extends Device {
 	/**
 	 * Initialize a new bottomless device with a given array of ingredients containers.
 	 * 
-	 *  @param ingredientArray
+	 * @param  ingredientArray
 	 *  	   The given array of ingredient containers to load in this device.
 	 * @effect The containers in the given ingredient container array get loaded into this bottomless device.
-	 * 		   | for(IngredientContainer container : ingredientArray)
+	 * 		   | for(IngredientContainer container: ingredientArray)
 	 * 		   |   loadIngredient(container)
 	 */
 	@Model @Raw
 	public BottomlessDevice(IngredientContainer[] ingredientArray) {
-		for (IngredientContainer container : ingredientArray) {
+		for (IngredientContainer container: ingredientArray) {
 			loadIngredient(container);
 		}
 	}
@@ -38,24 +38,55 @@ public abstract class BottomlessDevice extends Device {
 	@Model @Raw
 	public BottomlessDevice() {}
 	
+	
+	/**************************************************
+	 * Start ingredients
+	 **************************************************/
+	
+	
 	/**
 	 * Return the list containing the start ingredients.
 	 */
+	@Basic @Raw
 	public List<AlchemicIngredient> getStartIngredients() {
 		return this.startIngredients;
 	}
 	
 	/**
+	 * Return the amount of start ingredients loaded into this bottomless device.
+	 */
+	@Basic
+	public int getNbStartIngredients() {
+		return startIngredients.size();
+	}
+	
+	
+	
+	/**
 	 * Clear the startIngredients list.
+	 * 
+	 * @note There is no dire need for a method that removes one ingredient, as this is not how the device is
+	 * 		 supposed to work, namely removing all start ingredients after they are processed.
 	 */
 	protected void clearStartIngredients() {
 		getStartIngredients().clear();
 	}
 
 	/**
-	 * A variable for the loaded ingredients in the device
+	 * A variable for the loaded ingredients in the device.
+	 * 
+	 * @invar The list of start ingredients is effective.
+	 * 		  | startIngredients != null
+	 * @invar Each ingredient in the start ingredients list is effective.
+	 * 		  | for each ingredient in startIngredients:
+	 * 		  |    ingredient != null
 	 */
 	private List<AlchemicIngredient> startIngredients = new ArrayList<AlchemicIngredient>();
+	
+	
+	/**************************************************
+	 * Processed ingredients
+	 **************************************************/
 	
 	/**
 	 * Return the list with the processedIngredients.
@@ -81,12 +112,18 @@ public abstract class BottomlessDevice extends Device {
 	 */
 	private List<AlchemicIngredient> processedIngredients = new ArrayList<AlchemicIngredient>();
 
+	
+	/**************************************************
+	 * Methods
+	 **************************************************/
+	
 	/**
 	 * Loads a new ingredient in a container into this device.
 	 * 
 	 * @param container
 	 * 		  The given container containing the ingredient that will be loaded into this device.
-	 * @post  The ingredient in the given container gets added to the start ingredients of this device and the container gets deleted.
+	 * @post  The ingredient in the given container gets added to the start ingredients of this device 
+	 *        and the container gets deleted.
 	 * 		  | this.getStartIngredients().add(container.getContents())
 	 * 		  | container = null
 	 */
@@ -121,8 +158,8 @@ public abstract class BottomlessDevice extends Device {
 	}
 	
 	/**
-	 * This bottomless device processes the ingredients in the start ingredients list. The processed ingredients get added to the
-	 * processed ingredients list.
+	 * This bottomless device processes the ingredients in the start ingredients list. 
+	 * The processed ingredients gets added to the processed ingredients list.
 	 */
 	@Override
 	public abstract void process();

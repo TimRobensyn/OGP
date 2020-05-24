@@ -166,8 +166,9 @@ public class Recipe {
 	 * 
 	 * @param  recipe
 	 * 		   The recipe to check.
-	 * @return True if and only if the given recipe can have each item at its index.
-	 *  	   | result ==
+	 * @return True if and only if the given recipe can have each item at its index and its processes list
+	 * 		   is effective.
+	 *  	   | result == recipe.getProcesses()!=null &&
 	 *  	   |   for each I in 1..getNbProcesses()
 	 *         |      canHaveAsProcessAt(recipe.getProcessAt(i),i)
 	 */
@@ -177,7 +178,7 @@ public class Recipe {
 			if (!canHaveAsProcessAt(recipe.getProcessAt(i),i))
 				return false;
 		}
-		return true;
+		return (recipe.getProcesses()!=null);
 	}
 	
 	/**
