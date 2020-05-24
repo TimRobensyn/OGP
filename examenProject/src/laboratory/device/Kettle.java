@@ -153,8 +153,8 @@ public class Kettle extends BottomlessDevice {
 																	  waterTemperature));
 		int quantityOfLiquids=0;
 		int quantityOfPowders=0;
-		long cumulativeColdness = 0L;
-		long cumulativeHotness = 0L;
+		double cumulativeColdness = 0L;
+		double cumulativeHotness = 0L;
 		double totalNbOfSpoons = 0L;
 		
 		for (AlchemicIngredient ingredient: getStartIngredients()) {
@@ -166,7 +166,7 @@ public class Kettle extends BottomlessDevice {
 			//State & standardTemperature
 			long diffIngredient = Math.abs(Temperature.temperatureDifference(ingredient.getStandardTemperatureObject(),
 					                                                         waterTemperature));
-			System.out.println(diffIngredient);
+			
 			if (diffIngredient<diffClosest) {
 				closestToWater.clear();
 				closestToWater.add(ingredient);
@@ -175,16 +175,18 @@ public class Kettle extends BottomlessDevice {
 			}
 			
 			//Quantity & temperature
+			
+			
 			if (ingredient.getState()==State.LIQUID) {
 				quantityOfLiquids += ingredient.getQuantity();
-				cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*Unit.SPOON_LIQUID.getCapacity();
-				cumulativeHotness += ingredient.getHotness()*ingredient.getQuantity()*Unit.SPOON_LIQUID.getCapacity();
-				totalNbOfSpoons += (double) ingredient.getQuantity()/Unit.SPOON_LIQUID.getCapacity();
+				cumulativeColdness += (double) ingredient.getColdness()*ingredient.getQuantity()/Unit.SPOON_LIQUID.getCapacity();
+				cumulativeHotness += (double) ingredient.getHotness()*ingredient.getQuantity()/Unit.SPOON_LIQUID.getCapacity();
+				totalNbOfSpoons += (double) ingredient.getQuantity()/Unit.SPOON_LIQUID.getAbsoluteCapacity();
 			} else if (ingredient.getState()==State.POWDER) {
 				quantityOfPowders += ingredient.getQuantity();
-				cumulativeColdness += ingredient.getColdness()*ingredient.getQuantity()*Unit.SPOON_POWDER.getCapacity();
-				cumulativeHotness += ingredient.getHotness()*ingredient.getQuantity()*Unit.SPOON_POWDER.getCapacity();
-				totalNbOfSpoons += (double) ingredient.getQuantity()/Unit.SPOON_POWDER.getCapacity();
+				cumulativeColdness += (double) ingredient.getColdness()*ingredient.getQuantity()/Unit.SPOON_POWDER.getCapacity();
+				cumulativeHotness += (double) ingredient.getHotness()*ingredient.getQuantity()/Unit.SPOON_POWDER.getCapacity();
+				totalNbOfSpoons += (double) ingredient.getQuantity()/Unit.SPOON_POWDER.getAbsoluteCapacity();
 			}
 			
 		}
@@ -208,12 +210,10 @@ public class Kettle extends BottomlessDevice {
 		//Quantity
 		int newQuantity = 0;
 		if (newState==State.LIQUID) {
-			int powderToLiquid = Unit.SPOON_LIQUID.getCapacity()*( (int) Math.floor(quantityOfPowders*Unit.getRatio(
-																				    newState, newState.otherState())));
+			int powderToLiquid = (int) Math.floor(quantityOfPowders*Unit.getRatio(newState, newState.otherState()));
 			newQuantity = quantityOfLiquids + powderToLiquid;
 		} else if (newState==State.POWDER) {
-			int liquidToPowder = Unit.SPOON_POWDER.getCapacity()*( (int) Math.floor(quantityOfLiquids*Unit.getRatio(
-					                                                                newState, newState.otherState())));
+			int liquidToPowder = (int) Math.floor(quantityOfLiquids*Unit.getRatio(newState, newState.otherState()));
 			newQuantity = quantityOfPowders + liquidToPowder;
 		}
 		
