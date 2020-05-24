@@ -3,6 +3,8 @@ package alchemy;
 import be.kuleuven.cs.som.annotate.*;
 import temperature.Temperature;
 
+import java.util.Arrays;
+
 /**
  * A class defining the type of an alchemic ingredient with a name, a standard temperature and a state (liquid or powder).
  * 
@@ -444,16 +446,18 @@ public class IngredientType {
 	 * 		   The given ingredient type to check.
 	 * @return True if and only if this ingredient type and the given ingredient type have the same simple names, special name,
 	 * 		   state and standard temperature.
-	 * 		   | result == (this.getSimpleNames() == type.getSimpleNames() 
+	 * 		   | result == (Arrays.equals(this.getSimpleNames(),type.getSimpleNames())  
 	 *         |           && this.getSpecialName() == type.getSpecialName()
 	 *         |           && this.getState() == type.getState() 
-	 *         |           && this.getStandardTemperature() == type.getStandardTemperature())
+	 *         |           && Temperature.compareTemperature(this.getStandardTemperatureObject(), 
+	 *         |					                         type.getStandardTemperatureObject())==0 )
 	 */
 	public boolean equals(IngredientType type) {
-		return (this.getSimpleNames() == type.getSimpleNames() 
+		return (Arrays.equals(this.getSimpleNames(),type.getSimpleNames()) 
 				&& this.getSpecialName() == type.getSpecialName()
 				&& this.getState() == type.getState() 
-				&& this.getStandardTemperature() == type.getStandardTemperature());
+				&& Temperature.compareTemperature(this.getStandardTemperatureObject(), 
+						                          type.getStandardTemperatureObject())==0);
 	}
 
 }
