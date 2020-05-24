@@ -60,7 +60,10 @@ public class Laboratory {
 		}
 		this.capacity = capacity;
 		this.storage = storage;
-		this.devices = devices;
+		
+		for(Device device : devices) {
+			addAsDevice(device);
+		}
 	}
 	
 	/**
@@ -491,7 +494,7 @@ public class Laboratory {
 	 */
 	public IngredientContainer request(String name, int amount) throws CapacityException{
 		for(IngredientType type : this.storage.keySet()) {
-			if((type.getSimpleName().equals(name)) || (type.getSpecialName().equals(name))){
+			if((type.getSimpleName().equals(name)) || (type.getSpecialName()==(name))){
 				
 				if(getQuantityOf(type) < amount) {
 					throw new CapacityException(this, "Not enough of this ingredient.");
@@ -773,7 +776,6 @@ public class Laboratory {
 	 *          |     device.getLaboratory() == null
 	 *          |     !hasAsDevice(device)
 	 */
-	@Basic @Raw
 	public void terminate() {
 		Set<Device> toRemove = new HashSet<Device>();
 		for (Device device: this.devices) {
@@ -787,7 +789,7 @@ public class Laboratory {
 	/**
 	 * Check whether this laboratory is terminated.
 	 */
-	@Basic
+	@Basic @Raw
 	public boolean isTerminated() {
 		return this.isTerminated;
 	}
