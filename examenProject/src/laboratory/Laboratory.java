@@ -51,8 +51,11 @@ public class Laboratory {
 	@Raw
 	public Laboratory(int capacity, Map<IngredientType,Integer> storage, Set<Device> devices)
 			throws CapacityException{
-		if(!isValidCapacity(capacity)) {
+		if (!isValidCapacity(capacity)) {
 			throw new CapacityException(this, "The given capacity is invalid.");
+		}
+		if (!canHaveAsStorage(storage)) {
+			throw new CapacityException(this, "The given storage is invalid.");
 		}
 		this.capacity = capacity;
 		this.storage = storage;
@@ -160,7 +163,7 @@ public class Laboratory {
 	@Basic @Raw
 	public int getQuantityOf(IngredientType type) throws CapacityException{
 		if (!hasAsIngredientType(type))
-			throw new IllegalArgumentException("Type not found.");
+			throw new CapacityException(this,"Type not found.");
 		return this.storage.get(type).intValue();
 	}
 	
@@ -240,18 +243,42 @@ public class Laboratory {
 		for (IngredientType storedType:this.storage.keySet()) {
 			if (storedType!=type) {
 				if (storedType.getState()==State.LIQUID)
-					usedCapacity += getQuantityOf(storedType)/Unit.SPOON_LIQUID.getCapacity();
+					usedCapacity += getQuantityOf(storedType)/(double)Unit.SPOON_LIQUID.getCapacity();
 				else
-					usedCapacity += getQuantityOf(storedType)/Unit.SPOON_POWDER.getCapacity();
+					usedCapacity += getQuantityOf(storedType)/(double)Unit.SPOON_POWDER.getCapacity();
 			}
 			else {
 				if (storedType.getState()==State.LIQUID)
-					usedCapacity += quantity/Unit.SPOON_LIQUID.getCapacity();
+					usedCapacity += quantity/(double)Unit.SPOON_LIQUID.getCapacity();
 				else
-					usedCapacity += quantity/Unit.SPOON_POWDER.getCapacity();
+					usedCapacity += quantity/(double)Unit.SPOON_POWDER.getCapacity();
 			}
 		}
 		if (usedCapacity>getCapacityInSpoons()) return false;
+		return true;
+	}
+	
+	/**
+	 * Check whether the given storage is a valid storage for this laboratory.
+	 * 
+	 * @return	True if and only if the storage is effective, 
+	 * 			if all the stored ingredient types and their quantities are valid
+	 * 			ingredient types and quantities,
+	 * 			and if the total capacity taken by the ingredient's quantities
+	 * 			is less than the available capacity of the laboratory.
+	 *          | if(this.storage == null) then result == false
+	 * 			| for each type in Storage:
+	 * 			|	((!isValidIngredientType(type))
+	 * 			|	  ||(!canHaveAsQuantity(type)))
+	 * 			|     result == false
+	 * 			| result == true
+	 */
+	public boolean canHaveAsStorage(Map<IngredientType,Integer> storage) {
+		if(storage == null) return false;
+		for (IngredientType type:storage.keySet()) {
+			if (!isValidIngredientType(type)) return false;
+			if (!canHaveAsQuantity(type,storage.get(type))) return false;
+		}
 		return true;
 	}
 	
@@ -324,13 +351,14 @@ public class Laboratory {
 	 * 			This laboratory cannot contain the given quantity
 	 * 			| !canHaveAsQuantity(type, quantity)
 	 */
-	public void addIngredientType(IngredientType type, int quantity) throws CapacityException {
-		if (!canHaveAsQuantity(type, quantity))
-			throw new CapacityException(this, "Invalid quantity");
+	private void addIngredientType(IngredientType type, int quantity) 
+			throws CapacityException {
 		if (hasAsIngredientType(type)) {
 			setIngredientQuantity(type, getQuantityOf(type)+quantity);
 		}
 		else {
+			if (!canHaveAsQuantity(type, quantity))
+				throw new CapacityException(this, "Invalid quantity");
 			this.storage.put(type, quantity);
 		}
 		//TODO
@@ -356,7 +384,7 @@ public class Laboratory {
 	 * 			The given quantity is greater than the quantity of the given type.
 	 * 			| getQuantityOf(type)<quantity
 	 */
-	public void removeIngredientType(IngredientType type, int quantity) throws CapacityException {
+	private void removeIngredientType(IngredientType type, int quantity) throws CapacityException {
 		if (getQuantityOf(type)==quantity) {
 			this.storage.remove(type);
 		}
@@ -375,7 +403,7 @@ public class Laboratory {
 	 * @effect  The full quantity of the given ingredient type gets removed from the storage.
 	 * 			| removeIngredientType(type, getQuantityOf(type)) 
 	 */
-	public void removeIngredientType(IngredientType type) {
+	private void removeIngredientType(IngredientType type) {
 		removeIngredientType(type,getQuantityOf(type));
 	}
 	

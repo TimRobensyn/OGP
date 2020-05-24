@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class LaboratoryTest {
 
-	public static AlchemicIngredient water, water_full, crumbs;
+	public static AlchemicIngredient water, water_full, crumbs, coke;
 	
 	public static Map<IngredientType,Integer> storage,storage_full;
 	
@@ -34,6 +34,8 @@ public class LaboratoryTest {
 		water_full = new AlchemicIngredient(50400);
 		crumbs = new AlchemicIngredient(new IngredientType("Crumbs",State.POWDER,
 				new Temperature(0,40)),30);
+		coke = new AlchemicIngredient(new IngredientType("Dough",State.LIQUID,
+				new Temperature(10,0)),80);
 		storage = new HashMap<IngredientType,Integer>();
 		storage.put(water.getType(),water.getQuantity());
 		storage.put(crumbs.getType(), crumbs.getQuantity());
@@ -146,57 +148,51 @@ public class LaboratoryTest {
 		laboratory_empty.getQuantityOf(water.getType());
 	}
 	
-	@Test
-	public void testAddIngredientType() {
-		assertFalse(laboratory_empty.hasAsIngredientType(water.getType()));
-		laboratory.addIngredientType(water.getType(),water.getQuantity());
-		assertTrue(laboratory_empty.hasAsIngredientType(water.getType()));
-	}
-	
-	@Test
-	public void testRemoveIngredientType() {
-		assertTrue(laboratory.hasAsIngredientType(water.getType()));
-		laboratory.removeIngredientType(water.getType());
-		assertFalse(laboratory.hasAsIngredientType(water.getType()));
-	}
+//	@Test
+//	public void testAddIngredientType() {
+//		assertFalse(laboratory_empty.hasAsIngredientType(water.getType()));
+//		laboratory.addIngredientType(water.getType(),water.getQuantity());
+//		assertTrue(laboratory_empty.hasAsIngredientType(water.getType()));
+//	}
+//	
+//	@Test
+//	public void testRemoveIngredientType() {
+//		assertTrue(laboratory.hasAsIngredientType(water.getType()));
+//		laboratory.removeIngredientType(water.getType());
+//		assertFalse(laboratory.hasAsIngredientType(water.getType()));
+//	}
 	
 	@Test
 	public void testStore_legalCase_NewIngredientType() {
-		
-		basicLiquidContainer.setContents(basicWater);
-		laboratory_storage.store(basicLiquidContainer);
-		assertEquals(basicWater, laboratory_storage.getIngredientAt(3));
-		assertEquals(basicLiquidContainer, null);
+		IngredientContainer container = new IngredientContainer(coke,Unit.getContainer(
+				coke.getState(), coke.getQuantity()));
+		laboratory.store(container);
+		assertTrue(laboratory.hasAsIngredientType(coke.getType()));
+		assertEquals(null,container); //TODO terminatie werkt niet
 	}
 	
-//	@Test
-//	public void testStore_LegalCase_OldIngredientType() {
-//		AlchemicIngredient ingredientLiquid2 = new AlchemicIngredient(ingredientTypeLiquid, 5);
-//		IngredientContainer container2 = new IngredientContainer(ingredientLiquid2, Unit.VIAL_LIQUID);
-//
-//		laboratory_storage.store(container2);
-//		assertEquals(ingredientPowder, laboratory_storage.getIngredientAt(1));
-//		assertEquals(ingredientTypeLiquid, laboratory_storage.getIngredientAt(2).getType());
-//		assertEquals(laboratory_storage.getIngredientAt(2).getQuantity(), 20);
-//		assertEquals(container2, null);
-//	}
-//	
-//	@Test //TODO
-//	public void testStore_LegalCase_WarmIngredient() {
-//	}
-//	
-//	@Test //TODO
-//	public void testStore_LegalCase_ColdIngredient() {
-//	}
-//	
-//	@Test (expected = CapacityException.class)
-//	public void testStore_IllegalCase_InvalidCapacity() {
-//		AlchemicIngredient bigIngredient = new AlchemicIngredient(ingredientTypeLiquid, 200);
-//		IngredientContainer bigContainer = new IngredientContainer(bigIngredient, Unit.getContainer(State.LIQUID, 200));
-//		
-//		laboratory_storage.store(bigContainer);
-//	}
-//	
+	@Test
+	public void testStore_LegalCase_OldIngredientType() {
+		IngredientContainer container = new IngredientContainer(water, Unit.getContainer(
+				water.getState(), water.getQuantity()));
+
+		laboratory.store(container);
+		assertTrue(laboratory.hasAsIngredientType(water.getType()));
+		assertEquals(48,laboratory.getQuantityOf(water.getType()));
+		assertEquals(null,container); //TODO terminatie werkt niet
+	}
+	
+	@Test (expected = CapacityException.class)
+	public void testStore_IllegalCase_InvalidCapacity() {
+		AlchemicIngredient ingredient = new AlchemicIngredient(1);
+		IngredientContainer container = new IngredientContainer(ingredient, Unit.getBiggestContainer(State.LIQUID));
+		for (Object name: laboratory_full.getInventory()[0])
+			System.out.println(name.toString());
+		laboratory_full.store(container);
+		for (Object name: laboratory_full.getInventory()[0])
+			System.out.println(name.toString());
+	}
+	
 //	@Test
 //	public void testRequestNameAmount_LegalCase_NoLeftovers() {
 //		IngredientContainer ingredientContainer = laboratory_storage.request("ingredientTypeLiquid", 15);
