@@ -78,6 +78,7 @@ public class RecipeBook {
 	 * 		   integer.
 	 *         | result == (nbPages>0 && nbPages<=Long.MAX_VALUE)
 	 */
+	@Raw
 	public boolean isValidNbPages(int nbPages) {
 		return (nbPages>0 && nbPages<=Integer.MAX_VALUE);
 	}
@@ -254,6 +255,7 @@ public class RecipeBook {
 	 * 			| for each I in 0..getNbRecipes()-1:
 	 * 			|	(result.get(I) == getRecipeAt(I+1))
 	 */
+	@Basic
 	public List<Recipe> getAllRecipes() {
 		return this.book;		
 	}
