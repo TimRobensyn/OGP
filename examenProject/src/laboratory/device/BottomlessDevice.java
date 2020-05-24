@@ -78,6 +78,7 @@ public abstract class BottomlessDevice extends Device {
 	 * 		   the start ingredients list.
 	 *         | (index<=0 || index>getNbStartIngredients())
 	 */
+	@Basic
 	public AlchemicIngredient getStartIngredientAt(int index) throws IndexOutOfBoundsException {
 		return getStartIngredients().get(index-1);
 	}
@@ -90,6 +91,7 @@ public abstract class BottomlessDevice extends Device {
 	 * @return True if and only if the ingredient is effective.
 	 * 		   | result == (ingredient!=null)
 	 */
+	@Raw
 	public static boolean isValidStartIngredient(AlchemicIngredient ingredient) {
 		return (ingredient!=null);
 	}
@@ -188,6 +190,7 @@ public abstract class BottomlessDevice extends Device {
 	 * 		   the processed ingredients list.
 	 *         | (index<=0 || index>getNbStartIngredients())
 	 */
+	@Basic
 	public AlchemicIngredient getProcessedIngredientAt(int index) throws IndexOutOfBoundsException {
 		return getProcessedIngredients().get(index-1);
 	}

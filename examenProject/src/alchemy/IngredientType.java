@@ -436,5 +436,23 @@ public class IngredientType {
 	 * A variable containing the Temperature object that is the standard temperature of this ingredient type.
 	 */
 	private final Temperature standardTemperature;
+	
+	/**
+	 * Check whether the given ingredient type is equal to this ingredient type.
+	 * 
+	 * @param type
+	 * 		  The given ingredient type to check.
+	 * @return True if and only if this ingredient type and the given ingredient type have the same simple names, special name,
+	 * 		   state and standard temperature.
+	 * 		   | result == (((this.getSimpleNames() != type.getSimpleNames()) || (this.getSpecialName() != type.getSpecialName()) || 
+	 *		   |        (this.getState() != type.getState()) || (this.getStandardTemperature() != type.getStandardTemperature()))
+	 */
+	public boolean equals(IngredientType type) {
+		if((this.getSimpleNames() != type.getSimpleNames()) || (this.getSpecialName() != type.getSpecialName()) || 
+				(this.getState() != type.getState()) || (this.getStandardTemperature() != type.getStandardTemperature())) {
+			return false;
+		}
+		return true;
+	}
 
 }
