@@ -54,7 +54,7 @@ public abstract class TemperatureDevice extends Device {
 	/**
 	 * Return the loaded ingredient in this device.
 	 */
-	@Basic
+	@Basic @Raw
 	protected AlchemicIngredient getStartIngredient() {
 		return this.startIngredient;
 	}
@@ -62,6 +62,7 @@ public abstract class TemperatureDevice extends Device {
 	/**
 	 * Set the startIngredient variable to the given ingredient.
 	 */
+	@Raw
 	protected void setStartIngredient(AlchemicIngredient ingredient) {
 		this.startIngredient = ingredient;
 	}
@@ -155,6 +156,7 @@ public abstract class TemperatureDevice extends Device {
 	/**
 	 * Return the temperature of this device in an array of two long values.
 	 */
+	@Basic
 	public long[] getTemperature() {
 		return getTemperatureObject().getTemperature();
 	}
@@ -177,6 +179,7 @@ public abstract class TemperatureDevice extends Device {
 	 * 			| if (Temperature.isValidTemperature(newTemperature))
 	 * 		    |   then new.getTemperature() == newTemperature
 	 */
+	@Raw
 	public void setTemperature(Temperature newTemperature) {
 		if (Temperature.isValidTemperature(newTemperature)) {
 			this.temperature = newTemperature;
