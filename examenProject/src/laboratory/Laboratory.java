@@ -65,10 +65,10 @@ public class Laboratory {
 	/**
 	 * Initialize a new laboratory with the given capacity and set of devices with an empty storage
 	 * 
-	 * @param 	capacity
-	 * 			The given capacity
-	 * @param	devices
-	 * 			The set of devices to be added in this new laboratory.
+	 * @param  capacity
+	 * 		   The given capacity
+	 * @param  devices
+	 * 		   The set of devices to be added in this new laboratory.
 	 * @effect The new laboratory has the given capacity and devices and an empty storage
 	 * 		   | this(capacity,new HashMap<IngredientType,Integer>(),devices)
 	 */
@@ -80,8 +80,8 @@ public class Laboratory {
 	/**
 	 * Initialize a new laboratory with the given capacity, an empty storage and no devices.
 	 * 
-	 * @param capacity
-	 * 	      The given capacity.
+	 * @param  capacity
+	 * 	       The given capacity.
 	 * @effect The new laboratory is initialized with the given capacity.
 	 * 		   It's storage is empty and the devices are set to null.
 	 * 		   | this(capacity, new HashMap<IngredientType,Integer>(), new HashSet<Device>())
@@ -94,10 +94,10 @@ public class Laboratory {
 	/**
 	 * Initialize a new laboratory with the given capacity and devices with an empty storage
 	 * 
-	 * @param 	capacity
-	 * 			The given capacity
-	 * @param	devices //TODO klopt nog niet
-	 * 			The set of devices to be added in this new laboratory.
+	 * @param  capacity
+	 * 		   The given capacity
+	 * @param  storage
+	 * 		   The given storage map of this laboratory which maps an ingredient type to an integer as the quantity.
 	 * @effect The new laboratory has the given capacity and devices and an empty storage
 	 * 		   | this(capacity,new HashMap<IngredientType,Integer>(),devices)
 	 */
