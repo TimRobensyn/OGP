@@ -8,6 +8,9 @@ import alchemy.*;
 /**
  * An abstract class of devices.
  * 
+ * @invar   The laboratory that this device is in must be proper
+ * 			| hasProperLaboratory()
+ * 
  * @version	1.0
  * @author	Tim Lauwers, Tim Robensyn, Robbe Van Biervliet
  */
