@@ -195,8 +195,8 @@ public class LaboratoryTest {
 		for (Object name: laboratory_full.getInventory()[0])
 			System.out.println(name.toString());
 		laboratory_full.store(container);
-		for (Object name: laboratory_full.getInventory()[0])
-			System.out.println(name.toString());
+//		for (Object name: laboratory_full.getInventory()[0])
+//			System.out.println(name.toString());
 	}
 	
 	@Test
@@ -205,6 +205,11 @@ public class LaboratoryTest {
 		IngredientContainer ingredientContainer = laboratory.request("Crumbs");
 		assertFalse(laboratory.hasAsIngredientType(crumbs.getType()));
 		assertEquals(crumbs.getType(),ingredientContainer.getContents().getType());
+	}
+	
+	@Test
+	public void vergelijkTypes() {
+		assertEquals(new IngredientType("Water",State.LIQUID,new Temperature(0,20)),water.getType());
 	}
 	
 //	@Test
