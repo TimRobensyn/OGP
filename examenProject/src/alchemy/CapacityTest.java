@@ -10,6 +10,7 @@ import org.junit.*;
  * Don't mind me, just trying to understand Capacity and other shit
  * @author	Tim Robensyn
  */
+@SuppressWarnings("unused")
 public class CapacityTest {
 	
 	@Test

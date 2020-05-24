@@ -2,7 +2,6 @@ package laboratory.device;
 
 import alchemy.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import be.kuleuven.cs.som.annotate.*;
